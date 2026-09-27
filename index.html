@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр ЕГЭ по Истории · v10</title>
+    <title>Тренажёр ЕГЭ по Истории · v11</title>
     
     <script>
         // Pre-defining window.tailwind avoids ReferenceError if CDN script loads asynchronously
@@ -289,6 +289,64 @@
             .relation-table th:nth-child(4), .relation-table td:nth-child(4) { min-width:260px; }
             .relation-table th:nth-child(3), .relation-table td:nth-child(3) { min-width:150px; }
         }
+
+        /* ===== MAP TRAINER ===== */
+        .map-layout { align-items:start; }
+        .map-viewer {
+            position:relative; height:min(66vh,620px); min-height:420px; border-radius:1.2rem; overflow:hidden;
+            background:radial-gradient(500px 260px at 50% 0%,rgba(99,102,241,.10),transparent 72%),#0b1323;
+            border:1px solid rgba(148,163,184,.14);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .map-viewer img { display:block; width:100%; height:100%; max-height:100%; object-fit:contain; margin:auto; cursor:zoom-in; }
+        .map-zoom-btn {
+            position:absolute; right:10px; bottom:10px; z-index:3;
+            border:1px solid rgba(148,163,184,.22); background:rgba(8,15,28,.80); color:#cbd5e1;
+            border-radius:10px; padding:7px 9px; font-size:10px; font-weight:800; backdrop-filter:blur(8px);
+        }
+        .map-zoom-btn:hover { background:rgba(30,41,59,.96); color:#fff; }
+        .map-study { border:1px solid rgba(129,140,248,.16); background:rgba(15,23,42,.56); border-radius:14px; overflow:hidden; }
+        .map-study-head { width:100%; text-align:left; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; color:#cbd5e1; font-size:11px; font-weight:800; }
+        .map-study-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 10px 10px; }
+        .map-study-item { border:1px solid rgba(148,163,184,.10); background:rgba(8,15,28,.42); border-radius:10px; padding:9px 10px; }
+        .map-study-label { font-size:9px; text-transform:uppercase; letter-spacing:.06em; font-weight:900; color:#8fa0b7; }
+        .map-study-text { margin-top:3px; font-size:11px; line-height:1.5; color:#d9e2ef; }
+        .map-modal { position:fixed; inset:0; z-index:100; background:rgba(2,6,16,.90); display:none; align-items:center; justify-content:center; padding:14px; backdrop-filter:blur(8px); }
+        .map-modal.open { display:flex; }
+        .map-modal img { max-width:96vw; max-height:92vh; object-fit:contain; border-radius:14px; box-shadow:0 30px 80px rgba(0,0,0,.45); background:#f8fafc; }
+        .map-modal-close { position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:12px; border:1px solid rgba(148,163,184,.20); background:rgba(15,23,42,.88); color:#fff; font-size:20px; }
+        .map-modal-caption { position:absolute; left:14px; right:60px; bottom:14px; color:#cbd5e1; font-size:11px; line-height:1.45; }
+        .map-option { width:100%; text-align:left; border:1px solid rgba(148,163,184,.14); background:rgba(15,23,42,.76); color:#dbe4f0; }
+        .map-option:hover:not(:disabled) { border-color:rgba(129,140,248,.45); background:rgba(30,41,59,.92); }
+        .map-option.correct { border-color:rgba(52,211,153,.48); background:rgba(16,185,129,.10); color:#d1fae5; }
+        .map-option.wrong { border-color:rgba(251,113,133,.44); background:rgba(244,63,94,.08); color:#ffe4e6; }
+        .map-option:disabled { cursor:default; opacity:1; }
+        .map-progress { height:7px; border-radius:999px; background:#0b1324; overflow:hidden; }
+        .map-progress > span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6366f1,#8b7cff); transition:width .3s ease; }
+        .map-source-note { font-size:10px; line-height:1.45; color:#6f8098; }
+        .map-badge { font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; padding:4px 7px; border-radius:7px; background:rgba(99,102,241,.10); border:1px solid rgba(99,102,241,.18); color:#a5b4fc; }
+        @media (max-width: 1023px) {
+            .map-layout { grid-template-columns:1fr !important; }
+            .map-viewer { height:min(60vh,540px); min-height:360px; }
+        }
+        @media (max-width: 640px) {
+            .map-viewer { height:min(56vh,410px); min-height:250px; border-radius:1rem; }
+            .map-viewer img { width:100%; height:100%; }
+            .map-study-grid { grid-template-columns:1fr; }
+            .map-option { padding:.8rem .75rem !important; font-size:12px !important; }
+            .map-modal { padding:7px; }
+            .map-modal-caption { left:8px; right:50px; bottom:8px; }
+        }
+
+        .map-atlas-card { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+        .map-atlas-card:hover { transform: translateY(-2px); border-color: rgba(129,140,248,.28); box-shadow: 0 14px 32px rgba(0,0,0,.18); }
+        .map-atlas-mini { padding:9px 10px; border-radius:10px; border:1px solid rgba(148,163,184,.10); background:rgba(8,15,28,.42); }
+        @media (max-width: 640px) {
+            .map-viewer { height: min(52vh, 380px); min-height: 230px; }
+            .map-atlas-card img { height: 220px; }
+            #section-maps .map-layout { gap: 10px; }
+            #section-maps .glass-panel { border-radius: 1rem; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
@@ -327,6 +385,9 @@
                     <button onclick="switchTab('relations')" id="tab-btn-relations" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all duration-200">
                         <i class="fa-solid fa-link mr-1.5"></i> Соотношения
                     </button>
+                    <button onclick="switchTab('maps')" id="tab-btn-maps" title="Карты ЕГЭ" aria-label="Карты ЕГЭ" class="tab-btn px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all duration-200">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </button>
                     <button onclick="switchTab('updates')" id="tab-btn-updates" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all duration-200">
                         <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> Обновления
                     </button>
@@ -352,6 +413,7 @@
                 <button onclick="switchTab('dictionary')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">Справочник</button>
                 <button onclick="switchTab('progress')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">Прогресс</button>
                 <button onclick="switchTab('relations')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">Связи</button>
+                <button onclick="switchTab('maps')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">Карты</button>
                 <button onclick="switchTab('updates')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 whitespace-nowrap">Ещё</button>
             </div>
         </header>
@@ -794,6 +856,29 @@
                     <div id="progress-topics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
                 </div>
 
+
+
+                <div class="glass-panel p-4 sm:p-5 rounded-2xl">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-indigo-300"></i> Карты</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">Отдельный прогресс по заданиям с историческими картами</p>
+                        </div>
+                        <button onclick="switchTab('maps')" class="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-indigo-500/10 text-indigo-200 border border-indigo-500/20">Открыть</button>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+                        <div class="progress-topic-chip"><div class="text-[10px] text-slate-500">Всего карт</div><div id="progress-map-total" class="text-xl font-black text-white mt-1">0</div></div>
+                        <div class="progress-topic-chip"><div class="text-[10px] text-slate-500">Решено</div><div id="progress-map-answered" class="text-xl font-black text-indigo-300 mt-1">0</div></div>
+                        <div class="progress-topic-chip"><div class="text-[10px] text-slate-500">Верно</div><div id="progress-map-correct" class="text-xl font-black text-emerald-300 mt-1">0</div></div>
+                        <div class="progress-topic-chip"><div class="text-[10px] text-slate-500">Ошибки</div><div id="progress-map-wrong" class="text-xl font-black text-rose-300 mt-1">0</div></div>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between text-[10px] text-slate-500"><span>Охват карт</span><strong id="progress-map-percent" class="text-indigo-300">0%</strong></div>
+                    <div class="progress-bar mt-2"><span id="progress-map-fill" style="width:0%"></span></div>
+                    <div class="mt-3 flex justify-end">
+                        <button onclick="resetMapProgress()" class="px-3 py-2 rounded-lg text-[10px] font-bold text-amber-200 bg-amber-500/10 border border-amber-500/20">Сбросить прогресс карт</button>
+                    </div>
+                </div>
+
                 <div class="glass-panel p-4 sm:p-5 rounded-2xl">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
@@ -806,6 +891,111 @@
                             <button onclick="resetAllProgress()" class="px-3 py-2 rounded-lg text-[11px] font-bold text-rose-200 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/15">Сбросить всё</button>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- TAB MAPS: EGE MAP TRAINER -->
+            <section id="section-maps" class="tab-section hidden space-y-4">
+                <div class="max-w-6xl mx-auto space-y-4">
+                    <div class="glass-panel p-4 sm:p-5 rounded-2xl">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div>
+                                <div class="text-[10px] font-black uppercase tracking-[0.18em] text-indigo-400">Практика ЕГЭ</div>
+                                <h2 class="text-xl sm:text-2xl font-black text-white mt-1 flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> Карты ЕГЭ</h2>
+                                <p class="text-xs text-slate-400 mt-1"><span id="map-stats-tasks">0</span> заданий · <span id="map-stats-maps">0</span> карты · прогресс сохраняется</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button id="map-filter-all" onclick="setMapFilter('all')" class="filter-chip active px-3 py-1.5 rounded-lg text-[11px] font-bold">Все карты</button>
+                                <button id="map-filter-wrong" onclick="setMapFilter('wrong')" class="filter-chip px-3 py-1.5 rounded-lg text-[11px] font-bold">Ошибки <span id="map-wrong-count" class="ml-1 opacity-70">0</span></button>
+                                <button onclick="switchTab('map-atlas')" class="filter-chip px-3 py-1.5 rounded-lg text-[11px] font-bold"><i class="fa-solid fa-images mr-1"></i> Атлас</button>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between text-[10px] text-slate-500">
+                            <span id="map-counter">Задание 1 из 25</span>
+                            <span id="map-score">Верно: 0</span>
+                        </div>
+                        <div class="map-progress mt-2"><span id="map-progress-fill" style="width:0%"></span></div>
+                    </div>
+
+                    <div class="map-layout grid grid-cols-1 lg:grid-cols-[1.45fr_.75fr] gap-4 items-start">
+                        <div class="glass-panel p-2.5 rounded-2xl">
+                            <div class="px-2 py-2 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span id="map-type-badge" class="map-badge">Определи событие</span>
+                                    <span id="map-title" class="text-xs font-bold text-slate-200">Карта</span>
+                                </div>
+                                <a id="map-source-link" href="#" target="_blank" rel="noopener" class="text-[10px] text-indigo-300 hover:text-white">Источник ↗</a>
+                            </div>
+                            <div class="map-viewer" onclick="openMapZoom()">
+                                <img id="map-image" src="" alt="Историческая карта для тренировки ЕГЭ" loading="eager" referrerpolicy="no-referrer">
+                                <button type="button" class="map-zoom-btn" onclick="event.stopPropagation(); openMapZoom()"><i class="fa-solid fa-expand mr-1"></i> Крупно</button>
+                                <div id="map-image-error" class="hidden absolute inset-0 items-center justify-center text-center p-8 text-xs text-slate-400">
+                                    <div><i class="fa-regular fa-image text-3xl text-slate-600"></i><div class="mt-2">Карта не загрузилась.</div><a id="map-error-link" href="#" target="_blank" rel="noopener" class="inline-block mt-2 text-indigo-300">Открыть источник</a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-4 sm:p-5 rounded-2xl space-y-4">
+                            <div>
+                                <div class="text-[10px] font-black uppercase tracking-[0.16em] text-indigo-400">Задание</div>
+                                <h3 id="map-question" class="text-base sm:text-lg font-extrabold text-white leading-snug mt-1">Загрузка...</h3>
+                            </div>
+                            <div id="map-options" class="space-y-2.5"></div>
+                            <div id="map-feedback" class="hidden rounded-xl p-3 text-xs"></div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="showMapHint()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-bold transition"><i class="fa-regular fa-lightbulb text-amber-400 mr-1"></i> Подсказка</button>
+                                <button onclick="toggleMapStudy()" class="py-2.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/15 text-indigo-200 border border-indigo-500/20 text-[11px] font-bold transition"><i class="fa-solid fa-book-open mr-1"></i> Разобрать</button>
+                                <button onclick="nextMapTask()" id="map-next-btn" disabled class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-35 disabled:cursor-not-allowed text-white text-[11px] font-bold transition">Следующее <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                            </div>
+                            <div id="map-hint" class="hidden rounded-xl border border-amber-500/20 bg-amber-500/7 p-3 text-[11px] text-slate-300 leading-relaxed">
+                                <span class="text-amber-300 font-black uppercase tracking-wider text-[9px] block mb-1">Подсказка</span>
+                                <span id="map-hint-text"></span>
+                            </div>
+                            <div id="map-study" class="map-study hidden">
+                                <button type="button" class="map-study-head" onclick="toggleMapStudy()">
+                                    <span><i class="fa-solid fa-graduation-cap text-indigo-300 mr-1.5"></i> Разбор карты для запоминания</span>
+                                    <i id="map-study-chevron" class="fa-solid fa-chevron-up text-slate-500 text-[10px]"></i>
+                                </button>
+                                <div class="map-study-grid">
+                                    <div class="map-study-item"><div class="map-study-label">Что за событие</div><div id="map-study-what" class="map-study-text"></div></div>
+                                    <div class="map-study-item"><div class="map-study-label">Как узнать карту</div><div id="map-study-how" class="map-study-text"></div></div>
+                                    <div class="map-study-item"><div class="map-study-label">Что запомнить</div><div id="map-study-memory" class="map-study-text"></div></div>
+                                    <div class="map-study-item"><div class="map-study-label">Дата-якорь</div><div id="map-study-date" class="map-study-text"></div></div>
+                                </div>
+                            </div>
+                            <div class="map-source-note pt-1 border-t border-slate-800/70">
+                                Тестовая подборка использует открытые учебные и справочные материалы; источник указан у каждой карты. Атлас предназначен для спокойного просмотра и запоминания.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- TAB MAP ATLAS: QUIET STUDY / VIEWING -->
+            <section id="section-map-atlas" class="tab-section hidden space-y-5">
+                <div class="max-w-7xl mx-auto space-y-4">
+                    <div class="glass-panel p-4 sm:p-5 rounded-2xl">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                            <div>
+                                <div class="text-[10px] font-black uppercase tracking-[0.18em] text-indigo-400">Спокойная подготовка</div>
+                                <h2 class="text-xl sm:text-2xl font-black text-white mt-1 flex items-center gap-2"><i class="fa-solid fa-images text-indigo-400"></i> Атлас исторических карт</h2>
+                                <p class="text-xs text-slate-400 mt-1">Смотри, сравнивай и читай разбор без тестирования. Нажми на карту, чтобы открыть её крупно.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="switchTab('maps')" class="filter-chip px-3 py-1.5 rounded-lg text-[11px] font-bold"><i class="fa-solid fa-arrow-left mr-1"></i> К тренировке</button>
+                                <div class="relative w-full sm:w-64">
+                                    <input id="map-atlas-search" oninput="renderMapAtlas()" type="text" placeholder="Поиск карты или события..." class="relation-search w-full rounded-xl px-3 py-2.5 pl-9 text-xs text-white focus:outline-none focus:border-indigo-500">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
+                            <span class="map-badge">25 карт</span>
+                            <span>Учебный просмотр · источники указаны у каждой карточки</span>
+                        </div>
+                    </div>
+                    <div id="map-atlas-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
                 </div>
             </section>
 
@@ -826,7 +1016,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
                         <div class="glass-panel p-4 rounded-2xl"><div class="text-2xl mb-2">👤</div><h3 class="font-bold text-white">Личности</h3><p class="text-[11px] text-slate-400 mt-1">Карточки «личность → эпоха → вклад → связанное событие».</p><span class="inline-block mt-3 text-[10px] text-slate-500">В разработке</span></div>
                         <div class="glass-panel p-4 rounded-2xl"><div class="text-2xl mb-2">📚</div><h3 class="font-bold text-white">Термины</h3><p class="text-[11px] text-slate-400 mt-1">Определения и задания на использование исторических понятий.</p><span class="inline-block mt-3 text-[10px] text-slate-500">В разработке</span></div>
-                        <div class="glass-panel p-4 rounded-2xl"><div class="text-2xl mb-2">🗺️</div><h3 class="font-bold text-white">Карты</h3><p class="text-[11px] text-slate-400 mt-1">Привязка событий к территориям и интерактивная практика.</p><span class="inline-block mt-3 text-[10px] text-slate-500">В разработке</span></div>
+                        <button type="button" onclick="switchTab('maps')" class="glass-panel p-4 rounded-2xl text-left hover:border-indigo-400/30 transition w-full"><div class="text-2xl mb-2">🗺️</div><h3 class="font-bold text-white">Карты</h3><p class="text-[11px] text-slate-400 mt-1">25 заданий и 25 карт · тренировка + отдельный атлас для просмотра.</p><span class="inline-block mt-3 text-[10px] text-indigo-300">Открыть →</span></button>
                         <div class="glass-panel p-4 rounded-2xl"><div class="text-2xl mb-2">🧩</div><h3 class="font-bold text-white">Источники</h3><p class="text-[11px] text-slate-400 mt-1">Чтение источника, признаки эпохи и тематические вопросы.</p><span class="inline-block mt-3 text-[10px] text-slate-500">В разработке</span></div>
                     </div>
 
@@ -835,6 +1025,8 @@
                             <h3 class="font-bold text-white flex items-center"><i class="fa-solid fa-rotate text-emerald-400 mr-2"></i> Что уже обновлено</h3>
                             <div class="mt-3 space-y-2 text-xs text-slate-300">
                                 <div>• расширенная хронология проекта: <strong id="updates-total">0</strong> карточек</div>
+                                <div>• модуль «Карты ЕГЭ»: <strong id="updates-map-count">25</strong> карт и отдельный атлас</div>
+                                <div>• прогресс карт сохраняется отдельно и отображается в разделе «Прогресс»</div>
                                 <div>• отдельный фокус «Ядро ЕГЭ / Расширение»</div>
                                 <div>• отдельный модуль синхронных соотношений</div>
                                 <div>• сортировка по хронологии вместо разрозненных блоков</div>
@@ -847,6 +1039,7 @@
                                 <a class="block hover:text-indigo-300 transition" href="https://quizlet.com/ru/517963361/егэ-по-истории-даты-flash-cards/" target="_blank" rel="noopener">Quizlet — присланный набор дат</a>
                                 <a class="block hover:text-indigo-300 transition" href="https://down.ctege.info/ege/obshee/history/daty/ege-history-daty-daty-sootnoshenie.pdf" target="_blank" rel="noopener">PDF — соотношение событий мировой и отечественной истории</a>
                                 <a class="block hover:text-indigo-300 transition" href="https://www.youtube.com/watch?v=6n_1KE_aWeg" target="_blank" rel="noopener">Видео — присланный ролик</a>
+                                <a class="block hover:text-indigo-300 transition" href="https://commons.wikimedia.org/wiki/Category:Maps" target="_blank" rel="noopener">Wikimedia Commons — учебные карты с указанием лицензии</a>
                                 <p class="text-[10px] text-slate-600 pt-2">Примечание: метки приоритета внутри тренажёра являются учебной классификацией проекта, а не официальной маркировкой ФИПИ.</p>
                             </div>
                         </div>
@@ -855,6 +1048,12 @@
             </section>
 
         </main>
+    </div>
+
+    <div id="map-modal" class="map-modal" onclick="closeMapZoom(event)">
+        <button type="button" class="map-modal-close" onclick="closeMapZoom()" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+        <img id="map-modal-image" src="" alt="Увеличенная историческая карта">
+        <div id="map-modal-caption" class="map-modal-caption"></div>
     </div>
 
     <!-- Footer -->
@@ -959,9 +1158,205 @@
             if (['all','Государственность','Войны','Реформы','Законы','Культура'].includes(session.topicFilter)) currentTopicFilter = session.topicFilter;
         }
 
+        // ===== MAP TRAINER: 25 TASKS / 25 UNIQUE MAPS =====
+        // Images are public educational copies of map materials; each task is an original concise practice prompt.
+        const EGE_MAP_TASKS = [{"id":"m1","image":"https://esuo.ru/storage/images/d724cabb224afc6704b541a1978846bc.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-01","type":"Определи правителя","title":"Походы Владимира Святославича","prompt":"С каким князем связаны походы, показанные на карте?","options":["Владимир Святославич","Иван III","Дмитрий Донской","Пётр I"],"answer":0,"hint":"Смотри на западные границы Руси и подписи, связанные с походами 981–983 гг.","guide":{"what":"Расширение и укрепление Древнерусского государства при Владимире Святославиче.","how":"Ищи Киев, западное направление походов, Припять и районы расселения ятвягов; в легенде есть походы Владимира 981–983 гг.","memory":"Владимир → 980–1015 → крещение Руси 988 → укрепление границ.","date":"981–983 гг. — западные походы Владимира."}},{"id":"m2","image":"https://esuo.ru/storage/images/0cd9ffa0c0104cfbc96fb8690ca7dc0f.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-04","type":"Определи событие","title":"Нашествие Батыя","prompt":"Какое событие отражает карта?","options":["Монгольское нашествие на Русь","Ливонская война","Смутное время","Северная война"],"answer":0,"hint":"Ищи стрелки продвижения монгольского войска по русским землям и крупные княжеские центры XIII века.","guide":{"what":"Западный поход монголов и нашествие Батыя на русские княжества.","how":"Маршруты через Рязанскую, Владимиро-Суздальскую и Чернигово-Северскую земли; города идут цепочкой к югу и степям.","memory":"Батый → 1237–1240 → разорение крупнейших княжеств → зависимость от Орды.","date":"1237–1240 гг. — основная фаза нашествия на Русь."}},{"id":"m3","image":"https://esuo.ru/storage/images/60fd9383688aeb282cfcb985147d12fc.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-05","type":"Определи правителя","title":"Кампания 1519 года","prompt":"Кто правил Московским государством во время событий, показанных на карте?","options":["Василий III","Иван IV","Алексей Михайлович","Николай II"],"answer":0,"hint":"Ориентир: первая половина XVI века и война Московского государства с Великим княжеством Литовским.","guide":{"what":"Военные действия Московского государства против Великого княжества Литовского в 1519 г.","how":"Ключевые ориентиры — Вильно, Минск, Великие Луки, Стародуб и западная граница Русского государства.","memory":"Василий III → присоединение Пскова 1510, Смоленска 1514 → войны с Литвой.","date":"1519 г. — один из походов в рамках войны 1512–1522 гг."}},{"id":"m4","image":"https://esuo.ru/storage/images/76d18acb884d57ff344cb3027f7259b5.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-06","type":"Определи эпоху","title":"Стояние на Угре","prompt":"Какой правитель связан с событиями, отражёнными на карте?","options":["Иван III","Дмитрий Донской","Иван IV","Василий III"],"answer":0,"hint":"Смотри на Угру, Оку и противостояние Москвы с ордынским войском Ахмата.","guide":{"what":"Противостояние Московского княжества и Большой Орды в 1480 г.","how":"Главный ориентир — р. Угра; нет решающего сражения, армии противостоят друг другу и отступают.","memory":"1480 → Угра → Ахмат → конец ордынской зависимости.","date":"1480 г. — Стояние на Угре."}},{"id":"m5","image":"https://esuo.ru/storage/images/7d709a664e55ab96b3c3163138a74cce.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-14","type":"Определи правителя","title":"Кампания против Дорошенко","prompt":"При каком русском царе проходили военные действия, показанные на карте?","options":["Алексее Михайловиче","Петре I","Михаиле Фёдоровиче","Николае I"],"answer":0,"hint":"Ориентир — Правобережная Украина, Дорошенко, Ромодановский и Чигирин.","guide":{"what":"Борьба России с османским влиянием на Правобережной Украине и походы против Дорошенко.","how":"Ищи Днепр, Чигирин, Ромны и направления русских войск к ставке гетмана.","memory":"Алексей Михайлович → русско-польская борьба → Дорошенко → Чигиринские походы.","date":"1670-е гг. — ключевая фаза кампаний против Дорошенко."}},{"id":"m6","image":"https://esuo.ru/storage/images/4195c4e59e0d34d052e9c566ed127cc0.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-16","type":"Определи войну","title":"Русско-турецкая война 1877–1878 гг.","prompt":"К какому конфликту относится карта?","options":["Русско-турецкая война 1877–1878 гг.","Крымская война","Отечественная война 1812 г.","Русско-японская война"],"answer":0,"hint":"Ключи: Дунай, Балканы, Плевна, Шипка и продвижение русской армии к Константинополю.","guide":{"what":"Балканская кампания русской армии в войне с Османской империей.","how":"На карте характерны Дунай, Плевна, Шипка, Филиппополь и Константинополь.","memory":"1877–1878 → Дунай → Плевна → Шипка → Сан-Стефанский мир.","date":"1877–1878 гг. — русско-турецкая война."}},{"id":"m7","image":"https://esuo.ru/storage/images/91f43e5e1fcd0d83d8a314a4e96c2b12.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-18","type":"Чтение карты","title":"Территории и Царицын","prompt":"Какой город расположен внутри территории с цифрой 9?","options":["Царицын","Киев","Рига","Казань"],"answer":0,"hint":"Ищи юго-восточную часть карты: цифра 9 стоит рядом с подписью Царицын.","guide":{"what":"Карта территориальных изменений и южного направления российской политики.","how":"Цифры обозначают территории; для атрибуции полезны Азовское и Чёрное моря, Дунай, Кубань и Царицын.","memory":"Юг России → Азов → Кубань → Кавказ → расширение границ.","date":"Для этой карты важнее географическая атрибуция, чем один год."}},{"id":"m8","image":"https://esuo.ru/storage/images/ac13fb18297289bf3cf39057c8226a19.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-24-60","type":"Определи личность","title":"Походы Святослава","prompt":"Какого князя показывают стрелки походов на карте?","options":["Святослава Игоревича","Олега Вещего","Владимира Мономаха","Ярослава Мудрого"],"answer":0,"hint":"Ориентиры: Хазарский каганат, Волга, Дунайская Болгария и война с Византией.","guide":{"what":"Военные походы Святослава Игоревича.","how":"Комбинация направлений Волга → Хазарский каганат и Дунай → Болгария → Византия характерна для Святослава.","memory":"Святослав → 964–972 → Хазарский каганат → Дунайская Болгария → Византия.","date":"964–972 гг. — походы Святослава."}},{"id":"m9","image":"https://esuo.ru/storage/images/0a536baace076b361313e2b79b3efbb0.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-32","type":"Определи событие","title":"Отечественная война 1812 года","prompt":"Какое событие отражено на карте?","options":["Отечественная война 1812 года","Крымская война 1853–1856 гг.","Северная война 1700–1721 гг.","Первая мировая война"],"answer":0,"hint":"Ориентиры: Смоленск, Москва, Можайск, Бородино и отход русских армий к Москве.","guide":{"what":"Кампания Наполеона против России в 1812 г.","how":"Смотри на направления армий Багратиона и Барклая, Смоленск, Можайск и Москву.","memory":"1812 → вторжение → Смоленск → Бородино → Москва → отступление Наполеона.","date":"1812 г. — Отечественная война."}},{"id":"m10","image":"https://esuo.ru/storage/images/a887f9ca23b797128275f2404404121c.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-48","type":"Определи событие","title":"Полтавская кампания","prompt":"Какое крупное сражение связано с маршрутом войск на карте?","options":["Полтавская битва","Бородинское сражение","Куликовская битва","Сталинградская битва"],"answer":0,"hint":"На схеме видны Батурин, Гадяч, Полтава и направление армии Карла XII.","guide":{"what":"Поход шведской армии Карла XII на Украину и Полтавская битва.","how":"Главная цепочка — Стародуб → Батурин → Гадяч → Полтава; это начало XVIII века.","memory":"1709 → Полтава → Пётр I → Карл XII → перелом Северной войны.","date":"1709 г. — Полтавская битва."}},{"id":"m16","image":"https://esuo.ru/storage/images/dfdfec189b25988a6fa7900e24452ccb.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-24-58","type":"Определи войну","title":"Ливонская война — кампания 1577 года","prompt":"Какой конфликт отражён на карте?","options":["Ливонская война 1558–1583 гг.","Северная война 1700–1721 гг.","Смутное время 1598–1613 гг.","Крымская война 1853–1856 гг."],"answer":0,"hint":"На карте прямо отмечены походы 1577 года и направление русских войск к Динабургу.","guide":{"what":"Карта кампании Ливонской войны при Иване IV.","how":"Прибалтика, Рига, Дерпт, Ревель, Динабург и походы 1577 г. — сильные признаки Ливонской войны.","memory":"1558–1583 → Иван IV → Ливонская война → Баторий.","date":"1558–1583 гг.; на карте показана кампания 1577 г."}},{"id":"m17","image":"https://esuo.ru/storage/images/6b1641c7860aa0e1df312ffb2b654055.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-23","type":"Определи десятилетие","title":"Южное направление — 1670-е","prompt":"К какому десятилетию относятся события, отражённые на карте?","options":["1670-е","1640-е","1700-е","1610-е"],"answer":0,"hint":"Источник задания прямо указывает, что события относятся к 1670-м гг.; на карте видны украинские и османские территории.","guide":{"what":"Карта военных событий второй половины XVII века на южном и украинском направлениях.","how":"Сочетание Днепра, Крыма, Османской империи и правобережных/левобережных украинских земель указывает на эпоху Алексея Михайловича.","memory":"1670-е → Алексей Михайлович → Украина → Османское направление.","date":"1670-е гг."}},{"id":"m18","image":"https://esuo.ru/storage/images/2fc32177a0d35efa4288143c1c42cf86.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-38","type":"Определи век","title":"Европейская война начала XVIII века","prompt":"К какому веку относятся события, отражённые на карте?","options":["XVII век","XVIII век","XIX век","XVI век"],"answer":1,"hint":"Ориентиры из исходного задания: начало XVIII века, русское войско и первые гвардейские полки.","guide":{"what":"Карта военных действий эпохи Петра I и ранних Северо-восточноевропейских конфликтов.","how":"Связывай её с началом XVIII века, появлением гвардейских полков и европейским театром войны.","memory":"Пётр I → начало XVIII века → армейские реформы → гвардия.","date":"Конец XVII — первая четверть XVIII века."}},{"id":"m19","image":"https://esuo.ru/storage/images/ebde69d9a202fefc9d92917b708dcb82.png","source":"https://esuo.ru/tasks/ege-istoriya-09-12-zadanie-17","type":"Атрибуция карты","title":"Границы и военные направления XIX века","prompt":"Какой признак помогает отнести карту к XIX веку?","options":["Наличие Плевны и Русско-турецкой войны","Походы Святослава","Стояние на Угре","Нашествие Батыя"],"answer":0,"hint":"В исходном задании среди ориентиров названа Плевна; это сильная привязка к русско-турецкой войне 1877–1878 гг.","guide":{"what":"Карта с крупным набором территориальных и военных обозначений, используемая для атрибуции событий XIX века.","how":"Плевна, Османская империя и русская армия на Балканах позволяют выбрать XIX век.","memory":"Плевна → 1877 → Александр II → XIX век.","date":"1877 г. — Плевна как ключевой ориентир."}},{"id":"m21","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Kievan%20Rus%20in%20the%2011th%20Century.png?width=1400","source":"https://commons.wikimedia.org/wiki/File:Kievan_Rus_in_the_11th_Century.png","type":"Атрибуция эпохи","title":"Киевская Русь в XI веке","prompt":"Какой период русской истории представлен на карте?","options":["XI век и расцвет Киевской Руси","Конец XIII века и нашествие Батыя","XVI век и Ливонская война","XVIII век и реформы Петра I"],"answer":0,"hint":"Смотри на состав земель вокруг Киева и хронологическую привязку к эпохе Ярослава Мудрого.","guide":{"what":"Карта Киевской Руси примерно после смерти Ярослава Мудрого, в XI веке.","how":"Запоминай Киев как центр и крупные княжества восточнославянского мира до монгольского нашествия.","memory":"XI век → Ярослав Мудрый → Русская Правда → династические браки.","date":"XI век; ключевой ориентир — 1019–1054 гг."}},{"id":"m22","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Kyivan%20Rus%20in%201237%20%28en%29.svg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Kievan_Rus_in_1237_(en).svg","type":"Атрибуция эпохи","title":"Русь накануне нашествия Батыя","prompt":"Какому историческому состоянию Руси соответствует карта?","options":["Русские княжества накануне монгольского нашествия","Единое государство Ивана III","Россия после реформ Петра I","СССР в начале Великой Отечественной войны"],"answer":0,"hint":"На карте много самостоятельных княжеств: это уже период раздробленности, но ещё до удара Батыя.","guide":{"what":"Политическая карта русских земель накануне похода Батыя.","how":"Сопоставляй раздробленность, Владимиро-Суздальскую землю, Новгород и южнорусские княжества.","memory":"Раздробленность → 1237–1240 → Батый → зависимость от Орды.","date":"1237–1240 гг. — нашествие Батыя."}},{"id":"m23","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Russian%20map%20of%20Battle%20of%20Kulikovo.jpg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Russian_map_of_Battle_of_Kulikovo.jpg","type":"Определи событие","title":"Куликовская битва","prompt":"Какое сражение отражено на карте движения войск?","options":["Куликовская битва","Ледовое побоище","Стояние на Угре","Бородинское сражение"],"answer":0,"hint":"Ориентир — движение русской рати Дмитрия Ивановича к Дону в 1380 году.","guide":{"what":"Движение русской рати к Куликову полю и ход сражения с войском Мамая.","how":"Смотри на Дон, Непрядву и путь русского войска к полю боя; это карта именно похода 1380 г.","memory":"1380 → Дмитрий Донской → Мамай → Куликовская битва.","date":"8 сентября 1380 г."}},{"id":"m24","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Northern%20War%20Part1.png?width=1400","source":"https://commons.wikimedia.org/wiki/File:Great_Northern_War_Part1.png","type":"Определи войну","title":"Северная война: 1700–1709 гг.","prompt":"К какому конфликту относится карта боевых действий?","options":["Северная война","Ливонская война","Крымская война","Русско-японская война"],"answer":0,"hint":"Ищи Нарву, Полтаву и балтийское направление; карта показывает первую часть Северной войны.","guide":{"what":"Карта военных действий первой фазы Северной войны между Россией и Швецией.","how":"Нарва в 1700 и Полтава в 1709 — два главных якоря для распознавания.","memory":"1700 → Нарва; 1709 → Полтава; 1721 → Ништадтский мир.","date":"1700–1721 гг.; на карте — 1700–1709 гг."}},{"id":"m25","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Russia%20in%201715%20map.png?width=1400","source":"https://commons.wikimedia.org/wiki/File:Russia_in_1715_map.png","type":"Чтение карты","title":"Россия около 1715 года","prompt":"В какую эпоху относится показанное территориальное состояние России?","options":["Начало XVIII века, эпоха Петра I","Середина XVI века, эпоха Ивана IV","Начало XIX века, эпоха Александра I","Конец XIX века, эпоха Александра III"],"answer":0,"hint":"Карта датирована 1715 годом — это реформы Петра I и незавершённая Северная война.","guide":{"what":"Территориальная карта России в эпоху Петра I, около 1715 г.","how":"Используй её как карту-опору для расширения на Балтике и общей географии петровской эпохи.","memory":"Пётр I → 1700–1721 → Северная война → выход к Балтийскому морю.","date":"1715 г.; Северная война продолжается."}},{"id":"m26","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Russian%20history%20of%20the%20Baltic%20Sea%2C%201712-1721.jpg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Russian_history_of_the_Baltic_Sea,_1712-1721.jpg","type":"Определи направление","title":"Балтийская кампания 1712–1721 гг.","prompt":"Какому этапу Северной войны соответствует карта?","options":["Завершение борьбы России за Балтику","Начало Ливонской войны","Война с Наполеоном 1812 г.","Крымская война"],"answer":0,"hint":"Карта показывает события 1712–1721 гг. и продвижение России на Балтийском направлении.","guide":{"what":"Балтийский театр заключительного этапа Северной войны.","how":"Сопоставляй побережье Балтики, русские приобретения и итог войны со Швецией.","memory":"1712–1721 → Балтика → Ништадтский мир → усиление России как европейской державы.","date":"1712–1721 гг."}},{"id":"m27","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Crimean%20war%20map%201853.svg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Crimean_war_map_1853.svg","type":"Определи войну","title":"Крымская война: 1853 год","prompt":"Какой конфликт представлен на карте?","options":["Крымская война","Русско-турецкая война 1877–1878 гг.","Отечественная война 1812 г.","Русско-японская война"],"answer":0,"hint":"Ключи — Чёрное море, Крым и русско-османское противостояние середины XIX века.","guide":{"what":"Карта начального этапа Крымской войны 1853–1856 гг.","how":"Отличай её от войны 1877–1878: здесь центральный театр — Крым и Чёрное море, а не Балканы с Плевной.","memory":"1853–1856 → Николай I → Синоп → оборона Севастополя → Парижский мир.","date":"1853–1856 гг."}},{"id":"m28","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Russian%20civil%20war%20map%20on%20December%201919.jpg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Russian_civil_war_map_on_December_1919.jpg","type":"Определи период","title":"Гражданская война: конец 1919 года","prompt":"Какому событию соответствует политико-военная карта?","options":["Гражданская война в России","Первая мировая война","Крымская война","Отечественная война 1812 г."],"answer":0,"hint":"Ориентир — фронты Красной армии и белых армий в конце 1919 года.","guide":{"what":"Положение фронтов Гражданской войны в России в декабре 1919 г.","how":"Для атрибуции важны несколько центров белого движения и разнесённые фронты на огромной территории.","memory":"1918–1920/22 → Гражданская война → Колчак, Деникин, Юденич, Врангель → победа красных.","date":"Декабрь 1919 г."}},{"id":"m29","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Battle%20of%20Japan%20Sea%20%28Route%20of%20Baltic%20Fleet%29%20NT.PNG?width=1400","source":"https://commons.wikimedia.org/wiki/File:Battle_of_Japan_Sea_(Route_of_Baltic_Fleet)_NT.PNG","type":"Определи событие","title":"Путь 2-й Тихоокеанской эскадры","prompt":"К какому конфликту относится маршрут на карте?","options":["Русско-японская война","Первая мировая война","Крымская война","Северная война"],"answer":0,"hint":"Маршрут Балтийского флота через океаны к Дальнему Востоку связан с Цусимским сражением.","guide":{"what":"Маршрут русской 2-й Тихоокеанской эскадры к Дальнему Востоку в войне с Японией.","how":"Дальний Восток + длинный переход Балтийского флота = русско-японская война 1904–1905 гг.","memory":"1904–1905 → Порт-Артур → Мукден → Цусима → Портсмутский мир.","date":"1904–1905 гг.; Цусима — 1905 г."}},{"id":"m30","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Battle%20of%20Mukden%2C%20March%209%2C%201905.jpg?width=1400","source":"https://commons.wikimedia.org/wiki/File:Battle_of_Mukden,_March_9,_1905.jpg","type":"Определи сражение","title":"Мукденское сражение","prompt":"Какое событие показывает положение русских и японских войск на карте?","options":["Мукденское сражение","Сталинградская битва","Бородинское сражение","Полтавская битва"],"answer":0,"hint":"Мукден — один из ключевых эпизодов русско-японской войны 1904–1905 гг.","guide":{"what":"Мукденская операция — крупное сухопутное сражение русско-японской войны.","how":"Маньчжурия, Мукден и массивные линии фронта — отличительные признаки этого театра.","memory":"1905 → Мукден → Цусима → Портсмутский мир.","date":"Март 1905 г."}},{"id":"m31","image":"https://commons.wikimedia.org/wiki/Special:FilePath/Battle%20of%20Stalingrad.png?width=1400","source":"https://commons.wikimedia.org/wiki/File:Battle_of_Stalingrad.png","type":"Определи событие","title":"Сталинградская битва","prompt":"Какое событие Великой Отечественной войны отражено на карте?","options":["Сталинградская битва","Курская битва","Битва за Москву","Берлинская операция"],"answer":0,"hint":"Ключевой признак — двойной охват группировки противника 19–23 ноября 1942 года.","guide":{"what":"Контрнаступление Красной армии и окружение 6-й армии вермахта под Сталинградом.","how":"Ищи Волгу, Сталинград и сходящиеся направления советских ударов с севера и юга.","memory":"1942–1943 → Сталинград → окружение → капитуляция армии Паулюса.","date":"17 июля 1942 – 2 февраля 1943 г."}}]
+        let mapTaskFilter = 'all';
+        let mapTaskIndex = 0;
+        let mapAnswered = false;
+        const MAP_PROGRESS_KEY = 'ege_maps_progress_v1';
+        const MAP_SESSION_KEY = 'ege_maps_session_v1';
+
+        function readMapProgress() { try { return JSON.parse(localStorage.getItem(MAP_PROGRESS_KEY) || '{}'); } catch (_) { return {}; } }
+        function writeMapProgress(data) { try { localStorage.setItem(MAP_PROGRESS_KEY, JSON.stringify(data)); } catch (_) {} }
+        function readMapSession() { try { return JSON.parse(localStorage.getItem(MAP_SESSION_KEY) || '{}'); } catch (_) { return {}; } }
+        function saveMapSession() { try { localStorage.setItem(MAP_SESSION_KEY, JSON.stringify({filter:mapTaskFilter,index:mapTaskIndex})); } catch (_) {} }
+        function getVisibleMapTasks() {
+            const all = EGE_MAP_TASKS.slice();
+            if (mapTaskFilter === 'wrong') { const p = readMapProgress(); return all.filter(t => p[t.id] && p[t.id].lastCorrect === false); }
+            return all;
+        }
+        function setMapFilter(filter) {
+            mapTaskFilter = filter === 'wrong' ? 'wrong' : 'all';
+            const list = getVisibleMapTasks();
+            mapTaskIndex = Math.min(mapTaskIndex, Math.max(0, list.length - 1));
+            document.getElementById('map-filter-all')?.classList.toggle('active', mapTaskFilter === 'all');
+            document.getElementById('map-filter-wrong')?.classList.toggle('active', mapTaskFilter === 'wrong');
+            renderMapTask(); saveMapSession();
+        }
+        function renderMapTask() {
+            const list = getVisibleMapTasks();
+            const counter = document.getElementById('map-counter');
+            const progressFill = document.getElementById('map-progress-fill');
+            const scoreEl = document.getElementById('map-score');
+            const wrongEl = document.getElementById('map-wrong-count');
+            const progress = readMapProgress();
+            const wrongCount = EGE_MAP_TASKS.filter(t => progress[t.id] && progress[t.id].lastCorrect === false).length;
+            if (wrongEl) wrongEl.textContent = wrongCount;
+            if (!list.length) {
+                if (counter) counter.textContent = 'Ошибок пока нет';
+                if (progressFill) progressFill.style.width = '0%';
+                const q=document.getElementById('map-question'); if(q) q.textContent='Отлично — сохранённых ошибок нет.';
+                const opts=document.getElementById('map-options'); if(opts) opts.innerHTML='<div class="text-xs text-slate-500 py-6 text-center">Все текущие задания решены верно.</div>';
+                document.getElementById('map-next-btn')?.setAttribute('disabled','disabled');
+                return;
+            }
+            const task = list[mapTaskIndex]; mapAnswered = !!(progress[task.id] && progress[task.id].answered);
+            if (counter) counter.textContent = `Задание ${mapTaskIndex + 1} из ${list.length}`;
+            if (progressFill) progressFill.style.width = `${Math.round(((mapTaskIndex + 1) / Math.max(1,list.length)) * 100)}%`;
+            if (scoreEl) scoreEl.textContent = `Верно: ${EGE_MAP_TASKS.filter(t => progress[t.id]?.lastCorrect === true).length}`;
+            const statsTasks = document.getElementById('map-stats-tasks');
+            const statsMaps = document.getElementById('map-stats-maps');
+            if (statsTasks) statsTasks.textContent = EGE_MAP_TASKS.length;
+            if (statsMaps) statsMaps.textContent = new Set(EGE_MAP_TASKS.map(t => t.image)).size;
+            document.getElementById('map-type-badge').textContent = task.type;
+            document.getElementById('map-title').textContent = task.title;
+            document.getElementById('map-question').textContent = task.prompt;
+            const img=document.getElementById('map-image');
+            const err=document.getElementById('map-image-error');
+            err?.classList.add('hidden'); err?.classList.remove('flex');
+            img.style.display='block'; img.src=task.image;
+            img.alt=`${task.title} — карта для подготовки к ЕГЭ`;
+            img.onerror=()=>{img.style.display='none'; if(err){err.classList.remove('hidden');err.classList.add('flex');} document.getElementById('map-error-link').href=task.source;};
+            document.getElementById('map-source-link').href=task.source;
+            const options=document.getElementById('map-options'); options.innerHTML='';
+            task.options.forEach((opt,i)=>{
+                const b=document.createElement('button'); b.className='map-option rounded-xl px-3 py-2.5 text-xs font-semibold transition flex items-start gap-2';
+                b.innerHTML=`<span class="w-5 h-5 shrink-0 rounded-md border border-slate-600 flex items-center justify-center text-[10px] text-slate-400">${String.fromCharCode(65+i)}</span><span>${opt}</span>`;
+                b.onclick=()=>answerMapTask(i);
+                options.appendChild(b);
+            });
+            const fb=document.getElementById('map-feedback'); fb.classList.add('hidden'); fb.textContent='';
+            document.getElementById('map-next-btn').disabled=!mapAnswered;
+            document.getElementById('map-hint').classList.add('hidden'); document.getElementById('map-hint-text').textContent=task.hint;
+            renderMapStudy(task);
+            updateMapOptionState(task);
+        }
+        function updateMapOptionState(task) {
+            const progress=readMapProgress()[task.id];
+            if(!progress || !progress.answered) return;
+            const buttons=[...document.querySelectorAll('#map-options .map-option')];
+            buttons.forEach((b,i)=>{b.disabled=true; if(i===task.answer)b.classList.add('correct'); if(progress.selected===i && i!==task.answer)b.classList.add('wrong');});
+            const fb=document.getElementById('map-feedback'); fb.classList.remove('hidden');
+            fb.className = progress.lastCorrect ? 'rounded-xl p-3 text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-200' : 'rounded-xl p-3 text-xs bg-rose-500/10 border border-rose-500/20 text-rose-200';
+            fb.innerHTML = progress.lastCorrect ? '<strong>✓ Верно.</strong> Хорошо читаешь карту.' : `<strong>✗ Не совсем.</strong> Правильный ответ: <strong>${task.options[task.answer]}</strong>`;
+        }
+        function answerMapTask(selected) {
+            const list=getVisibleMapTasks(); const task=list[mapTaskIndex]; if(!task || mapAnswered) return;
+            const data=readMapProgress(); data[task.id]={answered:true,selected,lastCorrect:selected===task.answer,updatedAt:Date.now()}; writeMapProgress(data); mapAnswered=true;
+            updateMapOptionState(task); document.getElementById('map-next-btn').disabled=false; renderMapWrongCountOnly(); renderMapProgress(); saveMapSession();
+        }
+        function renderMapWrongCountOnly(){ const p=readMapProgress(); const el=document.getElementById('map-wrong-count'); if(el) el.textContent=EGE_MAP_TASKS.filter(t=>p[t.id]?.lastCorrect===false).length; renderMapProgress(); }
+        function showMapHint(){ const el=document.getElementById('map-hint'); if(el) el.classList.toggle('hidden'); }
+        function renderMapStudy(task){
+            const guide = task?.guide || {};
+            const map = {what:'—',how:'—',memory:'—',date:'—'};
+            Object.assign(map, guide);
+            const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=val || '—'; };
+            set('map-study-what', map.what); set('map-study-how', map.how); set('map-study-memory', map.memory); set('map-study-date', map.date);
+            const panel=document.getElementById('map-study'); if(panel) panel.classList.add('hidden');
+            const ch=document.getElementById('map-study-chevron'); if(ch) ch.className='fa-solid fa-chevron-down text-slate-500 text-[10px]';
+        }
+        function toggleMapStudy(){
+            const panel=document.getElementById('map-study'); if(!panel) return;
+            const hidden=panel.classList.toggle('hidden');
+            const ch=document.getElementById('map-study-chevron'); if(ch) ch.className=hidden?'fa-solid fa-chevron-down text-slate-500 text-[10px]':'fa-solid fa-chevron-up text-slate-500 text-[10px]';
+        }
+        function openMapZoom(){
+            const img=document.getElementById('map-image'); const modal=document.getElementById('map-modal'); const out=document.getElementById('map-modal-image'); const cap=document.getElementById('map-modal-caption');
+            if(!img || !modal || !out) return; out.src=img.currentSrc || img.src; out.alt=img.alt; if(cap) cap.textContent=document.getElementById('map-title')?.textContent || 'Историческая карта'; modal.classList.add('open'); document.body.style.overflow='hidden';
+        }
+        function closeMapZoom(event){
+            if(event && event.target && event.target.id !== 'map-modal') return;
+            const modal=document.getElementById('map-modal'); if(modal) modal.classList.remove('open'); document.body.style.overflow='';
+        }
+        function nextMapTask(){ const list=getVisibleMapTasks(); if(!list.length) return; mapTaskIndex=(mapTaskIndex+1)%list.length; saveMapSession(); renderMapTask(); const sec=document.getElementById('section-maps'); if(sec && !sec.classList.contains('hidden')) sec.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+
+        function getUniqueMapTasks(){
+            const seen = new Set();
+            return EGE_MAP_TASKS.filter(t=>{
+                if(seen.has(t.image)) return false;
+                seen.add(t.image); return true;
+            });
+        }
+
+        function renderMapAtlas(){
+            const grid = document.getElementById('map-atlas-grid');
+            if(!grid) return;
+            const q=(document.getElementById('map-atlas-search')?.value||'').toLowerCase().trim();
+            const items=getUniqueMapTasks().filter(t=>`${t.title} ${t.type} ${t.prompt} ${t.guide?.what||''} ${t.guide?.memory||''}`.toLowerCase().includes(q));
+            if(!items.length){
+                grid.innerHTML='<div class="glass-panel p-8 rounded-2xl text-center text-xs text-slate-500 md:col-span-2 xl:col-span-3">По вашему запросу карт не найдено.</div>'; return;
+            }
+            grid.innerHTML=items.map((t,i)=>{
+                const g=t.guide||{};
+                return `<article class="map-atlas-card glass-panel rounded-2xl overflow-hidden border border-slate-800/80">
+                    <div class="relative bg-slate-950/70">
+                        <img src="${t.image}" alt="${t.title}" loading="lazy" referrerpolicy="no-referrer" class="w-full h-56 sm:h-64 object-contain cursor-zoom-in" onclick="openAtlasZoom('${String(t.id).replace(/'/g, "\\'")}')" onerror="this.style.opacity='.35'">
+                        <span class="absolute left-3 top-3 map-badge">${i+1}</span>
+                    </div>
+                    <div class="p-4 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2"><span class="map-badge">${t.type}</span><a href="${t.source}" target="_blank" rel="noopener" class="text-[10px] text-indigo-300 hover:text-white">Источник ↗</a></div>
+                        <h3 class="font-extrabold text-white text-sm">${t.title}</h3>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">${g.what||'Учебная историческая карта.'}</p>
+                        <div class="map-atlas-mini"><div class="map-study-label">Как распознать</div><div class="map-study-text">${g.how||'Смотри на географические ориентиры и направление стрелок.'}</div></div>
+                        <div class="map-atlas-mini"><div class="map-study-label">Что запомнить</div><div class="map-study-text">${g.memory||'Свяжи карту с ключевым событием и датой.'}</div></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-[10px] text-slate-500">${g.date||''}</span>
+                            <button onclick="startAtlasStudy('${String(t.id).replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-200 border border-indigo-500/20 text-[10px] font-bold">Изучать</button>
+                        </div>
+                    </div>
+                </article>`;
+            }).join('');
+        }
+
+        function openAtlasZoom(id){
+            const t=EGE_MAP_TASKS.find(x=>x.id===id); if(!t) return;
+            const modal=document.getElementById('map-modal'); const out=document.getElementById('map-modal-image'); const cap=document.getElementById('map-modal-caption');
+            if(!modal||!out) return;
+            out.src=t.image; out.alt=t.title; if(cap) cap.textContent=`${t.title} · ${t.guide?.date||''}`; modal.classList.add('open'); document.body.style.overflow='hidden';
+        }
+        function startAtlasStudy(id){
+            const t=EGE_MAP_TASKS.find(x=>x.id===id); if(!t) return;
+            const q=document.getElementById('map-atlas-search'); if(q) q.value='';
+            const panel=document.getElementById('map-study');
+            if(panel){
+                const guide=t.guide||{};
+                document.getElementById('map-study-what').textContent=guide.what||'';
+                document.getElementById('map-study-how').textContent=guide.how||'';
+                document.getElementById('map-study-memory').textContent=guide.memory||'';
+                document.getElementById('map-study-date').textContent=guide.date||'';
+            }
+            openAtlasZoom(id);
+        }
+
+        function renderMapProgress(){
+            const p=readMapProgress();
+            const total=EGE_MAP_TASKS.length;
+            const answered=EGE_MAP_TASKS.filter(t=>p[t.id]?.answered).length;
+            const correct=EGE_MAP_TASKS.filter(t=>p[t.id]?.lastCorrect===true).length;
+            const wrong=EGE_MAP_TASKS.filter(t=>p[t.id]?.lastCorrect===false).length;
+            const percent=total?Math.round(answered/total*100):0;
+            const vals={
+                'progress-map-total':total,
+                'progress-map-answered':answered,
+                'progress-map-correct':correct,
+                'progress-map-wrong':wrong,
+                'progress-map-percent':`${percent}%`
+            };
+            Object.entries(vals).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+            const fill=document.getElementById('progress-map-fill'); if(fill)fill.style.width=`${percent}%`;
+        }
+
         // INITIALIZATION
+        window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMapZoom(); });
+
         window.addEventListener('DOMContentLoaded', () => {
             loadCardSession();
+            const mapSession = readMapSession();
+            if (mapSession.filter === 'wrong' || mapSession.filter === 'all') mapTaskFilter = mapSession.filter;
+            if (Number.isInteger(mapSession.index) && mapSession.index >= 0) mapTaskIndex = mapSession.index;
             updateScopeButtons();
             updateFilterButtonState();
             updateFilteredDataset(true);
@@ -969,7 +1364,10 @@
             renderDictionary();
             renderRelations();
             renderUpdates();
+            renderMapTask();
+            renderMapAtlas();
             updateStatsUI();
+            renderMapProgress();
 
             window.addEventListener('keydown', handleGlobalKeydown);
             window.addEventListener('resize', () => {
@@ -1001,9 +1399,11 @@
             if (tabName === 'list') renderStudyList();
             if (tabName === 'quiz') startQuizMode(true);
             if (tabName === 'input') startInputMode();
-            if (tabName === 'progress') { updateStatsUI(); }
+            if (tabName === 'progress') { updateStatsUI(); renderMapProgress(); }
             if (tabName === 'relations') renderRelations();
             if (tabName === 'updates') renderUpdates();
+            if (tabName === 'maps') renderMapTask();
+            if (tabName === 'map-atlas') renderMapAtlas();
         }
 
         // FILTER MECHANICS
@@ -1726,6 +2126,8 @@
         function renderUpdates() {
             const el = document.getElementById('updates-total');
             if (el) el.innerText = ALL_HISTORICAL_DATES.length;
+            const mc = document.getElementById('updates-map-count');
+            if (mc) mc.innerText = getUniqueMapTasks().length;
         }
 
         // DICTIONARY
@@ -1881,10 +2283,13 @@
             updateStatsUI();
         }
 
+        function resetMapProgress(){ localStorage.removeItem(MAP_PROGRESS_KEY); localStorage.removeItem(MAP_SESSION_KEY); mapTaskIndex=0; mapTaskFilter='all'; renderMapTask(); renderMapProgress(); }
+
         function resetAllProgress() {
             learnedIds.clear();
             repeatIds.clear();
             currentStreak = 0;
+            resetMapProgress();
             saveUserProgress();
             updateStreakDisplay();
             renderDictionary();

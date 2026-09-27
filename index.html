@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр ЕГЭ по Истории · v8</title>
+    <title>Тренажёр ЕГЭ по Истории · v10</title>
     
     <script>
         // Pre-defining window.tailwind avoids ReferenceError if CDN script loads asynchronously
@@ -271,6 +271,8 @@
         .relation-russia { color:#34d399; font-weight:600; }
         .relation-dash { color:#64748b; }
         .relation-search { background:#0b1323 !important; border-color:#2a3952 !important; height:40px; }
+        .card-session-status { font-size:9px; color:#64748b; text-align:center; min-height:14px; transition:.2s ease; }
+        .card-hint-box { max-height:86px; overflow:auto; }
 
         /* v8: compact desktop navigation without horizontal overflow */
         @media (min-width: 768px) and (max-width: 1180px) {
@@ -400,7 +402,7 @@
                                 <button onclick="setTopicFilter('Культура')" data-topic="Культура" class="topic-btn px-2 py-0.5 rounded-md text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium">Культура и Наука</button>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 mt-2">
-                                <div class="ege-only-note"><i class="fa-solid fa-bullseye"></i> Только приоритетные даты ЕГЭ</div>
+                                <div class="ege-only-note"><i class="fa-solid fa-bullseye"></i> Только карточки базы ЕГЭ</div>
                             </div>
                         </div>
 
@@ -431,6 +433,7 @@
                             </button>
                         </div>
                     </div>
+                    <div id="card-session-status" class="card-session-status">Прогресс карточек сохраняется автоматически</div>
 
                     <!-- 3D Card Container -->
                     <div class="card-stage max-w-xl mx-auto cursor-pointer group my-1 ege-card-shell" onclick="flipCurrentCard()">
@@ -857,7 +860,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4">
-            Тренажёр ЕГЭ по Истории &copy; 2026 • Даты, связи и практика • Обновление базы
+            Тренажёр ЕГЭ по Истории &copy; 2026 • Даты, связи и практика • Сохранение прогресса
         </div>
     </footer>
 
@@ -877,11 +880,12 @@
             return String(item.year || '').match(/\d{3,4}/g)?.map(Number) || [];
         }
 
-        // ЕГЭ-база — только российские даты, попадающие в список Academix.
-        // Всемирные даты и российское расширение не должны случайно попадать в ЕГЭ-тренировку.
+        // ЕГЭ-база — только российские карточки, которые явно помечены как
+        // часть приоритетной базы (isEgeTop=true). Так мы не захватываем
+        // лишние карточки только потому, что у них совпал один из годов
+        // с диапазоном из PDF Academix.
         function isEgeCore(item) {
-            if (item.centuryGroup === 'world') return false;
-            return itemYearNumbers(item).some(y => ACADEMIX_EGE_SOURCE_YEARS.has(y));
+            return item.centuryGroup !== 'world' && item.isEgeTop === true;
         }
 
         function isWorldStudyItem(item) {
@@ -912,17 +916,61 @@
         let repeatIds = new Set(JSON.parse(localStorage.getItem('ege_repeat_ids') || '[]'));
         let currentStreak = parseInt(localStorage.getItem('ege_streak') || '0');
 
+        const CARD_SESSION_KEY = 'ege_card_session_v10';
+
+        function readCardSessionStore() {
+            try {
+                const raw = localStorage.getItem(CARD_SESSION_KEY);
+                const parsed = raw ? JSON.parse(raw) : {};
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (_) {
+                return {};
+            }
+        }
+
+        function getCardSession(scope = studyScope) {
+            const store = readCardSessionStore();
+            return store[scope] && typeof store[scope] === 'object' ? store[scope] : null;
+        }
+
+        function saveCardSession() {
+            try {
+                const store = readCardSessionStore();
+                const currentItem = filteredCards?.[currentCardIndex] || null;
+                store[studyScope] = {
+                    cardId: currentItem ? currentItem.id : null,
+                    cardIndex: currentCardIndex,
+                    isFlipped: !!isCardFlipped,
+                    cardStartMode,
+                    centuryFilter: currentCenturyFilter,
+                    topicFilter: currentTopicFilter,
+                    orderIds: Array.isArray(filteredCards) ? filteredCards.map(d => d.id) : [],
+                    savedAt: Date.now()
+                };
+                localStorage.setItem(CARD_SESSION_KEY, JSON.stringify(store));
+            } catch (_) {}
+        }
+
+        function loadCardSession() {
+            const session = getCardSession(studyScope);
+            if (!session) return;
+            if (session.cardStartMode === 'date' || session.cardStartMode === 'event') cardStartMode = session.cardStartMode;
+            if (['all','IX-XV','XVI-XVII','XVIII','XIX','XX-XXI'].includes(session.centuryFilter)) currentCenturyFilter = session.centuryFilter;
+            if (['all','Государственность','Войны','Реформы','Законы','Культура'].includes(session.topicFilter)) currentTopicFilter = session.topicFilter;
+        }
+
         // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
+            loadCardSession();
             updateScopeButtons();
-            updateFilteredDataset();
+            updateFilterButtonState();
+            updateFilteredDataset(true);
             updateStreakDisplay();
             renderDictionary();
             renderRelations();
             renderUpdates();
             updateStatsUI();
 
-            // Keyboard navigation listener
             window.addEventListener('keydown', handleGlobalKeydown);
             window.addEventListener('resize', () => {
                 const stage = document.querySelector('.card-stage');
@@ -959,6 +1007,29 @@
         }
 
         // FILTER MECHANICS
+        function updateFilterButtonState() {
+            document.querySelectorAll('.century-btn').forEach(btn => {
+                const active = btn.dataset.century === currentCenturyFilter;
+                btn.className = active
+                    ? 'century-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white shadow-sm transition'
+                    : 'century-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition';
+            });
+            document.querySelectorAll('.topic-btn').forEach(btn => {
+                const active = btn.dataset.topic === currentTopicFilter;
+                btn.className = active
+                    ? 'topic-btn px-2 py-0.5 rounded-md text-[11px] bg-purple-600 text-white font-medium'
+                    : 'topic-btn px-2 py-0.5 rounded-md text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium';
+            });
+            const btnDate = document.getElementById('mode-start-date');
+            const btnEvent = document.getElementById('mode-start-event');
+            if (btnDate) btnDate.className = cardStartMode === 'date'
+                ? 'px-2 py-0.5 rounded-md text-[11px] font-medium bg-indigo-600 text-white transition'
+                : 'px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition';
+            if (btnEvent) btnEvent.className = cardStartMode === 'event'
+                ? 'px-2 py-0.5 rounded-md text-[11px] font-medium bg-indigo-600 text-white transition'
+                : 'px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition';
+        }
+
         function setCenturyFilter(centuryGroup) {
             currentCenturyFilter = centuryGroup;
             document.querySelectorAll('.century-btn').forEach(btn => {
@@ -969,6 +1040,7 @@
                 }
             });
             updateFilteredDataset();
+            saveCardSession();
         }
 
         function setTopicFilter(topic) {
@@ -981,6 +1053,7 @@
                 }
             });
             updateFilteredDataset();
+            saveCardSession();
         }
 
         function setFocusFilter(focus) {
@@ -1012,6 +1085,7 @@
             
             resetCardFlip();
             renderCurrentCard();
+            saveCardSession();
         }
 
         function getScopedDates() {
@@ -1049,9 +1123,9 @@
         }
 
         function setStudyScope(scope) {
+            saveCardSession();
             studyScope = scope === 'world' ? 'world' : 'ege';
-            currentCenturyFilter = 'all';
-            currentTopicFilter = 'all';
+            loadCardSession();
             updateScopeButtons();
             updateFilteredDataset();
             if (activeTab === 'list') renderStudyList();
@@ -1059,13 +1133,25 @@
             if (activeTab === 'input') startInputMode();
         }
 
-        function updateFilteredDataset() {
+        function updateFilteredDataset(isInitial = false) {
+            const previousItemId = filteredCards?.[currentCardIndex]?.id ?? null;
+            const session = getCardSession(studyScope);
             const scoped = getScopedDates();
             filteredCards = scoped.filter(item => {
                 const matchesCentury = (currentCenturyFilter === 'all') || (item.centuryGroup === currentCenturyFilter);
                 const matchesTopic = (currentTopicFilter === 'all') || (item.topic === currentTopicFilter);
                 return matchesCentury && matchesTopic;
             });
+
+            // Restore a previous shuffle order when it still matches the current filtered set.
+            if (session && Array.isArray(session.orderIds)) {
+                const pos = new Map(session.orderIds.map((id, i) => [id, i]));
+                filteredCards.sort((a, b) => {
+                    const ai = pos.has(a.id) ? pos.get(a.id) : Number.MAX_SAFE_INTEGER;
+                    const bi = pos.has(b.id) ? pos.get(b.id) : Number.MAX_SAFE_INTEGER;
+                    return ai - bi;
+                });
+            }
 
             const countElem = document.getElementById('cards-selected-count');
             if (countElem) countElem.innerText = `Выбрано: ${filteredCards.length} дат`;
@@ -1078,9 +1164,30 @@
             if (totalEl) totalEl.innerText = total;
             if (egeEl) egeEl.innerText = ege;
             if (worldEl) worldEl.innerText = world;
-            currentCardIndex = 0;
-            resetCardFlip();
+
+            const sessionMatchesFilters = session && session.centuryFilter === currentCenturyFilter && session.topicFilter === currentTopicFilter;
+            const desiredId = sessionMatchesFilters ? session.cardId : previousItemId;
+            let targetIndex = desiredId ? filteredCards.findIndex(d => d.id === desiredId) : -1;
+            if (targetIndex < 0 && sessionMatchesFilters && Number.isInteger(session.cardIndex) && session.cardIndex < filteredCards.length) {
+                targetIndex = session.cardIndex;
+            }
+            currentCardIndex = Math.max(0, targetIndex);
+            isCardFlipped = !!(sessionMatchesFilters && session.cardId === filteredCards[currentCardIndex]?.id && session.isFlipped);
+            updateFilterButtonState();
             renderCurrentCard();
+            saveCardSession();
+            if (isInitial) restoreCardUi();
+        }
+
+        function restoreCardUi() {
+            updateFilterButtonState();
+            const session = getCardSession(studyScope);
+            const currentItem = filteredCards?.[currentCardIndex];
+            isCardFlipped = !!(session && session.cardId === currentItem?.id && session.isFlipped);
+            const cardInner = document.getElementById('flashcard-3d');
+            if (cardInner) cardInner.classList.toggle('is-flipped', isCardFlipped);
+            const status = document.getElementById('card-session-status');
+            if (status) status.innerText = currentItem ? 'Прогресс сохранён на этом месте' : '';
         }
 
         function shuffleCards() {
@@ -1091,6 +1198,7 @@
             currentCardIndex = 0;
             resetCardFlip();
             renderCurrentCard();
+            saveCardSession();
         }
 
         // 3D CARD FLIP MECHANISM
@@ -1105,6 +1213,7 @@
             cardInner.style.top = '0';
             cardInner.style.right = '0';
             cardInner.style.bottom = '0';
+            saveCardSession();
         }
 
         function resetCardFlip() {
@@ -1114,20 +1223,33 @@
         }
 
         function buildCardHint(item) {
-            const figs = item.figures ? String(item.figures).split(';')[0].trim() : '';
+            const figures = String(item.figures || '')
+                .split(';')
+                .map(x => x.trim())
+                .filter(Boolean)
+                .slice(0, 2);
+            const topicLabels = {
+                'Государственность': 'государство и власть',
+                'Войны': 'война / военный конфликт',
+                'Реформы': 'реформа / изменение порядка',
+                'Законы': 'закон / государственный документ',
+                'Культура': 'культура / наука',
+                'Всемирная': 'событие мировой истории'
+            };
+            const topic = topicLabels[item.topic] || item.topic || 'историческое событие';
+            const description = String(item.description || '')
+                .replace(/\b\d{3,4}\b/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .replace(/[.;]+$/, '')
+                .trim();
+            const descShort = description.length > 105 ? `${description.slice(0, 102).trim()}…` : description;
+            const people = figures.length ? `Связка: ${figures.join(', ')}.` : '';
+
             if (cardStartMode === 'date') {
-                if (figs) return `Опора: ${figs}. Вспомни, какое событие связано с этой личностью.`;
-                if (item.topic === 'Войны') return 'Опора: военное событие. Вспомни противника и эпоху.';
-                if (item.topic === 'Реформы') return 'Опора: изменение государственного строя или управления. Вспомни правителя.';
-                if (item.topic === 'Законы') return 'Опора: документ или правовая норма. Вспомни, при каком правителе она появилась.';
-                if (item.topic === 'Культура') return 'Опора: культура или наука. Вспомни деятеля и эпоху.';
-                return `Опора: ${item.topic || 'историческое событие'}. Восстанови событие по эпохе.`;
+                return `${people} Тема: ${topic}.${descShort ? ` Ключ: ${descShort}.` : ' Вспомни главное событие этой даты.'}`;
             }
-            if (figs) return `Опора: ${figs}. От неё восстанови примерную дату.`;
-            if (item.topic === 'Войны') return 'Опора: военный конфликт. Вспомни его соседние события по хронологии.';
-            if (item.topic === 'Реформы') return 'Опора: преобразования эпохи. Вспомни правителя и последовательность реформ.';
-            if (item.topic === 'Законы') return 'Опора: документ. Сопоставь его с эпохой и правителем.';
-            return `Опора: ${item.topic || 'историческое событие'}. Найди место события на временной шкале.`;
+
+            return `${people} Тема: ${topic}. Восстанови год по эпохе и соседним событиям.${descShort ? ` Ориентир: ${descShort}.` : ''}`;
         }
 
         function toggleCardHint() {
@@ -1212,7 +1334,7 @@
             if (frontHintText) frontHintText.innerText = buildCardHint(item);
             if (backHintText) backHintText.innerText = buildCardHint(item);
             if (frontHintBox) frontHintBox.classList.add('hidden');
-            if (backHintBox) backHintBox.classList.remove('hidden');
+            if (backHintBox) backHintBox.classList.add('hidden');
             if (hintBtn) hintBtn.innerHTML = '<i class="fa-regular fa-lightbulb mr-1"></i> Подсказка';
         }
 
@@ -1222,6 +1344,7 @@
             setTimeout(() => {
                 currentCardIndex = (currentCardIndex + 1) % filteredCards.length;
                 renderCurrentCard();
+                saveCardSession();
             }, 150);
         }
 
@@ -1231,6 +1354,7 @@
             setTimeout(() => {
                 currentCardIndex = (currentCardIndex - 1 + filteredCards.length) % filteredCards.length;
                 renderCurrentCard();
+                saveCardSession();
             }, 150);
         }
 
@@ -1250,6 +1374,8 @@
 
             saveUserProgress();
             updateStreakDisplay();
+            const status = document.getElementById('card-session-status');
+            if (status) status.innerText = knowsIt ? 'Отмечено как выученное · следующее место сохранится' : 'Отправлено на повторение · следующее место сохранится';
             nextCard();
         }
 
@@ -1751,6 +1877,7 @@
             localStorage.setItem('ege_learned_ids', JSON.stringify(Array.from(learnedIds)));
             localStorage.setItem('ege_repeat_ids', JSON.stringify(Array.from(repeatIds)));
             localStorage.setItem('ege_streak', currentStreak.toString());
+            saveCardSession();
             updateStatsUI();
         }
 

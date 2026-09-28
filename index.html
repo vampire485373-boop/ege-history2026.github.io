@@ -1052,11 +1052,116 @@
             #section-progress .grid.grid-cols-2 { grid-template-columns:1fr !important; }
         }
 
+
+        /* Device-specific presentation */
+        .device-chooser {
+            position: fixed; inset: 0; z-index: 99999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 18px;
+            background: rgba(2,6,23,.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .device-chooser.hidden { display: none; }
+        .device-chooser-panel {
+            width: min(720px, 100%);
+            max-height: min(92dvh, 760px);
+            overflow: auto;
+            border: 1px solid rgba(148,163,184,.16);
+            background: linear-gradient(180deg, rgba(15,23,42,.98), rgba(11,15,25,.98));
+            border-radius: 24px;
+            box-shadow: 0 30px 90px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.03);
+        }
+        .device-choice-btn {
+            min-height: 150px;
+            border: 1px solid rgba(71,85,105,.55);
+            background: rgba(15,23,42,.72);
+            border-radius: 18px;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+        .device-choice-btn:hover { transform: translateY(-2px); border-color: rgba(99,102,241,.55); background: rgba(30,41,59,.9); }
+        .device-choice-btn.selected { border-color: rgba(99,102,241,.9); background: linear-gradient(180deg, rgba(79,70,229,.16), rgba(15,23,42,.86)); box-shadow: 0 10px 30px rgba(79,70,229,.12); }
+        .device-chooser .device-badge { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+        .device-continue:disabled { opacity: .45; cursor: not-allowed; }
+        body.device-pending { overflow: hidden; }
+        body.device-phone .desktop-only-density { display: none !important; }
+        body.device-phone .top-header-inner { gap: 8px !important; }
+        body.device-phone main { padding-left: 10px !important; padding-right: 10px !important; }
+        body.device-phone .glass-panel { border-radius: 16px; }
+        body.device-phone .tab-section { scroll-margin-top: 72px; }
+        body.device-phone .header-brand-copy { min-width: 0; }
+        body.device-phone .header-title { font-size: clamp(14px, 4vw, 17px) !important; }
+        body.device-phone .header-subtitle { font-size: 10px !important; }
+        body.device-phone .header-streak { font-size: 10px !important; }
+        body.device-phone .card-face { padding: 1rem !important; }
+        body.device-phone .practice-option { min-height: 64px !important; }
+        body.device-phone .history-detail-panel { border-radius: 18px !important; }
+        body.device-pc .device-touch-spacing { gap: .65rem; }
+        body.device-pc main { padding-left: 18px !important; padding-right: 18px !important; }
+        body.device-pc .glass-panel { box-shadow: 0 10px 28px rgba(2,6,23,.12); }
+        body.device-pc .tab-section { scroll-margin-top: 82px; }
+        @media (max-width: 767px) {
+            .device-chooser { padding: 10px; align-items: flex-end; }
+            .device-chooser-panel { border-radius: 22px; max-height: 95dvh; }
+            .device-chooser .grid { grid-template-columns: 1fr !important; }
+            .device-choice-btn { min-height: 118px; }
+        }
+        @media (min-width: 768px) {
+            .device-chooser-panel { padding: 28px; }
+        }
+
 </style>
 
         <!-- Created by Vampire -->
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white device-pending">
+
+    <!-- Device-specific startup chooser -->
+    <div id="device-chooser" class="device-chooser" role="dialog" aria-modal="true" aria-labelledby="device-chooser-title">
+        <div class="device-chooser-panel p-5 sm:p-7">
+            <div class="text-center max-w-xl mx-auto">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 mb-4">
+                    <i class="fa-solid fa-display text-indigo-300 text-xl"></i>
+                </div>
+                <p class="device-badge text-indigo-300 font-bold mb-1">Настройка интерфейса</p>
+                <h2 id="device-chooser-title" class="text-2xl sm:text-3xl font-black text-white">С какого устройства вы заходите?</h2>
+                <p class="text-sm text-slate-400 mt-2">Выберите вариант — тренажёр подстроит размеры, плотность интерфейса и навигацию.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 mt-6">
+                <button type="button" class="device-choice-btn p-4 text-left" data-device-choice="phone" aria-pressed="false">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-mobile-screen-button text-emerald-300 text-lg"></i>
+                        </span>
+                        <span class="text-[10px] uppercase tracking-wider text-emerald-300/80">Touch</span>
+                    </div>
+                    <div class="mt-4 font-bold text-white">Телефон</div>
+                    <div class="text-xs text-slate-400 mt-1 leading-relaxed">Крупнее элементы, удобнее касания, компактнее карточки и вертикальные блоки.</div>
+                </button>
+                <button type="button" class="device-choice-btn p-4 text-left" data-device-choice="pc" aria-pressed="false">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-desktop text-indigo-300 text-lg"></i>
+                        </span>
+                        <span class="text-[10px] uppercase tracking-wider text-indigo-300/80">Desktop</span>
+                    </div>
+                    <div class="mt-4 font-bold text-white">ПК</div>
+                    <div class="text-xs text-slate-400 mt-1 leading-relaxed">Больше рабочего пространства, широкая навигация, плотнее таблицы и панели.</div>
+                </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6">
+                <div class="text-xs text-slate-500 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i>
+                    <span>Настройка сохранится на этом устройстве.</span>
+                </div>
+                <button id="device-continue" type="button" disabled class="device-continue w-full sm:w-auto px-5 py-3 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 transition">
+                    Продолжить <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div>
         <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md">
@@ -2672,6 +2777,65 @@
             const fill=document.getElementById('progress-map-fill'); if(fill)fill.style.width=`${percent}%`;
         }
 
+
+        // DEVICE PRESENTATION
+        const DEVICE_MODE_KEY = 'ege_device_mode_v1';
+        let selectedDeviceMode = null;
+
+        function detectSuggestedDevice() {
+            return window.matchMedia && window.matchMedia('(max-width: 767px)').matches ? 'phone' : 'pc';
+        }
+        function applyDeviceMode(mode) {
+            if (mode !== 'phone' && mode !== 'pc') return;
+            selectedDeviceMode = mode;
+            document.body.classList.toggle('device-phone', mode === 'phone');
+            document.body.classList.toggle('device-pc', mode === 'pc');
+            document.body.classList.remove('device-pending');
+            document.documentElement.dataset.deviceMode = mode;
+        }
+        function closeDeviceChooser() {
+            const chooser = document.getElementById('device-chooser');
+            if (chooser) chooser.classList.add('hidden');
+            document.body.classList.remove('device-pending');
+        }
+        function initDeviceChooser() {
+            const chooser = document.getElementById('device-chooser');
+            const continueBtn = document.getElementById('device-continue');
+            if (!chooser || !continueBtn) return;
+            let stored = null;
+            try { stored = localStorage.getItem(DEVICE_MODE_KEY); } catch (_) {}
+            if (stored === 'phone' || stored === 'pc') {
+                applyDeviceMode(stored);
+                closeDeviceChooser();
+                return;
+            }
+
+            const suggested = detectSuggestedDevice();
+            const buttons = chooser.querySelectorAll('[data-device-choice]');
+            const select = mode => {
+                selectedDeviceMode = mode;
+                buttons.forEach(btn => {
+                    const active = btn.dataset.deviceChoice === mode;
+                    btn.classList.toggle('selected', active);
+                    btn.setAttribute('aria-pressed', String(active));
+                });
+                continueBtn.disabled = false;
+            };
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => select(btn.dataset.deviceChoice));
+                btn.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+                });
+            });
+            select(suggested);
+            continueBtn.addEventListener('click', () => {
+                if (!selectedDeviceMode) return;
+                try { localStorage.setItem(DEVICE_MODE_KEY, selectedDeviceMode); } catch (_) {}
+                applyDeviceMode(selectedDeviceMode);
+                closeDeviceChooser();
+            });
+        }
+
         // INITIALIZATION
         window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeHistoryDetails(); closeProjectStub(); closeMapZoom(); } });
 
@@ -2682,6 +2846,7 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            initDeviceChooser();
             if(isLowPowerDevice()) document.body.classList.add('low-power');
             loadCardSession();
             const mapSession = readMapSession();

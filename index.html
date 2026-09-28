@@ -763,6 +763,140 @@
                 width: 100% !important;
             }
         }
+
+
+        /* ===== Mobile UI stability pass: prevent overlap, overflow and tiny controls ===== */
+        @media (max-width: 767px) {
+            html, body { max-width:100%; overflow-x:hidden; }
+            body { -webkit-text-size-adjust:100%; text-rendering:optimizeLegibility; }
+            header { overflow:hidden; }
+            main { width:100%; max-width:100%; padding-left:12px !important; padding-right:12px !important; }
+            .top-header-inner { width:100% !important; box-sizing:border-box; }
+            .header-brand, .header-brand-copy, .header-title, .header-meta-row { max-width:100%; }
+            .header-title { line-height:1.18; }
+            .header-title-text { min-width:0; max-width:calc(100% - 2px); }
+            .header-meta-row { min-width:0; }
+            .header-subtitle { min-width:0; max-width:100%; }
+            .header-streak { flex:0 0 auto; }
+
+            /* Mobile nav is its own horizontal scroller; buttons never squeeze or wrap. */
+            .mobile-tab-btn, .tab-btn { box-sizing:border-box; }
+            header > div:nth-of-type(2) {
+                max-width:100%;
+                overflow-x:auto;
+                overflow-y:hidden;
+                -webkit-overflow-scrolling:touch;
+                scrollbar-width:none;
+                padding-left:12px !important;
+                padding-right:12px !important;
+                gap:.5rem !important;
+            }
+            header > div:nth-of-type(2)::-webkit-scrollbar { display:none; }
+            header > div:nth-of-type(2) .tab-btn {
+                flex:0 0 auto !important;
+                min-height:38px;
+                padding:.55rem .85rem !important;
+                font-size:12px !important;
+                white-space:nowrap;
+            }
+
+            /* Prevent long labels from pushing neighbouring controls. */
+            .glass-panel, .tab-section, .study-list-item, .map-atlas-card,
+            .map-viewer, .history-detail-panel, .progress-topic-chip { min-width:0; }
+            h1,h2,h3,h4,p,span,div,button,a,label { overflow-wrap:anywhere; }
+            button, input, select, textarea { max-width:100%; }
+            input, select, textarea { font-size:16px !important; }
+
+            /* Keep controls in clean rows instead of letting them collide. */
+            .scope-switch, .progress-scope {
+                max-width:100%;
+                overflow-x:auto;
+                white-space:nowrap;
+                -webkit-overflow-scrolling:touch;
+                scrollbar-width:none;
+                flex:0 0 auto;
+            }
+            .scope-switch::-webkit-scrollbar, .progress-scope::-webkit-scrollbar { display:none; }
+            .scope-switch button, .progress-scope button { flex:0 0 auto; }
+
+            #section-flashcards .glass-panel:first-child { padding:12px !important; }
+            #section-flashcards .card-stage { width:100% !important; max-width:100%; }
+            #section-flashcards .card-face { padding:12px !important; }
+            #section-flashcards .card-face h3 { max-width:100%; }
+            #section-flashcards .card-hint-box { max-width:100%; }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 { gap:8px; }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 > button {
+                min-width:0; min-height:44px; padding:10px 12px !important;
+            }
+
+            #section-list .glass-panel:first-child,
+            #section-dictionary .glass-panel:first-child,
+            #section-progress .glass-panel,
+            #section-maps .glass-panel,
+            #section-updates .glass-panel { padding:13px !important; }
+            #section-list .study-list-item { padding:13px !important; }
+            #section-list .study-list-item > div { min-width:0; }
+            #study-list-container { width:100%; overflow:visible; }
+
+            #section-quiz .glass-panel,
+            #section-input .glass-panel { padding:14px !important; }
+            #quiz-options-grid, #input-options-grid { width:100%; }
+            #quiz-options-grid button, #input-options-grid button { min-height:46px; }
+
+            #section-dictionary .overflow-x-auto {
+                max-width:100%;
+                -webkit-overflow-scrolling:touch;
+            }
+            #section-dictionary table { min-width:720px; }
+
+            #section-progress .grid.grid-cols-2 { grid-template-columns:1fr 1fr !important; }
+            #section-progress .progress-topic-chip { overflow:hidden; }
+            #section-progress .progress-topic-chip .text-lg,
+            #section-progress .progress-topic-chip .text-xl { white-space:nowrap; }
+
+            #section-maps .map-layout { width:100%; }
+            #section-maps .map-viewer { width:100%; max-width:100%; }
+            #section-maps .map-study-grid { width:100%; }
+            #section-maps .map-option { min-height:48px; }
+            #section-maps .map-atlas-card { width:100%; }
+            #section-maps .map-atlas-card img { max-width:100%; object-fit:contain; }
+
+            #section-updates .grid,
+            #section-updates .flex { min-width:0; }
+            #section-updates a, #section-updates button { max-width:100%; }
+
+            /* Modals stay inside the viewport and never create a page-wide horizontal scroll. */
+            .history-detail-modal, .map-modal { width:100vw; max-width:100vw; box-sizing:border-box; }
+            .history-detail-panel { width:min(96vw,720px); max-width:96vw; }
+            .map-modal img { max-width:92vw; max-height:84vh; }
+        }
+
+        @media (max-width: 480px) {
+            main { padding-left:9px !important; padding-right:9px !important; }
+            .top-header-inner { padding-left:10px !important; padding-right:10px !important; }
+            .header-title { font-size:14px !important; }
+            .header-subtitle { font-size:9px !important; }
+            .header-streak { padding:3px 6px !important; }
+            header > div:nth-of-type(2) { padding-left:9px !important; padding-right:9px !important; }
+            header > div:nth-of-type(2) .tab-btn { min-height:36px; padding:.5rem .78rem !important; font-size:11px !important; }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 { flex-direction:column; }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 > button { width:100%; }
+            #section-progress .grid.grid-cols-2 { gap:7px !important; }
+            #section-progress .grid.grid-cols-2 > div { padding:11px !important; }
+            #section-maps .map-viewer { min-height:220px; }
+            #section-maps .map-option { padding:.75rem .7rem !important; font-size:12px !important; }
+        }
+
+        @media (max-width: 360px) {
+            .header-brand { gap:7px !important; }
+            .header-brand > div:first-child { width:32px !important; height:32px !important; }
+            .header-brand > div:first-child i { font-size:15px !important; }
+            .header-title { font-size:13px !important; }
+            .header-subtitle { display:none; }
+            .header-streak span { display:none; }
+            .header-streak { padding:3px 7px !important; }
+        }
+
 </style>
 
         <!-- Created by Vampire -->

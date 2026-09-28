@@ -124,6 +124,16 @@
             scrollbar-width: none;
         }
 
+        /* Performance: long study lists should not force the browser to paint everything at once. */
+        #study-list-container > .study-list-item {
+            content-visibility: auto;
+            contain-intrinsic-size: 108px;
+        }
+        #dictionary-table-body > tr {
+            content-visibility: auto;
+            contain-intrinsic-size: 48px;
+        }
+
 
         /* v6: flip card is locked to the stage; no paint/layout containment on the 3D scene */
         .card-stage {
@@ -745,7 +755,7 @@
                     <!-- Filters inside List Mode -->
                     <div class="pt-3 border-t border-slate-700/50 flex flex-col sm:flex-row gap-3 justify-between items-center">
                         <div class="relative w-full sm:w-80">
-                            <input type="text" id="list-search-input" oninput="listRenderLimit=60;renderStudyList()" placeholder="Поиск по событию, дате, личности, теме, ключевому слову..."
+                            <input type="text" id="list-search-input" oninput="scheduleStudyListRender()" placeholder="Поиск по событию, дате, личности, теме, ключевому слову..."
                                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 pl-9 text-xs text-white focus:outline-none focus:border-indigo-500">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
                         </div>
@@ -761,7 +771,7 @@
                         </div>
 
                         <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
-                            <select id="list-century-select" onchange="listRenderLimit=60;renderStudyList()" class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500">
+                            <select id="list-century-select" onchange="listRenderLimit=40;scheduleStudyListRender(true)" class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500">
                                 <option value="all">Все века</option>
                                 <option value="IX-XV">IX—XV вв.</option>
                                 <option value="XVI-XVII">XVI—XVII вв.</option>
@@ -915,7 +925,7 @@
                             <p class="text-xs text-slate-400">Поиск и фильтрация всех исторических событий</p>
                         </div>
                         <div class="relative w-full sm:w-72">
-                            <input type="text" id="dict-search" oninput="dictionaryRenderLimit=120;renderDictionary()" placeholder="Поиск по дате или событию..."
+                            <input type="text" id="dict-search" oninput="scheduleDictionaryRender()" placeholder="Поиск по дате или событию..."
                                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 pl-9 text-xs text-white focus:outline-none focus:border-indigo-500">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
                         </div>
@@ -1296,6 +1306,11 @@
                 ...(d.keywords||[]),d.summary,d.causes,d.course,d.result,d.significance].filter(Boolean).join(' ').toLowerCase();
         }
 
+        // Prebuild the searchable text once. Previously this was rebuilt for every row
+        // every time the list/dictionary was rendered, which caused visible pauses.
+        const HISTORY_SEARCH_INDEX = new Map();
+        ALL_HISTORICAL_DATES.forEach(item => HISTORY_SEARCH_INDEX.set(item.id, historySearchText(item)));
+
         function normalizeHistorySearch(q){
             return String(q||'').toLowerCase().replace(/ё/g,'е').trim();
         }
@@ -1303,7 +1318,7 @@
         function matchesHistorySearch(item,q){
             const query=normalizeHistorySearch(q);
             if(!query) return true;
-            const hay=historySearchText(item).replace(/ё/g,'е');
+            const hay=HISTORY_SEARCH_INDEX.get(item.id) || '';
             return query.split(/\s+/).filter(Boolean).every(token=>hay.includes(token));
         }
 
@@ -1391,7 +1406,7 @@
         function applyListKeyword(encoded){
             const input=document.getElementById('list-search-input');
             const value=decodeURIComponent(encoded||'');
-            if(input){input.value=value;listRenderLimit=60;renderStudyList();input.focus();}
+            if(input){input.value=value;listRenderLimit=40;scheduleStudyListRender(true);input.focus();}
             closeHistoryDetails();
         }
 
@@ -1408,8 +1423,33 @@
 
         let listMaskMode = 'none'; // 'none', 'dates', 'events'
         let showUnlearnedOnly = false;
-        let listRenderLimit = 60;
-        let dictionaryRenderLimit = 120;
+        let listRenderLimit = 40;
+        let dictionaryRenderLimit = 80;
+        let listDirty = true;
+        let dictionaryDirty = true;
+        let listRenderTimer = 0;
+        let dictionaryRenderTimer = 0;
+
+        function scheduleStudyListRender(immediate=false){
+            listDirty = true;
+            clearTimeout(listRenderTimer);
+            const run = () => requestAnimationFrame(() => renderStudyList());
+            listRenderTimer = immediate ? setTimeout(run, 0) : setTimeout(run, 70);
+        }
+
+        function scheduleDictionaryRender(immediate=false){
+            dictionaryDirty = true;
+            clearTimeout(dictionaryRenderTimer);
+            const run = () => requestAnimationFrame(() => renderDictionary());
+            dictionaryRenderTimer = immediate ? setTimeout(run, 0) : setTimeout(run, 90);
+        }
+
+        function invalidateStudyViews(){
+            listDirty = true;
+            dictionaryDirty = true;
+            if(activeTab === 'list') scheduleStudyListRender(true);
+            if(activeTab === 'dictionary') scheduleDictionaryRender(true);
+        }
 
         let learnedIds = new Set(JSON.parse(localStorage.getItem('ege_learned_ids') || '[]'));
         let repeatIds = new Set(JSON.parse(localStorage.getItem('ege_repeat_ids') || '[]'));
@@ -2220,7 +2260,8 @@
                 activeBtn.classList.remove('text-slate-400');
             }
 
-            if (tabName === 'list') renderStudyList();
+            if (tabName === 'list' && listDirty) scheduleStudyListRender(true);
+            if (tabName === 'dictionary' && dictionaryDirty) scheduleDictionaryRender(true);
             if (tabName === 'quiz') startQuizMode(true);
             if (tabName === 'input') startInputMode();
             if (tabName === 'progress') { updateStatsUI(true); renderMapProgress(); }
@@ -2313,8 +2354,7 @@
         }
 
         function getScopedDates() {
-            if (studyScope === 'world') return ALL_HISTORICAL_DATES.filter(isWorldStudyItem);
-            return getEgeDates();
+            return studyScope === 'world' ? getWorldStudyDates() : getEgeDates();
         }
 
         function updateScopeButtons() {
@@ -2352,7 +2392,8 @@
             loadCardSession();
             updateScopeButtons();
             updateFilteredDataset();
-            if (activeTab === 'list') renderStudyList();
+            listDirty = true;
+            if (activeTab === 'list') scheduleStudyListRender(true);
             if (activeTab === 'quiz') startQuizMode(true);
             if (activeTab === 'input') startInputMode();
         }
@@ -2605,7 +2646,7 @@
 
         // STUDY LIST MODE LOGIC
         function setListMaskMode(mode) {
-            listMaskMode = mode; listRenderLimit = 60;
+            listMaskMode = mode; listRenderLimit = 40;
             const btnNone = document.getElementById('mask-btn-none');
             const btnDates = document.getElementById('mask-btn-dates');
             const btnEvents = document.getElementById('mask-btn-events');
@@ -2625,11 +2666,11 @@
                     ? 'px-2.5 py-1 rounded-lg font-medium bg-indigo-600 text-white transition' 
                     : 'px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition';
             }
-            renderStudyList();
+            scheduleStudyListRender(true);
         }
 
         function toggleUnlearnedOnly() {
-            showUnlearnedOnly = !showUnlearnedOnly; listRenderLimit = 60;
+            showUnlearnedOnly = !showUnlearnedOnly; listRenderLimit = 40;
             const btn = document.getElementById('unlearned-only-btn');
             if (btn) {
                 if (showUnlearnedOnly) {
@@ -2640,7 +2681,7 @@
                     btn.innerHTML = '<i class="fa-regular fa-square mr-1.5"></i> Только невыученные';
                 }
             }
-            renderStudyList();
+            scheduleStudyListRender(true);
         }
 
         function toggleItemLearned(id, event) {
@@ -2652,8 +2693,7 @@
                 repeatIds.delete(id);
             }
             saveUserProgress();
-            renderStudyList();
-            renderDictionary();
+            invalidateStudyViews();
         }
 
         function renderStudyList() {
@@ -2678,6 +2718,7 @@
                         <p class="text-sm font-medium">Ничего не найдено по вашему запросу</p>
                     </div>
                 `;
+                listDirty = false;
                 return;
             }
 
@@ -2707,7 +2748,7 @@
                 }
 
                 return `
-                    <div class="glass-panel p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group ${isLearned ? 'bg-slate-900/40 opacity-80' : ''}">
+                    <div class="study-list-item glass-panel p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group ${isLearned ? 'bg-slate-900/40 opacity-80' : ''}">
                         <div class="flex items-start sm:items-center space-x-4 w-full sm:w-auto">
                             <!-- Checkbox for Learned state -->
                             <button onclick="toggleItemLearned(${item.id}, event)" title="${isLearned ? 'Отметить как невыученную' : 'Отметить как выученную'}"
@@ -2739,8 +2780,9 @@
                 `;
             }).join('');
             if (filtered.length > listRenderLimit) {
-                container.insertAdjacentHTML('beforeend', `<button type="button" onclick="listRenderLimit += 60; renderStudyList()" class="w-full py-3 rounded-xl bg-slate-900/70 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-indigo-300 transition">Показать ещё · осталось ${filtered.length - listRenderLimit}</button>`);
+                container.insertAdjacentHTML('beforeend', `<button type="button" onclick="listRenderLimit += 40; scheduleStudyListRender(true)" class="w-full py-3 rounded-xl bg-slate-900/70 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-indigo-300 transition">Показать ещё · осталось ${Math.max(0, filtered.length - listRenderLimit)}</button>`);
             }
+            listDirty = false;
         }
 
         function handleGlobalKeydown(e) {
@@ -2962,46 +3004,50 @@
 
         // DICTIONARY
         function renderDictionary() {
-            const query = (document.getElementById('dict-search')?.value || '').toLowerCase();
+            const query = (document.getElementById('dict-search')?.value || '');
             const tbody = document.getElementById('dictionary-table-body');
             if (!tbody) return;
 
-            tbody.innerHTML = '';
             document.querySelector('.dict-load-more')?.remove();
 
             const filtered = ALL_HISTORICAL_DATES.filter(item => matchesHistorySearch(item, query));
-
             const visible = filtered.slice(0, dictionaryRenderLimit);
-            visible.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-800/50 transition';
 
+            if (!visible.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-xs text-slate-500">Ничего не найдено</td></tr>';
+                dictionaryDirty = false;
+                return;
+            }
+
+            // One DOM write is substantially faster than appendChild for 80–120 rows.
+            tbody.innerHTML = visible.map(item => {
                 const isLearned = learnedIds.has(item.id);
-                const statusBadge = isLearned 
+                const statusBadge = isLearned
                     ? '<span class="text-emerald-400 font-bold"><i class="fa-solid fa-check mr-1"></i>Выучено</span>'
                     : '<span class="text-slate-500">Не выучено</span>';
+                const hasDetails = !!getHistoricalDetails(item);
+                return `
+                    <tr>
+                        <td class="p-3 font-bold text-white">${item.year}</td>
+                        <td class="p-3 text-indigo-300">${item.century} век</td>
+                        <td class="p-3">
+                            <button type="button" onclick="openHistoryDetails(${item.id})" class="text-left w-full group">
+                                <div class="font-semibold text-slate-200 group-hover:text-indigo-300 transition">${item.title} <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-slate-600 group-hover:text-indigo-400 ml-1"></i></div>
+                                <div class="text-[11px] text-slate-400">${item.description}</div>
+                                ${hasDetails ? '<div class="text-[10px] text-indigo-400/80 mt-1">Есть расширенная справка и поиск по ключевым словам</div>' : ''}
+                            </button>
+                        </td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.topic}</span></td>
+                        <td class="p-3">${isEgeCore(item) ? '<span class="text-emerald-300 font-semibold">Ядро ЕГЭ</span>' : '<span class="text-slate-500">Расширение</span>'}</td>
+                        <td class="p-3">${statusBadge}</td>
+                    </tr>`;
+            }).join('');
 
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-white">${item.year}</td>
-                    <td class="p-3 text-indigo-300">${item.century} век</td>
-                    <td class="p-3">
-                        <button type="button" onclick="openHistoryDetails(${item.id})" class="text-left w-full group">
-                            <div class="font-semibold text-slate-200 group-hover:text-indigo-300 transition">${item.title} <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-slate-600 group-hover:text-indigo-400 ml-1"></i></div>
-                            <div class="text-[11px] text-slate-400">${item.description}</div>
-                            ${getHistoricalDetails(item) ? '<div class="text-[10px] text-indigo-400/80 mt-1">Есть расширенная справка и поиск по ключевым словам</div>' : ''}
-                        </button>
-                    </td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.topic}</span></td>
-                    <td class="p-3">${isEgeCore(item) ? '<span class="text-emerald-300 font-semibold">Ядро ЕГЭ</span>' : '<span class="text-slate-500">Расширение</span>'}</td>
-                    <td class="p-3">${statusBadge}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-            if (filtered.length > dictionaryRenderLimit && tbody.parentElement?.parentElement) {
-                const wrap = tbody.parentElement.parentElement;
-                const oldMore = wrap.querySelector('.dict-load-more'); oldMore?.remove();
-                wrap.insertAdjacentHTML('afterend', `<button type="button" class="dict-load-more mt-3 w-full py-3 rounded-xl bg-slate-900/70 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-indigo-300 transition" onclick="dictionaryRenderLimit += 120; renderDictionary()">Показать ещё · осталось ${filtered.length - dictionaryRenderLimit}</button>`);
+            if (filtered.length > dictionaryRenderLimit) {
+                const tableWrap = tbody.closest('.overflow-x-auto');
+                tableWrap?.insertAdjacentHTML('afterend', `<button type="button" class="dict-load-more mt-3 w-full py-3 rounded-xl bg-slate-900/70 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-indigo-300 transition" onclick="dictionaryRenderLimit += 80; scheduleDictionaryRender(true)">Показать ещё · осталось ${Math.max(0, filtered.length - dictionaryRenderLimit)}</button>`);
             }
+            dictionaryDirty = false;
         }
 
         // STATS & PROGRESS
@@ -3036,8 +3082,7 @@
             ids.forEach(id => { learnedIds.delete(id); repeatIds.delete(id); });
             saveUserProgress();
             updateStatsUI();
-            renderDictionary();
-            renderStudyList();
+            invalidateStudyViews();
         }
 
         function updateStatsUI(renderDetails = true) {
@@ -3130,8 +3175,7 @@
             resetMapProgress();
             saveUserProgress();
             updateStreakDisplay();
-            renderDictionary();
-            renderStudyList();
+            invalidateStudyViews();
         }
     </script>
 </body>

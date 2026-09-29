@@ -209,6 +209,97 @@
             font-size:11px; font-weight:800; padding:6px 9px; border-radius:9px; transition:.18s ease;
         }
         .hint-toggle:hover { background:rgba(99,102,241,.16); color:#fff; }
+
+        /* ===== v17: mobile hint UI ===== */
+        @media (max-width: 767px) {
+            .task-hint-toggle {
+                width: auto !important;
+                min-height: 34px !important;
+                min-width: 0 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 4px !important;
+                padding: 7px 10px !important;
+                border-radius: 999px !important;
+                font-size: 10px !important;
+                line-height: 1 !important;
+                box-shadow: 0 6px 16px rgba(0,0,0,.10) !important;
+            }
+            .task-hint {
+                display: grid !important;
+                grid-template-columns: 24px minmax(0,1fr) !important;
+                align-items: start !important;
+                gap: 8px !important;
+                width: 100% !important;
+                margin-top: 7px !important;
+                padding: 9px 10px !important;
+                border-radius: 12px !important;
+                border-left-width: 2px !important;
+                font-size: 10.5px !important;
+                line-height: 1.42 !important;
+                box-shadow: 0 6px 16px rgba(0,0,0,.08) !important;
+                max-height: 118px !important;
+                overflow: auto !important;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            .task-hint .task-hint-icon {
+                width: 24px !important;
+                min-width: 24px !important;
+                height: 24px !important;
+                border-radius: 8px !important;
+                font-size: 10px !important;
+                position: sticky;
+                top: 0;
+            }
+            .task-hint .task-hint-label {
+                font-size: 8px !important;
+                line-height: 1.1 !important;
+                letter-spacing: .1em !important;
+                margin-bottom: 3px !important;
+            }
+            .task-hint .task-hint-text {
+                font-size: 10.5px !important;
+                line-height: 1.42 !important;
+                font-weight: 600 !important;
+            }
+            .card-hint-box {
+                max-height: 100px !important;
+                overflow: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            #section-flashcards .hint-toggle,
+            #section-flashcards .task-hint-toggle {
+                width: auto !important;
+                min-height: 34px !important;
+                padding: 7px 10px !important;
+            }
+            #section-flashcards .task-hint {
+                max-width: 100% !important;
+            }
+            #section-input #input-hint-btn {
+                min-height: 44px !important;
+                padding: 10px 8px !important;
+                font-size: 10px !important;
+            }
+            #section-map .grid.grid-cols-3 {
+                grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+            }
+            #section-map #map-next-btn {
+                grid-column: 1 / -1;
+            }
+            #section-map .task-hint {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            #section-personalities .task-hint,
+            #section-terms .task-hint,
+            #section-practice .task-hint,
+            #section-dictionary .task-hint {
+                max-height: 110px !important;
+            }
+        }
         .progress-scope button { padding:7px 13px; border-radius:9px; font-size:11px; font-weight:800; color:#94a3b8; background:transparent; transition:.18s ease; }
         .progress-scope button.active { color:#fff; background:linear-gradient(135deg,#6366f1,#7c5cff); box-shadow:0 5px 16px rgba(99,102,241,.2); }
         .progress-bar { height:8px; border-radius:999px; background:#0b1324; overflow:hidden; }
@@ -3992,7 +4083,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
             updatePeoplePracticeStats();
         }
         function buildPeopleQuizHint(){const q=peopleQuizItem;if(!q)return '';const p=q.person,e=q.event;if(q.askClue){return `Сначала определи эпоху и вид деятельности. Затем ищи в характеристике признак, который отличает этого деятеля от одноимённых или современников.`;}return `Свяжи событие с деятельностью личности. Ориентир: ${e?.century||p.period||'историческая эпоха'}${p.examFocus?`. Фокус: ${p.examFocus}`:''}.`; }
-        function togglePeopleQuizHint(){const box=document.getElementById('people-quiz-hint'),btn=document.getElementById('people-quiz-hint-btn');if(!box||!peopleQuizItem)return;peopleQuizHintShown=!peopleQuizHintShown;box.classList.toggle('hidden',!peopleQuizHintShown);document.getElementById('people-quiz-hint-text').textContent=peopleQuizHintShown?buildPeopleQuizHint():'';if(btn)btn.innerHTML=peopleQuizHintShown?'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку':'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';}
+        function togglePeopleQuizHint(){const box=document.getElementById('people-quiz-hint'),btn=document.getElementById('people-quiz-hint-btn');if(!box||!peopleQuizItem)return;peopleQuizHintShown=!peopleQuizHintShown;box.classList.toggle('hidden',!peopleQuizHintShown);document.getElementById('people-quiz-hint-text').textContent=peopleQuizHintShown?buildPeopleQuizHint():'';if(btn)btn.innerHTML=peopleQuizHintShown?'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку':'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';;revealMobileHint(box)}
 
         function nextPeopleQuiz(){
             if(peoplePracticeMode==='exam'){document.getElementById('people-exam-hint')?.classList.add('hidden');document.getElementById('people-exam-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';return nextPeopleExamTask();}
@@ -4363,7 +4454,7 @@ function renderTermsPractice(){const st=termsPracticeState;if(!st.active)return;
 st.item={t,opts,kind};st.answered=false;document.getElementById('terms-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('terms-practice-prompt').textContent=prompt;document.getElementById('terms-practice-hint')?.classList.add('hidden');document.getElementById('terms-practice-hint-text').textContent='';document.getElementById('terms-practice-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';const box=document.getElementById('terms-practice-options');box.innerHTML=opts.map((x,i)=>{const label=kind==='name'?x.name:x.definition;return `<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-xs font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(label)}</button>`}).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerTermsPractice(Number(b.dataset.i)));document.getElementById('terms-practice-feedback')?.classList.add('hidden');document.getElementById('terms-practice-next')?.classList.add('hidden');}
 function answerTermsPractice(index){const st=termsPracticeState;if(st.answered||!st.item)return;st.answered=true;const ok=st.item.opts[index].id===st.item.t.id;if(ok)st.score++;savePracticeResult('term-practicum',ok);recordModuleActivity('terms',ok?'Практикум терминов: верно':'Практикум терминов: ошибка');document.querySelectorAll('#terms-practice-options .practice-option').forEach((b,i)=>{b.disabled=true;if(i===st.item.opts.findIndex(x=>x.id===st.item.t.id))b.classList.add('border-emerald-400/70');if(i===index&&!ok)b.classList.add('border-rose-400/70');});const fb=document.getElementById('terms-practice-feedback');fb.className=`rounded-xl p-3 text-xs ${ok?'bg-emerald-500/10 border border-emerald-500/20 text-emerald-200':'bg-rose-500/10 border border-rose-500/20 text-rose-200'}`;fb.innerHTML=`<strong>${ok?'✓ Верно':'✕ Неверно'}</strong><div class="mt-1">Ваш ответ: <span class="${ok?'text-emerald-300':'text-rose-300'}">${escapeHistoryHtml(st.item.opts[index].name)}</span></div>${!ok?`<div class="mt-1">Правильно: <span class="text-emerald-300">${escapeHistoryHtml(st.item.t.name)}</span></div>`:''}<div class="mt-2 text-slate-300">${escapeHistoryHtml(st.item.t.definition)}</div>`;fb.classList.remove('hidden');document.getElementById('terms-practice-next')?.classList.remove('hidden');}
 function buildTermPracticeHint(st){const t=st?.item?.t;if(!t)return '';const tags=(t.tags||[]).slice(0,2).join(' · ');if(st.item.kind==='name')return `Смотри на период: ${t.era||t.period||'истории'}.${tags?` Связанные слова: ${tags}.`:''}`;return `Вспомни, к какой эпохе и сфере относится понятие.${t.period?` Период: ${t.period}.`:''}${tags?` Опора: ${tags}.`:''}`;}
-function toggleTermsPracticeHint(){const box=document.getElementById('terms-practice-hint'),btn=document.getElementById('terms-practice-hint-btn');if(!box||!termsPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('terms-practice-hint-text').textContent=hidden?'':buildTermPracticeHint(termsPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+function toggleTermsPracticeHint(){const box=document.getElementById('terms-practice-hint'),btn=document.getElementById('terms-practice-hint-btn');if(!box||!termsPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('terms-practice-hint-text').textContent=hidden?'':buildTermPracticeHint(termsPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';;revealMobileHint(box)}
 function nextTermsPractice(){const st=termsPracticeState;if(!st.active)return;if(st.index+1>=st.total){const fb=document.getElementById('terms-practice-feedback');if(fb){fb.className='rounded-xl p-3 text-xs bg-indigo-500/10 border border-indigo-500/20 text-indigo-100';fb.innerHTML=`<strong>Подборка завершена: ${st.score} / ${st.total}</strong><div class="mt-1 text-slate-400">Можно снова запустить практику и поменять режим.</div>`;}document.getElementById('terms-practice-next')?.classList.add('hidden');return;}st.index++;renderTermsPractice();}
 function scheduleTermsRender(immediate=false){ clearTimeout(termsRenderTimer); if(immediate){renderTerms();return;} termsRenderTimer=setTimeout(()=>requestAnimationFrame(renderTerms),120); }
 
@@ -4373,7 +4464,7 @@ function closeDictionaryPractice(){dictionaryPracticeState.active=false;document
 function renderDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active||!st.source.length)return;const t=st.source[Math.floor(Math.random()*st.source.length)];const pool=shuffleArray(st.source.filter(x=>x.id!==t.id)).slice(0,3);const opts=shuffleArray([t,...pool]);st.item={t,opts};st.answered=false;document.getElementById('dictionary-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('dictionary-practice-prompt').textContent=`Какая дата соответствует событию? ${t.title}`;document.getElementById('dictionary-practice-hint')?.classList.add('hidden');document.getElementById('dictionary-practice-hint-text').textContent='';document.getElementById('dictionary-practice-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';const box=document.getElementById('dictionary-practice-options');box.innerHTML=opts.map((x,i)=>`<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-sm font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(formatYearLabel(x.year))}</button>`).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerDictionaryPractice(Number(b.dataset.i)));document.getElementById('dictionary-practice-feedback')?.classList.add('hidden');document.getElementById('dictionary-practice-next')?.classList.add('hidden');}
 function answerDictionaryPractice(index){const st=dictionaryPracticeState;if(st.answered||!st.item)return;st.answered=true;const ok=st.item.opts[index].id===st.item.t.id;if(ok)st.score++;savePracticeResult('dictionary-practicum',ok);recordModuleActivity('dictionary',ok?'Практикум справочника: верно':'Практикум справочника: ошибка');const correct=st.item.opts.findIndex(x=>x.id===st.item.t.id);document.querySelectorAll('#dictionary-practice-options .practice-option').forEach((b,i)=>{b.disabled=true;if(i===correct)b.classList.add('border-emerald-400/70');if(i===index&&!ok)b.classList.add('border-rose-400/70');});const fb=document.getElementById('dictionary-practice-feedback');fb.className=`rounded-xl p-3 text-xs ${ok?'bg-emerald-500/10 border border-emerald-500/20 text-emerald-200':'bg-rose-500/10 border border-rose-500/20 text-rose-200'}`;fb.innerHTML=`<strong>${ok?'✓ Верно':'✕ Неверно'}</strong><div class="mt-1">Ваш ответ: <span class="${ok?'text-emerald-300':'text-rose-300'}">${escapeHistoryHtml(formatYearLabel(st.item.opts[index].year))}</span></div>${!ok?`<div class="mt-1">Правильно: <span class="text-emerald-300">${escapeHistoryHtml(formatYearLabel(st.item.t.year))}</span></div>`:''}<div class="mt-2 text-slate-300">${escapeHistoryHtml(st.item.t.description||st.item.title)}</div>`;fb.classList.remove('hidden');document.getElementById('dictionary-practice-next')?.classList.remove('hidden');}
 function buildDictionaryPracticeHint(st){const t=st?.item?.t;if(!t)return '';const person=String(t.figures||'').split(';').map(x=>x.trim()).filter(Boolean)[0];const desc=String(t.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim();return `Сначала установи век: ${t.century||'—'}.${person?` Связка по личности: ${person}.`:''}${desc?` Ориентир: ${desc.slice(0,100)}${desc.length>100?'…':''}.`:''}`;}
-function toggleDictionaryPracticeHint(){const box=document.getElementById('dictionary-practice-hint'),btn=document.getElementById('dictionary-practice-hint-btn');if(!box||!dictionaryPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('dictionary-practice-hint-text').textContent=hidden?'':buildDictionaryPracticeHint(dictionaryPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+function toggleDictionaryPracticeHint(){const box=document.getElementById('dictionary-practice-hint'),btn=document.getElementById('dictionary-practice-hint-btn');if(!box||!dictionaryPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('dictionary-practice-hint-text').textContent=hidden?'':buildDictionaryPracticeHint(dictionaryPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';;revealMobileHint(box)}
 function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active)return;if(st.index+1>=st.total){const fb=document.getElementById('dictionary-practice-feedback');fb.className='rounded-xl p-3 text-xs bg-indigo-500/10 border border-indigo-500/20 text-indigo-100';fb.innerHTML=`<strong>Практикум завершён: ${st.score} / ${st.total}</strong>`;document.getElementById('dictionary-practice-next')?.classList.add('hidden');return;}st.index++;renderDictionaryPractice();}
 
 // APP STATE
@@ -4798,7 +4889,11 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             if(answer) out=out.replace(new RegExp(answer.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'ключевой объект');
             return out || 'Посмотри на легенду, направления стрелок, города и водные объекты. Они обычно дают нужную историческую привязку.';
         }
-        function showMapHint(){ const el=document.getElementById('map-hint'); const text=document.getElementById('map-hint-text'); const task=getVisibleMapTasks()[mapTaskIndex]; if(text) text.textContent=buildMapHint(task); if(el) el.classList.toggle('hidden'); }
+        function showMapHint(){ const el=document.getElementById('map-hint'); const text=document.getElementById('map-hint-text'); const task=getVisibleMapTasks()[mapTaskIndex]; if(text) text.textContent=buildMapHint(task); if(el) { el.classList.toggle('hidden'); revealMobileHint(el); } }
+        function revealMobileHint(box){
+            if(!box || window.innerWidth > 767 || box.classList.contains('hidden')) return;
+            requestAnimationFrame(()=>box.scrollIntoView({behavior:'smooth', block:'nearest'}));
+        }
         function renderMapStudy(task){ const guide=task?.guide||{}; const map={what:'—',how:'—',memory:'—',date:'—'}; Object.assign(map,guide); const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'—'}; set('map-study-what',map.what);set('map-study-how',map.how);set('map-study-memory',map.memory);set('map-study-date',map.date); const panel=document.getElementById('map-study');if(panel)panel.classList.add('hidden'); }
         function toggleMapStudy(){ const panel=document.getElementById('map-study'); if(!panel)return; const hidden=panel.classList.toggle('hidden'); const ch=document.getElementById('map-study-chevron'); if(ch) ch.className=hidden?'fa-solid fa-chevron-down text-slate-500 text-[10px]':'fa-solid fa-chevron-up text-slate-500 text-[10px]'; }
         function openMapZoom(){ const img=document.getElementById('map-image'),modal=document.getElementById('map-modal'),out=document.getElementById('map-modal-image'),cap=document.getElementById('map-modal-caption'); if(!img||!modal||!out)return; out.src=img.currentSrc||img.src;out.alt=img.alt;if(cap)cap.textContent=document.getElementById('map-title')?.textContent||'Историческая карта';modal.classList.add('open');document.body.style.overflow='hidden'; }
@@ -5143,7 +5238,7 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             openMapZoomFromUrl(encodeURIComponent(img.currentSrc||img.src), encodeURIComponent(title));
         }
         function buildPracticeBetaHint(){const it=practiceBetaState?.queue?.[practiceBetaState.index];if(!it)return '';if(it.kind==='map')return buildMapHint(it.task);if(it.kind==='person')return 'Свяжи описание с эпохой и сферой деятельности. Отсекай варианты, которые относятся к другой эпохе или роли.';if(it.kind==='term'){const t=it.term;return `Определи период и сферу понятия.${t?.period?` Период: ${t.period}.`:''}${(t?.tags||[]).length?` Ключевые слова: ${(t.tags||[]).slice(0,2).join(' · ')}.`:''}`;}return 'Сначала установи век и тип события, потом сравни варианты по хронологии. Не выбирай только по знакомому имени.';}
-function togglePracticeBetaHint(){const box=document.getElementById('practice-beta-hint'),btn=document.getElementById('practice-beta-hint-btn');if(!box)return;const hidden=box.classList.toggle('hidden');document.getElementById('practice-beta-hint-text').textContent=hidden?'':buildPracticeBetaHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+function togglePracticeBetaHint(){const box=document.getElementById('practice-beta-hint'),btn=document.getElementById('practice-beta-hint-btn');if(!box)return;const hidden=box.classList.toggle('hidden');document.getElementById('practice-beta-hint-text').textContent=hidden?'':buildPracticeBetaHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';;revealMobileHint(box)}
 function renderPracticeBeta(){
             const st=practiceBetaState,item=st.queue[st.index],p=document.getElementById('practice-beta-prompt'),o=document.getElementById('practice-beta-options'),f=document.getElementById('practice-beta-feedback'),n=document.getElementById('practice-beta-next'),mw=document.getElementById('practice-beta-map-wrap'),mi=document.getElementById('practice-beta-map-image'),mc=document.getElementById('practice-beta-map-caption');
             if(!item){p.textContent='Серия завершена';o.innerHTML='';mw?.classList.add('hidden');f.className='mt-4 rounded-xl p-3 text-sm bg-emerald-500/10 border border-emerald-500/20 text-emerald-200';f.textContent=`Результат: ${st.score} / ${st.queue.length}`;f.classList.remove('hidden');n.classList.add('hidden');return;}
@@ -5525,6 +5620,7 @@ function renderPracticeBeta(){
             if (btn) btn.innerHTML = hidden
                 ? '<i class="fa-regular fa-lightbulb mr-1"></i> Подсказка'
                 : '<i class="fa-solid fa-lightbulb mr-1"></i> Скрыть подсказку';
+            revealMobileHint(box);
         }
 
         function renderCurrentCard() {
@@ -5814,7 +5910,7 @@ function renderPracticeBeta(){
         }
 
         function buildQuizHint(){const item=currentQuizItem;if(!item)return '';const fig=String(item.figures||'').split(';').map(x=>x.trim()).filter(Boolean).slice(0,1)[0];const desc=String(item.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim();return `Эпоха: ${item.century||'—'} век.${fig?` Связка: ${fig}.`:''}${item.topic?` Тема: ${item.topic}.`:''}${desc?` Ориентир: ${desc.slice(0,105)}${desc.length>105?'…':''}.`:''}`;}
-        function toggleQuizHint(){const box=document.getElementById('quiz-hint'),btn=document.getElementById('quiz-hint-btn');if(!box||!currentQuizItem)return;const hidden=box.classList.toggle('hidden');document.getElementById('quiz-hint-text').textContent=hidden?'':buildQuizHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+        function toggleQuizHint(){const box=document.getElementById('quiz-hint'),btn=document.getElementById('quiz-hint-btn');if(!box||!currentQuizItem)return;const hidden=box.classList.toggle('hidden');document.getElementById('quiz-hint-text').textContent=hidden?'':buildQuizHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';;revealMobileHint(box)}
 
         function quizNextQuestion() {
             const scopeAtStart = quizScope;
@@ -5982,6 +6078,7 @@ function renderPracticeBeta(){
             else{const desc=String(currentInputItem.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim().replace(/[.!?]+$/,'');text=`Уровень 2: это ${currentInputItem.century||'нужного'} век.${desc?` Связка: ${desc.slice(0,140)}${desc.length>140?'…':''}.`:''} Год не раскрываем.`}
             feedback.className='task-hint'; feedback.innerHTML=`<span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">${inputHintLevel===1?'Подсказка · уровень 1':'Подсказка · уровень 2'}</span><span class="task-hint-text">${escapeHistoryHtml(text.replace(/^Уровень [12]:\s*/,''))}</span></span>`;
             const btn=document.getElementById('input-hint-btn'); if(btn)btn.innerHTML=inputHintLevel>=2?'<i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Подсказка 2':'<i class="fa-regular fa-lightbulb text-amber-400 mr-1.5"></i> Подсказка 2';
+            revealMobileHint(feedback);
         }
 
         // RELATIONS
@@ -6334,5 +6431,18 @@ function renderPracticeBeta(){
             invalidateStudyViews();
         }
     </script>
+
+<script>
+/* v17 mobile hint UI update */
+try {
+  if (typeof renderUpdatesFeed === 'function') {
+    setTimeout(()=>{ try {
+      const k='ege_ui_updates_v17';
+      if(localStorage.getItem(k)!=='1'){ recordModuleActivity('ui','Мобильный интерфейс подсказок улучшен'); localStorage.setItem(k,'1'); }
+      renderUpdatesFeed();
+    } catch(_){} }, 0);
+  }
+} catch(_){}
+</script>
 </body>
 </html>

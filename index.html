@@ -1235,6 +1235,72 @@
         body.device-pc main { padding-left: 18px !important; padding-right: 18px !important; }
         body.device-pc .glass-panel { box-shadow: 0 10px 28px rgba(2,6,23,.12); }
         body.device-pc .tab-section { scroll-margin-top: 82px; }
+
+        /* v19: cards mobile — stable actions + real horizontal topic scrolling */
+        @media (max-width: 767px) {
+            #section-flashcards #topic-filter-row {
+                display: grid !important;
+                grid-template-columns: auto minmax(0, 1fr) !important;
+                align-items: center !important;
+                gap: 7px !important;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            #section-flashcards #topic-filter-row > span {
+                margin-right: 0 !important;
+                white-space: nowrap !important;
+            }
+            #section-flashcards #topic-filters {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                padding: 2px 2px 5px !important;
+                -webkit-overflow-scrolling: touch !important;
+                overscroll-behavior-x: contain !important;
+                scrollbar-width: none !important;
+                touch-action: pan-x !important;
+            }
+            #section-flashcards #topic-filters::-webkit-scrollbar { display:none !important; }
+            #section-flashcards #topic-filters .topic-btn {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                white-space: nowrap !important;
+            }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 {
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 > button {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #section-flashcards .flex.items-center.justify-center.space-x-3 {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+            #section-flashcards .flex.items-center.justify-center.space-x-3 > button {
+                width: 100% !important;
+                min-width: 0 !important;
+                margin: 0 !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #section-flashcards #topic-filter-row {
+                grid-template-columns: 1fr !important;
+                align-items: stretch !important;
+            }
+        }
+
         @media (max-width: 767px) {
             .device-chooser { padding: 10px; align-items: flex-end; }
             .device-chooser-panel { border-radius: 22px; max-height: 95dvh; }
@@ -1434,7 +1500,7 @@
 
                     <!-- Category Filter Buttons -->
                     <div class="pt-1.5 border-t border-slate-700/50 flex flex-wrap items-center gap-2 justify-between">
-                        <div class="flex flex-wrap items-center gap-1.5">
+                        <div id="topic-filter-row" class="flex flex-wrap items-center gap-1.5">
                             <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">Тема:</span>
                             <div class="flex flex-wrap gap-1.5" id="topic-filters">
                                 <button onclick="setTopicFilter('all')" data-topic="all" class="topic-btn px-2 py-0.5 rounded-md text-[11px] bg-purple-600 text-white font-medium">Все темы</button>
@@ -5386,8 +5452,20 @@ function renderPracticeBeta(){
             saveCardSession();
         }
 
+        // В карточках оставляем основное ядро дат ЕГЭ, но не превращаем тренировку дат
+        // в заучивание отдельных тематических формулировок. Эти записи не удаляются
+        // из общей базы и остаются доступны в справочнике / библиотеке.
+        const FLASHCARD_EGE_EXCLUDED_IDS = new Set([289, 478]);
+        let EGE_CARD_DATES_CACHE = null;
+        function getEgeCardDates() {
+            if (!EGE_CARD_DATES_CACHE) {
+                EGE_CARD_DATES_CACHE = getEgeDates().filter(item => !FLASHCARD_EGE_EXCLUDED_IDS.has(Number(item.id)));
+            }
+            return EGE_CARD_DATES_CACHE;
+        }
+
         function getScopedDates() {
-            return studyScope === 'world' ? getWorldStudyDates() : getEgeDates();
+            return studyScope === 'world' ? getWorldStudyDates() : getEgeCardDates();
         }
         function getQuizDates() {
             return quizScope === 'world' ? getWorldStudyDates() : getEgeDates();
@@ -6191,6 +6269,8 @@ function renderPracticeBeta(){
         function recordAtlasStudy(id){ const d=readAtlasActivity(); d.opened=d.opened||{}; const k=String(id); d.opened[k]=(Number(d.opened[k])||0)+1; d.last={id:k,ts:Date.now()}; safeWriteObject(ATLAS_ACTIVITY_KEY,d); }
         function formatActivityTime(ts){ if(!ts)return ''; try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(_){return ''; } }
         function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[
+            {k:'ИСПРАВЛЕНИЕ',t:'Карточки: мобильные кнопки и прокрутка тем',d:'Исправлена мобильная сетка кнопок «Повторить / Знаю»: больше нет смещения второй кнопки. Темы в карточках снова нормально листаются горизонтальным свайпом.'},
+            {k:'ОЧИСТКА',t:'Карточки ЕГЭ: убраны тематические дубли',d:'Из тренировки именно дат исключены две тематические записи про экономические реформы 1992 года. Они сохранены в общей базе и справочнике, но не мешают заучиванию дат.'},
             {k:'НОВОЕ',t:'Подсказки переработаны во всех практических режимах',d:'Единый компактный блок с иконкой, понятной подписью и переключением «Подсказка / Скрыть подсказку» теперь используется в выборе дат, точном вводе, картах, личностях, терминах, справочнике и Практике ЕГЭ β.'},
             {k:'ИСПРАВЛЕНИЕ',t:'Подсказки в карточках снова закрываются',d:'Исправлено мобильное поведение 3D-карточек: подсказка скрыта при открытии карточки, показывается только после нажатия и закрывается повторным нажатием.'},
             {k:'НОВОЕ',t:'Прогресс объединён с модулями',d:'Результаты карточек, выбора даты, точного ввода, карт, атласа и практики β теперь учитываются вместе.'},

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="Vampire">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр ЕГЭ по Истории · v34</title>
+    <title>Тренажёр ЕГЭ по Истории · v37</title>
     
     <script>
         // Pre-defining window.tailwind avoids ReferenceError if CDN script loads asynchronously
@@ -1680,9 +1680,233 @@
 @media (max-width:1100px){.atlas-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.atlas-controls{grid-template-columns:1fr}.atlas-scope-row{justify-content:flex-start}.atlas-focus-top{grid-template-columns:1fr}.atlas-focus-image{height:min(42vh,440px)}}
 @media (max-width:767px){.atlas-header{padding:13px;border-radius:15px}.atlas-header-top{flex-direction:column;gap:10px}.atlas-header-actions{width:100%}.atlas-header-actions button{flex:1}.atlas-title{font-size:20px}.atlas-subtitle{font-size:10px}.atlas-controls{gap:8px}.atlas-scope-row{display:grid;grid-template-columns:1fr 1fr}.atlas-scope-row .scope-switch{grid-column:1/-1;width:max-content;max-width:100%;overflow:auto}.atlas-select{width:100%;min-width:0}.atlas-meta-row{gap:5px}.atlas-tip{width:100%;margin-left:0;line-height:1.4}.atlas-grid{grid-template-columns:1fr;gap:9px}.atlas-card-media{height:220px}.atlas-card{border-radius:14px}.atlas-card-body{padding:11px}.atlas-focus-modal{padding:0;align-items:stretch}.atlas-focus-panel{width:100%;max-height:100vh;height:100%;border-radius:0;border-left:0;border-right:0}.atlas-focus-body{padding:10px}.atlas-focus-head{padding:10px}.atlas-focus-nav,.atlas-focus-close{width:40px;height:40px}.atlas-focus-image-wrap{min-height:230px;border-radius:12px}.atlas-focus-image{height:31vh;min-height:210px}.atlas-focus-summary h2{font-size:20px}.atlas-focus-actions{grid-template-columns:1fr}.atlas-focus-actions .atlas-focus-primary{grid-column:auto}.atlas-focus-grid{grid-template-columns:1fr}.atlas-focus-section.accent{grid-column:auto}.atlas-quiz-grid{grid-template-columns:1fr}}
 @media (max-width:380px){.atlas-title{font-size:18px}.atlas-card-media{height:195px}.atlas-focus-body{padding:8px}.atlas-focus-image{height:28vh;min-height:190px}.atlas-focus-summary>p,.atlas-focus-section p,.atlas-algorithm{font-size:10px}.atlas-card-actions{grid-template-columns:1fr 38px 38px}}
+
+        /* ===== v35: HARD input polish / mobile-safe layout ===== */
+        .input-answer-input{appearance:none;-webkit-appearance:none;display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box;min-height:56px;border:1px solid rgba(99,102,241,.22)!important;background:#0b1424!important;background-color:#0b1424!important;color:#f8fafc!important;-webkit-text-fill-color:#f8fafc;border-radius:12px!important;font-size:20px;font-weight:900;line-height:1.1;text-align:center;outline:none;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease,transform .16s ease;caret-color:#a5b4fc;}
+        .input-answer-input::placeholder{color:#64748b!important;-webkit-text-fill-color:#64748b; font-weight:700;opacity:.9}
+        .input-answer-input:-webkit-autofill,.input-answer-input:-webkit-autofill:hover,.input-answer-input:-webkit-autofill:focus{-webkit-text-fill-color:#f8fafc!important;-webkit-box-shadow:0 0 0 1000px #0b1424 inset!important;box-shadow:0 0 0 1000px #0b1424 inset!important;transition:background-color 9999s ease-in-out 0s}
+        .input-answer-input:hover{border-color:rgba(129,140,248,.28);background:#0d1729}
+        .input-answer-input:focus{border-color:rgba(129,140,248,.78);box-shadow:0 0 0 3px rgba(99,102,241,.12),0 10px 24px rgba(0,0,0,.16);background:#0d1729}
+        .input-answer-input:disabled{opacity:.88;cursor:default}
+        .input-answer-wrap{display:grid;gap:7px}
+        .input-answer-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#708099;font-weight:900}
+        .input-answer-label span:first-child{color:#9aa9be}
+        .input-answer-label kbd{font-size:9px;letter-spacing:0;text-transform:none;color:#94a3b8;background:#111b2d;border:1px solid rgba(148,163,184,.14);border-radius:6px;padding:3px 6px}
+        .input-answer-input::-webkit-outer-spin-button,.input-answer-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+        .input-answer-input[type=number]{-moz-appearance:textfield}
+        .input-main-actions,.input-secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .input-submit-primary,.input-action-secondary,.input-action-tertiary{width:100%;min-height:46px;border-radius:11px;box-sizing:border-box}
+        .input-action-tertiary{background:#0d1728;color:#94a3b8;border:1px solid rgba(148,163,184,.12)}
+        .input-action-tertiary:hover{background:#121e31;color:#dbe4f0;border-color:rgba(129,140,248,.24)}
+        .input-session{max-width:100%}
+        @media(min-width:768px){
+            #section-input .input-module-shell{width:min(100%,780px)!important;}
+            #section-input .input-task-card{min-height:196px}
+            #section-input .input-event-text{max-width:92%;margin-inline:auto}
+        }
+        @media(max-width:767px){
+            #section-input{padding-left:0!important;padding-right:0!important}
+            #section-input .input-module-shell{width:100%!important;max-width:100%!important;padding:12px!important;border-radius:14px!important}
+            #section-input .input-module-head{padding-bottom:11px!important}
+            #section-input .input-module-head > div:first-child{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important}
+            #section-input .input-module-head > div:first-child > .min-w-0{width:100%!important}
+            #section-input .input-module-head .input-scope-switch{align-self:flex-start;max-width:100%;}
+            #section-input .input-scope-switch button{min-height:36px!important;padding:7px 11px!important;font-size:10px!important}
+            #section-input .input-stats-row{grid-template-columns:1fr 1fr!important;gap:7px!important}
+            #section-input .input-stat-chip{min-height:52px!important;padding:9px 10px!important;display:flex;align-items:center;justify-content:space-between;gap:8px}
+            #section-input .input-stat-chip span{font-size:8px!important}
+            #section-input .input-stat-chip strong{font-size:14px!important}
+            #section-input .input-howto{padding:9px 10px!important;display:grid!important;grid-template-columns:auto 1fr!important;gap:7px 8px!important;align-items:start}
+            #section-input .input-howto-title{width:auto!important;grid-column:1/-1}
+            #section-input .input-howto-pills{grid-column:1/-1;width:100%!important;display:flex;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap!important}
+            #section-input .input-howto-pills::-webkit-scrollbar{display:none}
+            #section-input .input-howto-note{grid-column:1/-1;width:100%!important}
+            #section-input .input-mode-row{margin-top:8px!important}
+            #section-input .input-mode-tabs{width:100%!important}
+            #section-input .input-mode-tab{min-height:38px!important;padding:7px 7px!important;font-size:9px!important}
+            #section-input .input-mode-status{text-align:center!important;font-size:8px!important;padding:6px 4px 3px!important}
+            #section-input .input-session{margin-top:9px!important}
+            #section-input .input-task-card{min-height:190px!important;padding:14px 11px!important;border-radius:14px!important}
+            #section-input .input-task-card h3{font-size:clamp(18px,5.5vw,23px)!important;line-height:1.22!important;max-width:100%;margin-inline:auto}
+            #section-input .input-task-tip{font-size:10px!important;line-height:1.4!important}
+            #section-input .input-question-meta{font-size:8px!important;margin-top:9px!important}
+            #section-input .input-answer-wrap{gap:6px!important}
+            #section-input .input-answer-label{font-size:8px!important}
+            #section-input .input-answer-input{min-height:52px!important;font-size:18px!important;padding:12px 11px!important;border-radius:11px!important}
+            #section-input .input-main-actions,#section-input .input-secondary-actions{grid-template-columns:1fr 1fr!important;gap:7px!important}
+            #section-input .input-main-actions button,#section-input .input-secondary-actions button{min-height:46px!important;font-size:10px!important}
+            #section-input #input-skip-btn:only-child{grid-column:1/-1}
+            #section-input .input-feedback-grid{grid-template-columns:1fr!important}
+        }
+        @media(max-width:380px){
+            #section-input .input-stats-row{gap:6px!important}
+            #section-input .input-stat-chip{min-height:48px!important;padding:8px 9px!important}
+            #section-input .input-stat-chip strong{font-size:13px!important}
+            #section-input .input-task-card{min-height:176px!important}
+            #section-input .input-task-card h3{font-size:18px!important}
+            #section-input .input-main-actions button,#section-input .input-secondary-actions button{min-height:44px!important}
+        }
+
+
+        /* ===== v37: definitive mobile header/navigation stabilization ===== */
+        @media (max-width: 767px) {
+            header { overflow: visible !important; }
+            .top-header-inner {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                width: 100% !important;
+                min-height: 0 !important;
+                gap: 8px !important;
+                padding: 9px 10px 8px !important;
+                box-sizing: border-box !important;
+            }
+            .top-header-inner > .header-brand {
+                display: flex !important;
+                flex: 0 0 auto !important;
+                align-items: center !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                gap: 10px !important;
+                overflow: hidden !important;
+            }
+            .top-header-inner > .header-brand > div:first-child {
+                flex: 0 0 42px !important;
+                width: 42px !important;
+                height: 42px !important;
+                border-radius: 12px !important;
+            }
+            .top-header-inner > .header-brand > div:first-child i { font-size: 18px !important; }
+            .header-brand-copy {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                width: auto !important;
+                overflow: hidden !important;
+            }
+            .header-title {
+                display: flex !important;
+                align-items: center !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                gap: 4px !important;
+                font-size: 16px !important;
+                line-height: 1.15 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+            }
+            .header-title-text {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
+            .header-meta-row {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin-top: 4px !important;
+                gap: 7px !important;
+                flex-wrap: nowrap !important;
+            }
+            .header-subtitle {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                max-width: none !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+            }
+            .header-streak {
+                flex: 0 0 auto !important;
+                min-width: 46px !important;
+                padding: 4px 7px !important;
+                font-size: 9px !important;
+                border-radius: 8px !important;
+                justify-content: center !important;
+            }
+            .header-streak strong { font-size: 10px !important; }
+
+            .mobile-main-nav {
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: nowrap !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                gap: 6px !important;
+                padding: 7px 10px !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                overscroll-behavior-x: contain !important;
+                scrollbar-width: none !important;
+                touch-action: pan-x !important;
+            }
+            .mobile-main-nav::-webkit-scrollbar { display: none !important; }
+            .mobile-main-nav > .tab-btn {
+                position: relative !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex: 0 0 auto !important;
+                width: auto !important;
+                min-width: max-content !important;
+                max-width: none !important;
+                min-height: 38px !important;
+                height: 38px !important;
+                padding: 0 13px !important;
+                margin: 0 !important;
+                border-radius: 10px !important;
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+                font-size: 11px !important;
+                line-height: 1 !important;
+                transform: none !important;
+            }
+            .mobile-main-nav > .tab-btn * {
+                white-space: nowrap !important;
+                word-break: normal !important;
+                overflow-wrap: normal !important;
+            }
+            .mobile-main-nav > .tab-btn.active {
+                box-shadow: 0 5px 14px rgba(99,102,241,.18) !important;
+            }
+            .mobile-main-nav > .tab-btn:active { transform: scale(.985) !important; }
+        }
+
+        @media (max-width: 480px) {
+            .top-header-inner { padding: 8px 9px 7px !important; gap: 7px !important; }
+            .top-header-inner > .header-brand > div:first-child {
+                flex-basis: 40px !important; width: 40px !important; height: 40px !important;
+            }
+            .header-title { font-size: 15px !important; }
+            .mobile-main-nav { padding-left: 8px !important; padding-right: 8px !important; gap: 5px !important; }
+            .mobile-main-nav > .tab-btn { min-height: 36px !important; height: 36px !important; padding: 0 11px !important; font-size: 10px !important; }
+        }
+
+        @media (max-width: 360px) {
+            .top-header-inner > .header-brand > div:first-child {
+                flex-basis: 38px !important; width: 38px !important; height: 38px !important;
+                border-radius: 11px !important;
+            }
+            .header-title { font-size: 14px !important; }
+            .header-subtitle { display: none !important; }
+            .header-streak span { display: none !important; }
+            .mobile-main-nav > .tab-btn {
+                min-height: 35px !important; height: 35px !important; padding: 0 10px !important; font-size: 10px !important;
+            }
+        }
 </style>
 
-        <!-- Created by Vampire -->
+        <!-- Created by Vampire · v37 mobile header fix -->
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white device-pending">
 
@@ -1779,7 +2003,7 @@
 
                 </div>
 
-            <div class="flex md:hidden overflow-x-auto px-4 py-2 border-t border-slate-800 space-x-2 text-xs no-scrollbar">
+            <div class="mobile-main-nav flex md:hidden overflow-x-auto px-3 py-2 border-t border-slate-800 text-xs no-scrollbar" aria-label="Мобильная навигация">
                 <button onclick="switchTab('flashcards')" data-tab="flashcards" role="tab" tabindex="0" aria-controls="section-flashcards" aria-selected="true" class="tab-btn px-3 py-1.5 rounded-lg text-slate-300 whitespace-nowrap">Карточки</button>
                 <button onclick="switchTab('list')" data-tab="list" role="tab" tabindex="0" aria-controls="section-list" aria-selected="false" class="tab-btn px-3 py-1.5 rounded-lg text-slate-300 whitespace-nowrap">Список</button>
                 <button onclick="switchTab('quiz')" data-tab="quiz" role="tab" tabindex="0" aria-controls="section-quiz" aria-selected="false" class="tab-btn px-3 py-1.5 rounded-lg text-slate-300 whitespace-nowrap">Выбор</button>
@@ -2174,8 +2398,7 @@
                         <div class="input-answer-wrap">
                             <div class="input-answer-label"><span>Твой ответ</span><span class="input-enter-hint"><kbd>Enter</kbd> проверить</span></div>
                             <div class="relative">
-                                <input type="text" id="user-date-input" class="input-answer-input" placeholder="Введите год или дату…" inputmode="numeric" autocomplete="off" aria-label="Ответ: год или дата исторического события"
-                                    class="w-full bg-slate-900 border-2 border-slate-700 focus:border-indigo-500 rounded-2xl px-4 py-4 text-lg sm:text-xl text-center font-black text-white focus:outline-none transition">
+                                <input type="text" id="user-date-input" class="input-answer-input" placeholder="Введите год или дату…" inputmode="numeric" autocomplete="off" aria-label="Ответ: год или дата исторического события">
                             </div>
                         </div>
                         <div id="input-feedback" class="hidden p-4 rounded-2xl text-center text-sm font-semibold"></div>
@@ -6718,7 +6941,7 @@ function renderPracticeBeta(){
             document.querySelectorAll('[data-input-practice-mode]').forEach(btn=>{const active=btn.dataset.inputPracticeMode===inputPracticeMode;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));});
             const status=document.getElementById('input-mode-status');
             const mistakes=getInputMistakeCount();
-            if(status)status.textContent=inputPracticeMode==='mistakes'?(mistakes?`Ошибочных дат: ${mistakes}`:'Ошибок пока нет — показываем обычную базу'):inputPracticeMode==='sprint'?'10 вопросов подряд · отдельный результат':'Новые даты без повторов последних вопросов';
+            if(status)status.textContent=inputPracticeMode==='mistakes'?(mistakes?`Ошибочных дат: ${mistakes}`:'Ошибок пока нет — начни обычную тренировку и допусти ошибку'):inputPracticeMode==='sprint'?'10 вопросов подряд · отдельный результат':'Новые даты без повторов последних вопросов';
             const label=document.getElementById('input-session-label');
             if(label)label.textContent=inputPracticeMode==='sprint'?'Блиц ×10':'Текущий вопрос';
         }
@@ -6731,7 +6954,10 @@ function renderPracticeBeta(){
         function chooseInputItem(dataset){
             if(!dataset.length)return null;const recent=new Set(inputLastIds.slice(-8));const candidates=dataset.filter(x=>!recent.has(x.id));const pool=candidates.length?candidates:dataset;const item=pool[Math.floor(Math.random()*pool.length)];inputLastIds.push(item.id);if(inputLastIds.length>12)inputLastIds=inputLastIds.slice(-12);return item;
         }
-        function getInputPracticeDates(){const d=getInputMistakeDates();return inputPracticeMode==='mistakes'&&d.length?d:getInputDates();}
+        function getInputPracticeDates(){
+            if(inputPracticeMode==='mistakes') return getInputMistakeDates();
+            return getInputDates();
+        }
         function setInputPracticeMode(mode){
             const next=['normal','mistakes','sprint'].includes(mode)?mode:'normal';
             if(next==='sprint'){startInputSprint();return;}
@@ -6752,8 +6978,28 @@ function renderPracticeBeta(){
             }return false;
         }
         function addCurrentInputToCustomDeck(){if(currentInputItem)openCustomCardFromHistory(currentInputItem.id);}
+        function renderInputEmptyState(){
+            currentInputItem=null;inputAnswered=false;inputHintLevel=0;inputSubmitLockUntil=0;
+            const catTag=document.getElementById('input-category-tag'),figureTag=document.getElementById('input-figure-tag'),eventText=document.getElementById('input-event-text'),taskTip=document.getElementById('input-task-tip'),userInput=document.getElementById('user-date-input'),feedback=document.getElementById('input-feedback'),nextBtn=document.getElementById('input-next-btn'),skipBtn=document.getElementById('input-skip-btn'),submitBtn=document.getElementById('input-submit-btn'),hintBtn=document.getElementById('input-hint-btn'),hintBox=document.getElementById('input-hint-live');
+            if(catTag){catTag.textContent=inputPracticeMode==='mistakes'?'ОШИБКИ':'ГОТОВО';catTag.classList.remove('hidden');}
+            if(figureTag){figureTag.textContent='';figureTag.classList.add('hidden');}
+            if(eventText)eventText.innerText=inputPracticeMode==='mistakes'?'Ошибок пока нет':'Загрузка...';
+            if(taskTip)taskTip.innerText=inputPracticeMode==='mistakes'?'Здесь появляются только даты, на которых ты ошибся. Сначала реши несколько обычных заданий с ошибкой.':'Вспомни точную дату события.';
+            if(userInput){userInput.value='';userInput.disabled=inputPracticeMode==='mistakes';}
+            if(feedback)feedback.className='hidden';
+            document.getElementById('input-custom-card-action')?.classList.add('hidden');
+            if(nextBtn)nextBtn.classList.add('hidden');
+            if(skipBtn)skipBtn.classList.add('hidden');
+            if(submitBtn){submitBtn.disabled=true;submitBtn.innerHTML=inputPracticeMode==='mistakes'?'<i class="fa-solid fa-lock"></i><span>Нет ошибок</span>':'<i class="fa-solid fa-check"></i><span>Проверить</span>'}
+            if(hintBtn)hintBtn.disabled=true;
+            if(hintBox)hintBox.classList.add('hidden');
+            const count=document.getElementById('input-session-count'),fill=document.getElementById('input-session-fill');
+            if(count)count.textContent='0';if(fill)fill.style.width='0%';
+            updateScopeButtons();updateInputPracticeModeUI();updateInputStatsUI();
+        }
         function startInputMode(){
-            const scopeAtStart=inputScope,dataset=getInputPracticeDates();if(!dataset.length)return;
+            const scopeAtStart=inputScope,dataset=getInputPracticeDates();
+            if(!dataset.length){ if(inputPracticeMode==='mistakes'){renderInputEmptyState();return;} return; }
             currentInputItem=chooseInputItem(dataset);currentInputScope=scopeAtStart;inputAnswered=false;inputHintLevel=0;inputSubmitLockUntil=0;
             const catTag=document.getElementById('input-category-tag'),figureTag=document.getElementById('input-figure-tag'),eventText=document.getElementById('input-event-text'),taskTip=document.getElementById('input-task-tip'),userInput=document.getElementById('user-date-input'),feedback=document.getElementById('input-feedback'),nextBtn=document.getElementById('input-next-btn'),skipBtn=document.getElementById('input-skip-btn'),submitBtn=document.getElementById('input-submit-btn'),hintBtn=document.getElementById('input-hint-btn'),hintBox=document.getElementById('input-hint-live');
             if(catTag)catTag.innerText=`${currentInputItem.century} ВЕК • ${currentInputItem.topic||'История'}`;
@@ -6785,7 +7031,6 @@ function renderPracticeBeta(){
         function nextInputQuestion(skipped=false){
             if(!currentInputItem)return;
             if(skipped&&!inputAnswered){recordModuleActivity('input','Точный ввод: задание пропущено');inputSessionStreak=0;if(inputSprintState.active){inputSprintState.index++;inputSprintState.answeredThis=false;if(finishInputSprint())return;}}
-            if(inputPracticeMode==='mistakes'&&getInputMistakeDates().length===0){inputPracticeMode='normal';updateInputPracticeModeUI();}
             startInputMode();
         }
         function showInputHint(){
@@ -6902,6 +7147,7 @@ function renderPracticeBeta(){
         function formatActivityTime(ts){ if(!ts)return ''; try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(_){return ''; } }
         function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[
             {k:'ИСПРАВЛЕНИЕ',t:'Карточки: безопасный размер текста на ПК и телефоне',d:'Исправлено масштабирование длинных названий в карточках; добавлены отдельные пределы для ПК, планшета и телефона, чтобы текст не пересекался и не вылезал за карточку.'},
+            {k:'ИСПРАВЛЕНИЕ',t:'Мобильная шапка и навигация стабилизированы',d:'Переработана мобильная шапка: название, серия и панель разделов больше не накладываются друг на друга; навигация получила отдельную горизонтальную прокрутку и безопасные размеры кнопок.'},
             {k:'ОБНОВЛЕНИЕ',t:'Интерфейс адаптирован для ПК и телефона',d:'Карточки получили более удобную рабочую ширину на большом экране, навигация по модулям — компактный доступ к полному списку, мобильная вёрстка дополнительно защищена от переполнения.'},
             {k:'НОВОЕ',t:'Атлас и практика карт расширены',d:'Добавлены новые справочные карты и несколько заданий на атрибуцию и определение войн; изображения открываются внутри атласа и тренировки.'},
             {k:'ОБНОВЛЕНИЕ',t:'ЕГЭ Выбор и Прогресс переработаны',d:'Добавлены режимы вопросов, фильтр периодов, быстрые переходы и более компактная панель прогресса; навигация по модулям на ПК стала прокручиваемой.'},
@@ -6911,6 +7157,7 @@ function renderPracticeBeta(){
             {k:'ИСПРАВЛЕНИЕ',t:'Подсказки в карточках снова закрываются',d:'Исправлено мобильное поведение 3D-карточек: подсказка скрыта при открытии карточки, показывается только после нажатия и закрывается повторным нажатием.'},
             {k:'НОВОЕ',t:'Прогресс объединён с модулями',d:'Результаты карточек, выбора даты, точного ввода, карт, атласа и практики β теперь учитываются вместе.'},
             {k:'ОБНОВЛЕНИЕ',t:'Статистика сохраняется',d:'Данные модулей хранятся локально и не пропадают после перезагрузки страницы.'},
+            {k:'ОБНОВЛЕНИЕ',t:'Точный ввод HARD обновлён',d:'Поле ответа, режимы «Ошибки» и «Блиц ×10», обратная связь и мобильная компоновка приведены к единому формату.'},
             {k:'ОБНОВЛЕНИЕ',t:'Практикумы расширены: личности + термины + даты',d:'Добавлен практикум терминов и компактный практикум из справочника; у точного ввода появился блиц ×10.'},
             {k:'ОБНОВЛЕНИЕ',t:'Справочник и атлас обновлены',d:'В справочнике добавлен фильтр ЕГЭ / Всемирная / Все; в атласе — фильтр ЕГЭ / Справочные, исправлена карта КИМ 2026 и добавлена схема проекта ЕГЭ-2027.'},
             {k:'ОБНОВЛЕНИЕ',t:'Точный ввод · HARD обновлён',d:'Обычный режим, режим ошибок и блиц ×10; улучшены ответы, подсказки и локальное хранение статистики.'},

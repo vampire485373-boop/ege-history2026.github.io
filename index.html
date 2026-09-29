@@ -196,6 +196,13 @@
             border: 1px solid rgba(245,158,11,.20); background: rgba(245,158,11,.07); color: #cbd5e1;
             font-size: 11px; line-height: 1.45; text-align: left;
         }
+        .task-hint { display:flex; align-items:flex-start; gap:10px; width:100%; border:1px solid rgba(245,158,11,.18); border-left:3px solid rgba(245,158,11,.52); background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(99,102,241,.04)); border-radius:14px; padding:10px 12px; color:#cbd5e1; font-size:11px; line-height:1.5; text-align:left; box-shadow:0 8px 22px rgba(0,0,0,.08); }
+        .task-hint .task-hint-icon { width:26px;height:26px;min-width:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,.10);color:#fbbf24;border:1px solid rgba(245,158,11,.16); }
+        .task-hint .task-hint-label { display:block;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#fbbf24;margin-bottom:2px; }
+        .task-hint .task-hint-text { color:#cbd5e1;font-weight:600; }
+        .task-hint-toggle { min-height:36px;padding:8px 11px;border-radius:11px;border:1px solid rgba(245,158,11,.18);background:rgba(15,23,42,.62);color:#cbd5e1;font-size:11px;font-weight:800;transition:.18s ease; }
+        .task-hint-toggle:hover { background:rgba(245,158,11,.08);color:#fff;border-color:rgba(245,158,11,.3); }
+        @media(max-width:767px){ .task-hint{padding:9px 10px;} .task-hint-toggle{width:100%;} }
         .card-hint-box .hint-label { color:#fbbf24; font-weight:800; text-transform:uppercase; letter-spacing:.05em; font-size:9px; display:block; margin-bottom:2px; }
         .hint-toggle {
             border:1px solid rgba(99,102,241,.22); background:rgba(99,102,241,.08); color:#a5b4fc;
@@ -516,6 +523,10 @@
         .relation-russia { color:#34d399; font-weight:600; }
         .relation-dash { color:#64748b; }
         .relation-search { background:#0b1323 !important; border-color:#2a3952 !important; height:40px; }
+        .relation-filter { cursor:pointer; user-select:none; }
+        .relation-filter.active { color:#fff !important; background:rgba(99,102,241,.16) !important; border-color:rgba(129,140,248,.34) !important; }
+        .relation-scroll { overscroll-behavior-x:contain; }
+        #relation-list tr { content-visibility:auto; contain-intrinsic-size:0 46px; }
         .card-session-status { font-size:9px; color:#64748b; text-align:center; min-height:14px; transition:.2s ease; }
         .card-hint-box { max-height:86px; overflow:auto; }
 
@@ -1401,10 +1412,10 @@
                                     <p id="front-sub-hint" class="text-[11px] text-slate-400 mt-2 font-medium">
                                         Нажмите или пробел — открыть событие
                                     </p>
-                                    <button id="front-hint-toggle" class="hint-toggle mt-2" onclick="event.stopPropagation(); toggleCardHint()">
+                                    <button id="front-hint-toggle" class="hint-toggle task-hint-toggle mt-2" onclick="event.stopPropagation(); toggleCardHint()">
                                         <i class="fa-regular fa-lightbulb mr-1"></i> Подсказка
                                     </button>
-                                    <div id="front-hint-box" class="card-hint-box hidden" onclick="event.stopPropagation()">
+                                    <div id="front-hint-box" class="card-hint-box task-hint hidden" onclick="event.stopPropagation()">
                                         <span class="hint-label">Подсказка</span>
                                         <span id="front-hint-text"></span>
                                     </div>
@@ -1441,7 +1452,7 @@
                                     <div id="back-key-figures" class="text-[11px] text-amber-300/90 font-medium pt-0.5">
                                         <i class="fa-solid fa-user-ninja mr-1"></i> Личности: Аскольд и Дир
                                     </div>
-                                    <div id="back-hint-box" class="card-hint-box hidden">
+                                    <div id="back-hint-box" class="card-hint-box task-hint hidden">
                                         <span class="hint-label">Экзаменационная связка</span>
                                         <span id="back-hint-text"></span>
                                     </div>
@@ -1573,6 +1584,8 @@
                     <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- Options generated dynamically -->
                     </div>
+                    <div class="flex justify-center"><button type="button" id="quiz-hint-btn" class="task-hint-toggle" onclick="toggleQuizHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                    <div id="quiz-hint" class="hidden task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span id="quiz-hint-text" class="task-hint-text"></span></span></div>
 
                     <button onclick="nextQuizQuestion()" id="quiz-next-btn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition shadow-lg hidden">
                         Следующий вопрос <i class="fa-solid fa-arrow-right ml-2"></i>
@@ -1721,6 +1734,8 @@
                     <div id="dictionary-practice-panel" class="hidden rounded-2xl border border-indigo-500/15 bg-indigo-500/5 p-4 space-y-3">
                         <div class="flex flex-wrap items-center justify-between gap-2"><div><div class="text-[10px] uppercase tracking-[.14em] text-indigo-300 font-black">Практикум справочника</div><div id="dictionary-practice-progress" class="text-[11px] text-slate-500 mt-1">1 / 10</div></div><button type="button" onclick="closeDictionaryPractice()" class="filter-chip px-2.5 py-1.5">Закрыть</button></div>
                         <div id="dictionary-practice-prompt" class="text-sm sm:text-base font-black text-white"></div>
+                        <div class="flex justify-center"><button type="button" id="dictionary-practice-hint-btn" class="task-hint-toggle" onclick="toggleDictionaryPracticeHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                        <div id="dictionary-practice-hint" class="hidden task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span id="dictionary-practice-hint-text" class="task-hint-text"></span></span></div>
                         <div id="dictionary-practice-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
                         <div id="dictionary-practice-feedback" class="hidden rounded-xl p-3 text-xs"></div>
                         <button type="button" id="dictionary-practice-next" onclick="nextDictionaryPractice()" class="hidden w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black">Следующее →</button>
@@ -1914,9 +1929,9 @@
                                 <button onclick="toggleMapStudy()" class="py-2.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/15 text-indigo-200 border border-indigo-500/20 text-[11px] font-bold transition"><i class="fa-solid fa-book-open mr-1"></i> Разобрать</button>
                                 <button onclick="nextMapTask()" id="map-next-btn" disabled class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-35 disabled:cursor-not-allowed text-white text-[11px] font-bold transition">Следующее <i class="fa-solid fa-arrow-right ml-1"></i></button>
                             </div>
-                            <div id="map-hint" class="hidden rounded-xl border border-amber-500/20 bg-amber-500/7 p-3 text-[11px] text-slate-300 leading-relaxed">
-                                <span class="text-amber-300 font-black uppercase tracking-wider text-[9px] block mb-1">Подсказка</span>
-                                <span id="map-hint-text"></span>
+                            <div id="map-hint" class="hidden task-hint mt-2">
+                                <span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span>
+                                <span><span class="task-hint-label">Подсказка</span><span id="map-hint-text" class="task-hint-text"></span></span>
                             </div>
                             <div id="map-study" class="map-study hidden">
                                 <button type="button" class="map-study-head" onclick="toggleMapStudy()">
@@ -2056,11 +2071,15 @@
                                 <p id="people-quiz-subtitle" class="text-[11px] text-slate-500">С каким историческим деятелем связана эта подсказка?</p>
                             </div>
                             <div id="people-quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-4"></div>
+                            <div class="mt-3 flex justify-center"><button type="button" id="people-quiz-hint-btn" class="task-hint-toggle" onclick="togglePeopleQuizHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                            <div id="people-quiz-hint" class="hidden mt-2 task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span id="people-quiz-hint-text" class="task-hint-text"></span></span></div>
                             <div id="people-quiz-feedback" class="hidden rounded-2xl border p-4 text-sm mt-4"></div>
                             <button type="button" id="people-quiz-next" onclick="nextPeopleQuiz()" class="hidden w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl mt-3">Следующий вопрос <i class="fa-solid fa-arrow-right ml-2"></i></button>
                         </div>
                         <div id="people-exam-practice" class="hidden space-y-3">
                             <div class="rounded-xl border border-indigo-500/15 bg-indigo-500/5 p-3 text-[11px] text-slate-400">Выбери для каждого описания подходящего деятеля. В одной подборке используется общий банк из 6 вариантов.</div>
+                            <div class="flex justify-center"><button type="button" id="people-exam-hint-btn" class="task-hint-toggle" onclick="togglePeopleExamHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                            <div id="people-exam-hint" class="hidden task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span class="task-hint-text">Сначала выдели в каждом описании 1–2 отличительных признака: эпоху, должность, главное событие или вклад. Затем отсекай деятелей, которым этот признак не подходит.</span></span></div>
                             <div id="people-exam-rows" class="space-y-2.5"></div>
                             <div class="flex flex-wrap gap-2">
                                 <button type="button" id="people-exam-submit" onclick="submitPeopleExamTask()" class="flex-1 min-w-[180px] py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl">Проверить подборку</button>
@@ -2122,6 +2141,8 @@
                         <div class="flex flex-wrap items-center justify-between gap-2"><div><div class="text-[10px] uppercase tracking-[.14em] text-indigo-300 font-black">Практикум</div><div class="flex flex-wrap gap-1.5 mt-2" id="terms-practice-switch"><button type="button" class="filter-chip px-2 py-1 active" data-term-practice-mode="mixed" onclick="setTermsPracticeMode('mixed')">Микс</button><button type="button" class="filter-chip px-2 py-1" data-term-practice-mode="definition" onclick="setTermsPracticeMode('definition')">Термин → смысл</button><button type="button" class="filter-chip px-2 py-1" data-term-practice-mode="term" onclick="setTermsPracticeMode('term')">Определение → термин</button><button type="button" class="filter-chip px-2 py-1" data-term-practice-mode="context" onclick="setTermsPracticeMode('context')">Контекст</button></div></div><button type="button" onclick="closeTermsPractice()" class="filter-chip px-2.5 py-1.5">Закрыть</button></div>
                         <div id="terms-practice-progress" class="text-[11px] text-slate-500">1 / 10</div>
                         <div id="terms-practice-prompt" class="text-sm sm:text-base font-black text-white"></div>
+                        <div class="flex justify-center"><button type="button" id="terms-practice-hint-btn" class="task-hint-toggle" onclick="toggleTermsPracticeHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                        <div id="terms-practice-hint" class="hidden task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span id="terms-practice-hint-text" class="task-hint-text"></span></span></div>
                         <div id="terms-practice-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
                         <div id="terms-practice-feedback" class="hidden rounded-xl p-3 text-xs"></div>
                         <button type="button" id="terms-practice-next" onclick="nextTermsPractice()" class="hidden w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black">Следующее →</button>
@@ -2164,6 +2185,8 @@
                             <div class="border border-slate-700/60 rounded-2xl p-4 sm:p-5 bg-slate-950/30">
                                 <div class="flex items-center justify-between gap-3"><div id="practice-beta-kind" class="text-[10px] uppercase tracking-wider font-black text-indigo-300">ПРАКТИКА</div><div id="practice-beta-score" class="text-xs font-bold text-slate-400">0 / 0</div></div>
                                 <div id="practice-beta-prompt" class="text-lg sm:text-xl font-black text-white mt-3"></div>
+                                <div class="flex justify-center mt-3"><button type="button" id="practice-beta-hint-btn" class="task-hint-toggle" onclick="togglePracticeBetaHint()"><i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка</button></div>
+                                <div id="practice-beta-hint" class="hidden mt-2 task-hint"><span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">Подсказка</span><span id="practice-beta-hint-text" class="task-hint-text"></span></span></div>
                                 <div id="practice-beta-map-wrap" class="hidden mt-4 rounded-2xl border border-slate-700/60 bg-slate-950/50 p-2">
                                     <button type="button" onclick="openPracticeBetaMapZoom()" class="block w-full rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500/50" aria-label="Увеличить карту">
                                         <img id="practice-beta-map-image" src="" alt="Карта к заданию Практики ЕГЭ" loading="eager" referrerpolicy="no-referrer" class="w-full max-h-[56vh] min-h-[220px] object-contain bg-slate-900 rounded-xl cursor-zoom-in">
@@ -2216,9 +2239,9 @@
                         </div>
                         <div id="custom-card-study" class="hidden"></div>
                         <div class="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 mt-2">
-                            <span>Локально на этом устройстве.</span>
-                            <button type="button" onclick="exportCustomCardsJson()" class="filter-chip px-2 py-1">Экспорт</button>
-                            <button type="button" onclick="document.getElementById('custom-card-import-file')?.click()" class="filter-chip px-2 py-1">Импорт</button>
+                            <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-hard-drive text-indigo-300"></i> Сохраняется автоматически.</span>
+                            <button type="button" onclick="exportCustomCardsJson()" class="filter-chip px-2 py-1" title="Сохранить копию колоды в JSON">Сохранить копию</button>
+                            <button type="button" onclick="document.getElementById('custom-card-import-file')?.click()" class="filter-chip px-2 py-1" title="Загрузить копию колоды из JSON">Загрузить копию</button>
                             <input id="custom-card-import-file" type="file" accept="application/json,.json" class="hidden" onchange="importCustomCardsJson(event)">
                         </div>
                         
@@ -3603,6 +3626,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
         let PEOPLE_ALL_CACHE = null;
         let peopleMode = 'list';
         let peopleQuizItem = null;
+        let peopleQuizHintShown = false;
         let peopleQuizLocked = false;
         let peopleQuizScore = 0;
         let peopleQuizTotal = 0;
@@ -3949,7 +3973,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
             peopleLastKeys.push(person.key);
             if (peopleLastKeys.length>12) peopleLastKeys=peopleLastKeys.slice(-12);
             document.getElementById('people-quiz-century').textContent=`${event.century||person.period||'—'} ВЕК`;
-            document.getElementById('people-quiz-prompt').textContent = kind==='clue' ? getPersonClue(person) : event.title;
+            document.getElementById('people-quiz-prompt').textContent = kind==='clue' ? getPersonClue(person) : event.title;peopleQuizHintShown=false;document.getElementById('people-quiz-hint')?.classList.add('hidden');document.getElementById('people-quiz-hint-text').textContent='';document.getElementById('people-quiz-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';
             document.getElementById('people-quiz-subtitle').textContent = kind==='clue'
                 ? 'Кто описан в этой характеристике?'
                 : (peoplePracticeMode==='confusion' ? 'Какого деятеля из пары отличительных признаков описывает связка?' : 'С каким историческим деятелем связано это событие?');
@@ -3967,8 +3991,11 @@ const PERSONALITY_CONFUSION_PAIRS = [
             }
             updatePeoplePracticeStats();
         }
+        function buildPeopleQuizHint(){const q=peopleQuizItem;if(!q)return '';const p=q.person,e=q.event;if(q.askClue){return `Сначала определи эпоху и вид деятельности. Затем ищи в характеристике признак, который отличает этого деятеля от одноимённых или современников.`;}return `Свяжи событие с деятельностью личности. Ориентир: ${e?.century||p.period||'историческая эпоха'}${p.examFocus?`. Фокус: ${p.examFocus}`:''}.`; }
+        function togglePeopleQuizHint(){const box=document.getElementById('people-quiz-hint'),btn=document.getElementById('people-quiz-hint-btn');if(!box||!peopleQuizItem)return;peopleQuizHintShown=!peopleQuizHintShown;box.classList.toggle('hidden',!peopleQuizHintShown);document.getElementById('people-quiz-hint-text').textContent=peopleQuizHintShown?buildPeopleQuizHint():'';if(btn)btn.innerHTML=peopleQuizHintShown?'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку':'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';}
+
         function nextPeopleQuiz(){
-            if(peoplePracticeMode==='exam') return nextPeopleExamTask();
+            if(peoplePracticeMode==='exam'){document.getElementById('people-exam-hint')?.classList.add('hidden');document.getElementById('people-exam-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';return nextPeopleExamTask();}
             nextPeopleEventQuiz();
         }
         function answerPeopleQuiz(btn,key){
@@ -3997,6 +4024,8 @@ const PERSONALITY_CONFUSION_PAIRS = [
             document.getElementById('people-quiz-next')?.classList.remove('hidden');
             updatePeoplePracticeStats();
         }
+
+        function togglePeopleExamHint(){const box=document.getElementById('people-exam-hint'),btn=document.getElementById('people-exam-hint-btn');if(!box)return;const hidden=box.classList.toggle('hidden');if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
 
         function nextPeopleExamTask(){
             const people=getPeopleIndex().filter(p=>p.events.length).slice();
@@ -4057,12 +4086,23 @@ const PERSONALITY_CONFUSION_PAIRS = [
         const CUSTOM_CARD_PROGRESS_KEY='ege_custom_card_progress_v1';
         let customCardsPractice={active:false,order:[],index:0,flipped:false};
         let customCardEditId='';
+        let customCardsCache=null;
+        let customCardProgressCache=null;
+        window.addEventListener('storage',e=>{if(e.key===CUSTOM_CARDS_KEY)customCardsCache=null;if(e.key===CUSTOM_CARD_PROGRESS_KEY)customCardProgressCache=null;},{passive:true});
         function readCustomCards(){
-            try{const v=JSON.parse(localStorage.getItem(CUSTOM_CARDS_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return []}
+            if(customCardsCache)return customCardsCache;
+            try{const v=JSON.parse(localStorage.getItem(CUSTOM_CARDS_KEY)||'[]');customCardsCache=Array.isArray(v)?v:[];return customCardsCache}catch(_){customCardsCache=[];return customCardsCache}
         }
-        function writeCustomCards(cards){try{localStorage.setItem(CUSTOM_CARDS_KEY,JSON.stringify(cards));return true}catch(_){return false}}
-        function readCustomCardProgress(){return safeReadObject(CUSTOM_CARD_PROGRESS_KEY,{})}
-        function writeCustomCardProgress(v){return safeWriteObject(CUSTOM_CARD_PROGRESS_KEY,v)}
+        function writeCustomCards(cards){
+            try{const normalized=Array.isArray(cards)?cards:[];localStorage.setItem(CUSTOM_CARDS_KEY,JSON.stringify(normalized));customCardsCache=normalized;return true}catch(_){return false}
+        }
+        function readCustomCardProgress(){
+            if(customCardProgressCache)return customCardProgressCache;
+            customCardProgressCache=safeReadObject(CUSTOM_CARD_PROGRESS_KEY,{});return customCardProgressCache;
+        }
+        function writeCustomCardProgress(v){
+            const ok=safeWriteObject(CUSTOM_CARD_PROGRESS_KEY,v);if(ok)customCardProgressCache=v&&typeof v==='object'?v:{};return ok;
+        }
         function customCardModuleLabel(m){return ({history:'Даты / события',person:'Личности',term:'Термины',map:'Карты',relation:'Связи',free:'Своя тема'})[m]||'Своя тема'}
         function openCustomCardFromHistory(id){const x=ALL_HISTORICAL_DATES.find(v=>String(v.id)===String(id));if(!x)return;openCustomCardBuilder({module:'history',title:`${formatYearLabel(x.year)} · ${x.title}`,front:formatYearLabel(x.year),back:`${x.title}. ${x.description||''}${x.figures?`\nЛичности: ${x.figures}`:''}`,hint:`${x.century||''} век · ${x.topic||''}`,tags:[x.century,x.topic,x.figures].filter(Boolean).join(', '),source:x.source||'База дат проекта'});}
         function openCustomCardFromTerm(encodedId){ const id=decodeURIComponent(encodedId||''); const t=TERMS_LIBRARY_2027.find(x=>x.id===id); if(t) openCustomCardBuilder({module:'term',title:t.name,front:t.name,back:t.definition,tags:[t.period,t.era,...(t.tags||[])].filter(Boolean).join(', '),source:'Библиотека терминов проекта · НейроМиша / ЕГЭ-2027'}); }
@@ -4170,11 +4210,51 @@ const PERSONALITY_CONFUSION_PAIRS = [
             }).join('');
         }
         function exportCustomCardsJson(){
-            const data=JSON.stringify({version:1,exportedAt:new Date().toISOString(),cards:readCustomCards()},null,2);
-            const blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ege-my-cards.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);recordModuleActivity('custom-cards','Своя колода: экспорт');
+            const payload={app:'ege-trainer',version:2,kind:'custom-card-backup',exportedAt:new Date().toISOString(),cards:readCustomCards(),progress:readCustomCardProgress()};
+            const data=JSON.stringify(payload,null,2),blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+            a.href=url;a.download=`ege-my-cards-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+            recordModuleActivity('custom-cards','Своя колода: сохранена копия');
         }
+        function makeImportedCardId(base,ids){
+            const clean=String(base||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,70)||'card';
+            if(!ids.has(clean))return clean;
+            let n=2,id=`${clean}-${n}`;while(ids.has(id))id=`${clean}-${++n}`;return id;
+        }
+        function customCardFingerprint(c){return normalizeHistorySearch([c?.module,c?.front,c?.back].filter(Boolean).join('¦'));}
         function importCustomCardsJson(event){
-            const file=event?.target?.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result),incoming=Array.isArray(d)?d:d.cards;if(!Array.isArray(incoming))throw new Error('bad');const existing=readCustomCards(),ids=new Set(existing.map(x=>x.id)),merged=existing.slice();for(const c of incoming.slice(0,500)){const card={...c,id:ids.has(c.id)?`cc-${Date.now()}-${Math.random().toString(36).slice(2,7)}`:String(c.id||`cc-${Date.now()}-${Math.random().toString(36).slice(2,7)}`),module:['history','person','term','map','relation','free'].includes(c.module)?c.module:'free',title:String(c.title||c.front||'Моя карточка').slice(0,100),front:String(c.front||'').slice(0,700),back:String(c.back||'').slice(0,1200),hint:String(c.hint||'').slice(0,400),image:safeCustomImageUrl(c.image),tags:Array.isArray(c.tags)?c.tags.slice(0,12):[],source:String(c.source||'').slice(0,240),createdAt:c.createdAt||Date.now(),updatedAt:Date.now()};if(card.front&&card.back){merged.unshift(card);ids.add(card.id);}}writeCustomCards(merged);recordModuleActivity('custom-cards','Своя колода: импорт');renderCustomCards();updateStatsUI(false);alert('Карточки импортированы.');}catch(_){alert('Не удалось прочитать JSON-файл.');}};reader.readAsText(file);event.target.value='';}
+            const file=event?.target?.files?.[0];if(!file)return;
+            const reader=new FileReader();
+            reader.onload=()=>{
+                try{
+                    const d=JSON.parse(reader.result),incoming=Array.isArray(d)?d:d.cards;if(!Array.isArray(incoming))throw new Error('bad');
+                    const existing=readCustomCards(),ids=new Set(existing.map(x=>String(x.id))),fingerprints=new Set(existing.map(customCardFingerprint)),merged=existing.slice(),now=Date.now(),importedProgress=d?.progress&&typeof d.progress==='object'?d.progress:{};
+                    const idMap=new Map();let added=0,skipped=0;
+                    for(const c of incoming.slice(0,500)){
+                        const normalizedModule=['history','person','term','map','relation','free'].includes(c?.module)?c.module:'free';
+                        const candidate={module:normalizedModule,front:String(c?.front||'').slice(0,700),back:String(c?.back||'').slice(0,1200)};
+                        if(!candidate.front||!candidate.back){skipped++;continue;}
+                        const fp=customCardFingerprint(candidate);
+                        if(fingerprints.has(fp)){
+                            const existingMatch=existing.find(x=>customCardFingerprint(x)===fp);if(c?.id&&existingMatch?.id)idMap.set(String(c.id),String(existingMatch.id));
+                            skipped++;continue;
+                        }
+                        const id=makeImportedCardId(c?.id,ids);
+                        const card={...c,id,module:normalizedModule,title:String(c?.title||c?.front||'Моя карточка').slice(0,100),front:candidate.front,back:candidate.back,hint:String(c?.hint||'').slice(0,400),image:safeCustomImageUrl(c?.image),tags:Array.isArray(c?.tags)?c.tags.slice(0,12):[],source:String(c?.source||'').slice(0,240),createdAt:Number(c?.createdAt)||now,updatedAt:now};
+                        merged.unshift(card);ids.add(id);fingerprints.add(fp);if(c?.id)idMap.set(String(c.id),id);added++;
+                    }
+                    writeCustomCards(merged);
+                    if(d?.version>=2){
+                        const current=readCustomCardProgress(),restored={...current};
+                        Object.entries(importedProgress).forEach(([oldId,val])=>{const mapped=idMap.get(String(oldId));if(mapped)restored[mapped]=val});
+                        writeCustomCardProgress(restored);
+                    }
+                    recordModuleActivity('custom-cards','Своя колода: загружена копия');renderCustomCards();updateStatsUI(false);
+                    alert(`Готово: добавлено ${added}${skipped?`, пропущено ${skipped}`:''}.`);
+                }catch(_){alert('Не удалось загрузить копию. Нужен JSON-файл, сохранённый из «Моих карточек».');}
+                event.target.value='';
+            };
+            reader.readAsText(file);
+        }
         function startCustomPractice(){
             const cards=readCustomCards(); if(!cards.length){setPeopleMode('custom');openCustomCardBuilder();return;}
             const q=normalizeHistorySearch(document.getElementById('custom-card-search')?.value||''); const module=document.getElementById('custom-card-module-filter')?.value||'all';
@@ -4280,16 +4360,20 @@ function startTermsPractice(){termsPracticeState={active:true,mode:'mixed',index
 function closeTermsPractice(){termsPracticeState.active=false;document.getElementById('terms-practice-panel')?.classList.add('hidden');}
 function setTermsPracticeMode(mode){termsPracticeState.mode=['mixed','definition','term','context'].includes(mode)?mode:'mixed';termsPracticeState.index=0;termsPracticeState.score=0;termsPracticeState.answered=false;document.querySelectorAll('[data-term-practice-mode]').forEach(b=>b.classList.toggle('active',b.dataset.termPracticeMode===termsPracticeState.mode));document.getElementById('terms-practice-panel')?.classList.remove('hidden');renderTermsPractice();}
 function renderTermsPractice(){const st=termsPracticeState;if(!st.active)return;const scope=typeof termsScope!=='undefined'?termsScope:'all';const period=document.getElementById('terms-period-filter')?.value||'all';let pool=TERMS_LIBRARY_2027.filter(t=>t.definition);if(scope!=='all')pool=pool.filter(t=>String(t.scope||t.category||'').toLowerCase()===String(scope).toLowerCase()||String(t.category||'').toLowerCase().includes(String(scope).toLowerCase()));if(period!=='all')pool=pool.filter(t=>t.period===period||period==='античность – XXI'&&String(t.era||'').toLowerCase().includes('всеобщ'));if(pool.length<4)pool=TERMS_LIBRARY_2027.filter(t=>t.definition);if(!pool.length)return;const t=pool[Math.floor(Math.random()*pool.length)];let mode=st.mode==='mixed'?['definition','term','context'][Math.floor(Math.random()*3)]:st.mode;const distractors=shuffleArray(pool.filter(x=>x.id!==t.id && (x.category===t.category || x.period===t.period))).slice(0,3);const opts=shuffleArray([t,...(distractors.length>=3?distractors:shuffleArray(pool.filter(x=>x.id!==t.id)).slice(0,3))]).slice(0,4);let prompt='',kind='';if(mode==='term'){prompt=`Какой термин соответствует определению?\n${t.definition}`;kind='name';}else if(mode==='context'){const key=(t.tags||[])[0]||t.period||t.era||'данным историческим контекстом';prompt=`Какой термин связан с ${key}?`;kind='name';}else{prompt=`Что означает термин «${t.name}»?`;kind='definition';}
-st.item={t,opts,kind};st.answered=false;document.getElementById('terms-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('terms-practice-prompt').textContent=prompt;const box=document.getElementById('terms-practice-options');box.innerHTML=opts.map((x,i)=>{const label=kind==='name'?x.name:x.definition;return `<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-xs font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(label)}</button>`}).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerTermsPractice(Number(b.dataset.i)));document.getElementById('terms-practice-feedback')?.classList.add('hidden');document.getElementById('terms-practice-next')?.classList.add('hidden');}
+st.item={t,opts,kind};st.answered=false;document.getElementById('terms-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('terms-practice-prompt').textContent=prompt;document.getElementById('terms-practice-hint')?.classList.add('hidden');document.getElementById('terms-practice-hint-text').textContent='';document.getElementById('terms-practice-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';const box=document.getElementById('terms-practice-options');box.innerHTML=opts.map((x,i)=>{const label=kind==='name'?x.name:x.definition;return `<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-xs font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(label)}</button>`}).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerTermsPractice(Number(b.dataset.i)));document.getElementById('terms-practice-feedback')?.classList.add('hidden');document.getElementById('terms-practice-next')?.classList.add('hidden');}
 function answerTermsPractice(index){const st=termsPracticeState;if(st.answered||!st.item)return;st.answered=true;const ok=st.item.opts[index].id===st.item.t.id;if(ok)st.score++;savePracticeResult('term-practicum',ok);recordModuleActivity('terms',ok?'Практикум терминов: верно':'Практикум терминов: ошибка');document.querySelectorAll('#terms-practice-options .practice-option').forEach((b,i)=>{b.disabled=true;if(i===st.item.opts.findIndex(x=>x.id===st.item.t.id))b.classList.add('border-emerald-400/70');if(i===index&&!ok)b.classList.add('border-rose-400/70');});const fb=document.getElementById('terms-practice-feedback');fb.className=`rounded-xl p-3 text-xs ${ok?'bg-emerald-500/10 border border-emerald-500/20 text-emerald-200':'bg-rose-500/10 border border-rose-500/20 text-rose-200'}`;fb.innerHTML=`<strong>${ok?'✓ Верно':'✕ Неверно'}</strong><div class="mt-1">Ваш ответ: <span class="${ok?'text-emerald-300':'text-rose-300'}">${escapeHistoryHtml(st.item.opts[index].name)}</span></div>${!ok?`<div class="mt-1">Правильно: <span class="text-emerald-300">${escapeHistoryHtml(st.item.t.name)}</span></div>`:''}<div class="mt-2 text-slate-300">${escapeHistoryHtml(st.item.t.definition)}</div>`;fb.classList.remove('hidden');document.getElementById('terms-practice-next')?.classList.remove('hidden');}
+function buildTermPracticeHint(st){const t=st?.item?.t;if(!t)return '';const tags=(t.tags||[]).slice(0,2).join(' · ');if(st.item.kind==='name')return `Смотри на период: ${t.era||t.period||'истории'}.${tags?` Связанные слова: ${tags}.`:''}`;return `Вспомни, к какой эпохе и сфере относится понятие.${t.period?` Период: ${t.period}.`:''}${tags?` Опора: ${tags}.`:''}`;}
+function toggleTermsPracticeHint(){const box=document.getElementById('terms-practice-hint'),btn=document.getElementById('terms-practice-hint-btn');if(!box||!termsPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('terms-practice-hint-text').textContent=hidden?'':buildTermPracticeHint(termsPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
 function nextTermsPractice(){const st=termsPracticeState;if(!st.active)return;if(st.index+1>=st.total){const fb=document.getElementById('terms-practice-feedback');if(fb){fb.className='rounded-xl p-3 text-xs bg-indigo-500/10 border border-indigo-500/20 text-indigo-100';fb.innerHTML=`<strong>Подборка завершена: ${st.score} / ${st.total}</strong><div class="mt-1 text-slate-400">Можно снова запустить практику и поменять режим.</div>`;}document.getElementById('terms-practice-next')?.classList.add('hidden');return;}st.index++;renderTermsPractice();}
 function scheduleTermsRender(immediate=false){ clearTimeout(termsRenderTimer); if(immediate){renderTerms();return;} termsRenderTimer=setTimeout(()=>requestAnimationFrame(renderTerms),120); }
 
 let dictionaryPracticeState={active:false,index:0,total:10,score:0,answered:false,item:null,source:[]};
 function startDictionaryPractice(){const q=document.getElementById('dict-search')?.value||'';const source=getDictionaryScopedDates().filter(x=>matchesHistorySearch(x,q));if(source.length<4){const p=document.getElementById('dictionary-practice-panel');if(p){p.classList.remove('hidden');const fb=document.getElementById('dictionary-practice-feedback');if(fb){fb.className='rounded-xl p-3 text-xs bg-amber-500/10 border border-amber-500/20 text-amber-200';fb.textContent='Для практикума нужно хотя бы 4 события. Уточни или очисти поиск.';fb.classList.remove('hidden');}}return;}dictionaryPracticeState={active:true,index:0,total:10,score:0,answered:false,item:null,source:shuffleArray(source)};document.getElementById('dictionary-practice-panel')?.classList.remove('hidden');renderDictionaryPractice();recordModuleActivity('dictionary','Справочник: практикум старт');}
 function closeDictionaryPractice(){dictionaryPracticeState.active=false;document.getElementById('dictionary-practice-panel')?.classList.add('hidden');}
-function renderDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active||!st.source.length)return;const t=st.source[Math.floor(Math.random()*st.source.length)];const pool=shuffleArray(st.source.filter(x=>x.id!==t.id)).slice(0,3);const opts=shuffleArray([t,...pool]);st.item={t,opts};st.answered=false;document.getElementById('dictionary-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('dictionary-practice-prompt').textContent=`Какая дата соответствует событию? ${t.title}`;const box=document.getElementById('dictionary-practice-options');box.innerHTML=opts.map((x,i)=>`<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-sm font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(formatYearLabel(x.year))}</button>`).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerDictionaryPractice(Number(b.dataset.i)));document.getElementById('dictionary-practice-feedback')?.classList.add('hidden');document.getElementById('dictionary-practice-next')?.classList.add('hidden');}
+function renderDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active||!st.source.length)return;const t=st.source[Math.floor(Math.random()*st.source.length)];const pool=shuffleArray(st.source.filter(x=>x.id!==t.id)).slice(0,3);const opts=shuffleArray([t,...pool]);st.item={t,opts};st.answered=false;document.getElementById('dictionary-practice-progress').textContent=`${st.index+1} / ${st.total} · верно ${st.score}`;document.getElementById('dictionary-practice-prompt').textContent=`Какая дата соответствует событию? ${t.title}`;document.getElementById('dictionary-practice-hint')?.classList.add('hidden');document.getElementById('dictionary-practice-hint-text').textContent='';document.getElementById('dictionary-practice-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';const box=document.getElementById('dictionary-practice-options');box.innerHTML=opts.map((x,i)=>`<button type="button" class="practice-option glass-panel rounded-xl p-3 text-left text-sm font-bold text-slate-200 hover:border-indigo-400/40" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHistoryHtml(formatYearLabel(x.year))}</button>`).join('');box.querySelectorAll('button').forEach(b=>b.onclick=()=>answerDictionaryPractice(Number(b.dataset.i)));document.getElementById('dictionary-practice-feedback')?.classList.add('hidden');document.getElementById('dictionary-practice-next')?.classList.add('hidden');}
 function answerDictionaryPractice(index){const st=dictionaryPracticeState;if(st.answered||!st.item)return;st.answered=true;const ok=st.item.opts[index].id===st.item.t.id;if(ok)st.score++;savePracticeResult('dictionary-practicum',ok);recordModuleActivity('dictionary',ok?'Практикум справочника: верно':'Практикум справочника: ошибка');const correct=st.item.opts.findIndex(x=>x.id===st.item.t.id);document.querySelectorAll('#dictionary-practice-options .practice-option').forEach((b,i)=>{b.disabled=true;if(i===correct)b.classList.add('border-emerald-400/70');if(i===index&&!ok)b.classList.add('border-rose-400/70');});const fb=document.getElementById('dictionary-practice-feedback');fb.className=`rounded-xl p-3 text-xs ${ok?'bg-emerald-500/10 border border-emerald-500/20 text-emerald-200':'bg-rose-500/10 border border-rose-500/20 text-rose-200'}`;fb.innerHTML=`<strong>${ok?'✓ Верно':'✕ Неверно'}</strong><div class="mt-1">Ваш ответ: <span class="${ok?'text-emerald-300':'text-rose-300'}">${escapeHistoryHtml(formatYearLabel(st.item.opts[index].year))}</span></div>${!ok?`<div class="mt-1">Правильно: <span class="text-emerald-300">${escapeHistoryHtml(formatYearLabel(st.item.t.year))}</span></div>`:''}<div class="mt-2 text-slate-300">${escapeHistoryHtml(st.item.t.description||st.item.title)}</div>`;fb.classList.remove('hidden');document.getElementById('dictionary-practice-next')?.classList.remove('hidden');}
+function buildDictionaryPracticeHint(st){const t=st?.item?.t;if(!t)return '';const person=String(t.figures||'').split(';').map(x=>x.trim()).filter(Boolean)[0];const desc=String(t.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim();return `Сначала установи век: ${t.century||'—'}.${person?` Связка по личности: ${person}.`:''}${desc?` Ориентир: ${desc.slice(0,100)}${desc.length>100?'…':''}.`:''}`;}
+function toggleDictionaryPracticeHint(){const box=document.getElementById('dictionary-practice-hint'),btn=document.getElementById('dictionary-practice-hint-btn');if(!box||!dictionaryPracticeState.item)return;const hidden=box.classList.toggle('hidden');document.getElementById('dictionary-practice-hint-text').textContent=hidden?'':buildDictionaryPracticeHint(dictionaryPracticeState);if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
 function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active)return;if(st.index+1>=st.total){const fb=document.getElementById('dictionary-practice-feedback');fb.className='rounded-xl p-3 text-xs bg-indigo-500/10 border border-indigo-500/20 text-indigo-100';fb.innerHTML=`<strong>Практикум завершён: ${st.score} / ${st.total}</strong>`;document.getElementById('dictionary-practice-next')?.classList.add('hidden');return;}st.index++;renderDictionaryPractice();}
 
 // APP STATE
@@ -5058,10 +5142,12 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             const title=document.getElementById('practice-beta-map-caption')?.textContent || 'Карта';
             openMapZoomFromUrl(encodeURIComponent(img.currentSrc||img.src), encodeURIComponent(title));
         }
-        function renderPracticeBeta(){
+        function buildPracticeBetaHint(){const it=practiceBetaState?.queue?.[practiceBetaState.index];if(!it)return '';if(it.kind==='map')return buildMapHint(it.task);if(it.kind==='person')return 'Свяжи описание с эпохой и сферой деятельности. Отсекай варианты, которые относятся к другой эпохе или роли.';if(it.kind==='term'){const t=it.term;return `Определи период и сферу понятия.${t?.period?` Период: ${t.period}.`:''}${(t?.tags||[]).length?` Ключевые слова: ${(t.tags||[]).slice(0,2).join(' · ')}.`:''}`;}return 'Сначала установи век и тип события, потом сравни варианты по хронологии. Не выбирай только по знакомому имени.';}
+function togglePracticeBetaHint(){const box=document.getElementById('practice-beta-hint'),btn=document.getElementById('practice-beta-hint-btn');if(!box)return;const hidden=box.classList.toggle('hidden');document.getElementById('practice-beta-hint-text').textContent=hidden?'':buildPracticeBetaHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+function renderPracticeBeta(){
             const st=practiceBetaState,item=st.queue[st.index],p=document.getElementById('practice-beta-prompt'),o=document.getElementById('practice-beta-options'),f=document.getElementById('practice-beta-feedback'),n=document.getElementById('practice-beta-next'),mw=document.getElementById('practice-beta-map-wrap'),mi=document.getElementById('practice-beta-map-image'),mc=document.getElementById('practice-beta-map-caption');
             if(!item){p.textContent='Серия завершена';o.innerHTML='';mw?.classList.add('hidden');f.className='mt-4 rounded-xl p-3 text-sm bg-emerald-500/10 border border-emerald-500/20 text-emerald-200';f.textContent=`Результат: ${st.score} / ${st.queue.length}`;f.classList.remove('hidden');n.classList.add('hidden');return;}
-            st.answered=false;f.classList.add('hidden');n.classList.add('hidden');document.getElementById('practice-beta-score').textContent=`${st.score} / ${st.index}`;
+            st.answered=false;f.classList.add('hidden');n.classList.add('hidden');document.getElementById('practice-beta-score').textContent=`${st.score} / ${st.index}`;document.getElementById('practice-beta-hint')?.classList.add('hidden');document.getElementById('practice-beta-hint-text').textContent='';document.getElementById('practice-beta-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';
             if(item.kind==='map'){
                 const v=getMapQuestionVariant(item.task,true);item.variant=v;
                 document.getElementById('practice-beta-kind').textContent='КАРТА';p.textContent=item.task.prompt;
@@ -5727,6 +5813,9 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             return String(value ?? '').trim().replace(/ё/g,'е').toLowerCase();
         }
 
+        function buildQuizHint(){const item=currentQuizItem;if(!item)return '';const fig=String(item.figures||'').split(';').map(x=>x.trim()).filter(Boolean).slice(0,1)[0];const desc=String(item.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim();return `Эпоха: ${item.century||'—'} век.${fig?` Связка: ${fig}.`:''}${item.topic?` Тема: ${item.topic}.`:''}${desc?` Ориентир: ${desc.slice(0,105)}${desc.length>105?'…':''}.`:''}`;}
+        function toggleQuizHint(){const box=document.getElementById('quiz-hint'),btn=document.getElementById('quiz-hint-btn');if(!box||!currentQuizItem)return;const hidden=box.classList.toggle('hidden');document.getElementById('quiz-hint-text').textContent=hidden?'':buildQuizHint();if(btn)btn.innerHTML=hidden?'<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка':'<i class="fa-solid fa-lightbulb mr-1.5 text-amber-400"></i> Скрыть подсказку';}
+
         function quizNextQuestion() {
             const scopeAtStart = quizScope;
             const dataset = getQuizDates().filter(Boolean);
@@ -5734,6 +5823,9 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             currentQuizItem = dataset[Math.floor(Math.random() * dataset.length)];
             const correctYear = String(currentQuizItem.year);
             quizAnswerLocked = false;
+            document.getElementById('quiz-hint')?.classList.add('hidden');
+            document.getElementById('quiz-hint-text').textContent='';
+            document.getElementById('quiz-hint-btn').innerHTML='<i class="fa-regular fa-lightbulb mr-1.5 text-amber-400"></i> Подсказка';
 
             const tagEl = document.getElementById('quiz-century-tag');
             const questionEl = document.getElementById('quiz-question-text');
@@ -5888,7 +5980,7 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             inputHintLevel=Math.min(2,inputHintLevel+1); updateInputStatsUI(); let text='';
             if(inputHintLevel===1){const topic=currentInputItem.topic||'историческое событие',f=String(currentInputItem.figures||'').split(';').map(x=>x.trim()).filter(Boolean).slice(0,1);text=`Уровень 1: определи эпоху и тип события (${topic.toLowerCase()}).${f.length?` Ключевая личность: ${f[0]}.`:''}`}
             else{const desc=String(currentInputItem.description||'').replace(/\b\d{3,4}\b/g,'').replace(/\s{2,}/g,' ').trim().replace(/[.!?]+$/,'');text=`Уровень 2: это ${currentInputItem.century||'нужного'} век.${desc?` Связка: ${desc.slice(0,140)}${desc.length>140?'…':''}.`:''} Год не раскрываем.`}
-            feedback.className='p-3 rounded-2xl text-center text-xs font-semibold bg-amber-500/12 text-amber-300 border border-amber-500/25 block'; feedback.innerText=text;
+            feedback.className='task-hint'; feedback.innerHTML=`<span class="task-hint-icon"><i class="fa-regular fa-lightbulb"></i></span><span><span class="task-hint-label">${inputHintLevel===1?'Подсказка · уровень 1':'Подсказка · уровень 2'}</span><span class="task-hint-text">${escapeHistoryHtml(text.replace(/^Уровень [12]:\s*/,''))}</span></span>`;
             const btn=document.getElementById('input-hint-btn'); if(btn)btn.innerHTML=inputHintLevel>=2?'<i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Подсказка 2':'<i class="fa-regular fa-lightbulb text-amber-400 mr-1.5"></i> Подсказка 2';
         }
 
@@ -5916,24 +6008,68 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
             return 'XXI';
         }
 
-        function renderRelations() {
-            const query = (document.getElementById('relation-search')?.value || '').trim().toLowerCase();
-            const tbody = document.getElementById('relation-list');
-            if (!tbody) return;
-            const filtered = RELATION_ENTRIES.filter(item => (`${item.year} ${item.event} ${item.country} ${item.russia}`).toLowerCase().includes(query));
-            const count = document.getElementById('relation-count');
-            if (count) count.innerText = `${filtered.length} строк${filtered.length === 1 ? 'а' : filtered.length < 5 ? 'и' : ''}`;
-            tbody.innerHTML = filtered.map(item => `
+        let relationFilterState = 'all';
+        let relationsRenderFrame = 0;
+        let relationSearchIndex = null;
+        function getRelationFilter(year){
+            const m=String(year).match(/\d{3,4}/);
+            if(!m)return 'other';
+            const y=parseInt(m[0],10);
+            if(y<=1599)return 'ancient';
+            if(y<=1799)return 'earlymodern';
+            if(y<=1899)return 'modern';
+            return 'contemporary';
+        }
+        function buildRelationSearchIndex(){
+            if(relationSearchIndex)return relationSearchIndex;
+            relationSearchIndex=RELATION_ENTRIES.map((item,index)=>({index,text:normalizeHistorySearch([item.year,item.event,item.country,item.russia,relationCentury(item.year)].filter(Boolean).join(' '))}));
+            return relationSearchIndex;
+        }
+        function setRelationFilter(filter){
+            const allowed=['all','ancient','earlymodern','modern','contemporary'];
+            relationFilterState=allowed.includes(filter)?filter:'all';
+            document.querySelectorAll('[data-relation-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.relationFilter===relationFilterState));
+            renderRelations();
+        }
+        function scheduleRelationsRender(){
+            if(relationsRenderFrame)cancelAnimationFrame(relationsRenderFrame);
+            relationsRenderFrame=requestAnimationFrame(()=>{relationsRenderFrame=0;renderRelations();});
+        }
+        function relationPlural(n){
+            const x=Math.abs(n)%100,y=x%10;
+            if(x>=11&&x<=14)return 'строк';
+            if(y===1)return 'строка';
+            if(y>=2&&y<=4)return 'строки';
+            return 'строк';
+        }
+        function renderRelations(){
+            const tbody=document.getElementById('relation-list');if(!tbody)return;
+            const query=normalizeHistorySearch(document.getElementById('relation-search')?.value||'');
+            const index=buildRelationSearchIndex();
+            const filtered=index.filter(entry=>{
+                const item=RELATION_ENTRIES[entry.index];
+                return (relationFilterState==='all'||getRelationFilter(item.year)===relationFilterState)&&(!query||entry.text.includes(query));
+            }).map(entry=>RELATION_ENTRIES[entry.index]);
+            const count=document.getElementById('relation-count');if(count)count.textContent=`${filtered.length} ${relationPlural(filtered.length)}`;
+            const countries=new Set(filtered.flatMap(item=>String(item.country||'').split(',').map(x=>x.trim()).filter(x=>x&&x!=='—')));
+            const centuries=new Set(filtered.map(item=>relationCentury(item.year)).filter(Boolean));
+            const metricMap=[
+                ['relation-country-count',countries.size],
+                ['relation-century-count',centuries.size],
+                ['relation-early-count',filtered.filter(x=>getRelationFilter(x.year)==='earlymodern').length],
+                ['relation-modern-count',filtered.filter(x=>getRelationFilter(x.year)==='modern').length],
+                ['relation-contemporary-count',filtered.filter(x=>getRelationFilter(x.year)==='contemporary').length]
+            ];
+            metricMap.forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=String(val);});
+            if(!filtered.length){tbody.innerHTML='<tr><td colspan="5" class="p-8 text-center text-xs text-slate-500">Ничего не найдено. Попробуй изменить запрос или период.</td></tr>';return;}
+            tbody.innerHTML=filtered.map(item=>`
                 <tr>
                     <td class="text-indigo-300 font-bold">${relationCentury(item.year)}</td>
-                    <td class="relation-year">${item.year}</td>
-                    <td class="relation-world">${item.event}</td>
-                    <td class="relation-country">${item.country}</td>
-                    <td class="relation-russia">${item.russia === '—' ? '<span class="relation-dash">—</span>' : item.russia}</td>
+                    <td class="relation-year">${escapeHistoryHtml(item.year)}</td>
+                    <td class="relation-world">${escapeHistoryHtml(item.event)}</td>
+                    <td class="relation-country">${escapeHistoryHtml(item.country)}</td>
+                    <td class="relation-russia">${item.russia==='—'?'<span class="relation-dash">—</span>':escapeHistoryHtml(item.russia)}</td>
                 </tr>`).join('');
-            if (!filtered.length) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-xs text-slate-500">Ничего не найдено</td></tr>';
-            }
         }
 
         const MODULE_ACTIVITY_KEY = 'ege_module_activity_v1';
@@ -5955,10 +6091,13 @@ function nextDictionaryPractice(){const st=dictionaryPracticeState;if(!st.active
         function recordAtlasStudy(id){ const d=readAtlasActivity(); d.opened=d.opened||{}; const k=String(id); d.opened[k]=(Number(d.opened[k])||0)+1; d.last={id:k,ts:Date.now()}; safeWriteObject(ATLAS_ACTIVITY_KEY,d); }
         function formatActivityTime(ts){ if(!ts)return ''; try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(_){return ''; } }
         function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[
+            {k:'НОВОЕ',t:'Подсказки переработаны во всех практических режимах',d:'Единый компактный блок с иконкой, понятной подписью и переключением «Подсказка / Скрыть подсказку» теперь используется в выборе дат, точном вводе, картах, личностях, терминах, справочнике и Практике ЕГЭ β.'},
             {k:'НОВОЕ',t:'Прогресс объединён с модулями',d:'Результаты карточек, выбора даты, точного ввода, карт, атласа и практики β теперь учитываются вместе.'},
             {k:'ОБНОВЛЕНИЕ',t:'Статистика сохраняется',d:'Данные модулей хранятся локально и не пропадают после перезагрузки страницы.'},
             {k:'ОБНОВЛЕНИЕ',t:'Практикумы расширены: личности + термины + даты',d:'Добавлен практикум терминов и компактный практикум из справочника; у точного ввода появился блиц ×10.'},
             {k:'ОБНОВЛЕНИЕ',t:'Справочник и атлас обновлены',d:'В справочнике добавлен фильтр ЕГЭ / Всемирная / Все; в атласе — фильтр ЕГЭ / Справочные, исправлена карта КИМ 2026 и добавлена схема проекта ЕГЭ-2027.'},
+            {k:'ОБНОВЛЕНИЕ',t:'Связи: поиск и фильтры исправлены',d:'Поиск ищет по году, событию, стране и связке с Россией; фильтр периодов работает вместе с метриками.'},
+            {k:'ОБНОВЛЕНИЕ',t:'Мои карточки: резервная копия без HTML',d:'Колода сохраняется в браузере автоматически, а перенос между устройствами выполняется небольшим JSON-файлом вместе с прогрессом своей колоды.'},
             {k:'ОБНОВЛЕНИЕ',t:'Мои карточки стали общей библиотекой всей базы',d:'Единая личная колода доступна из раздела «Ещё» и умеет собирать карточки из дат, личностей, терминов, карт и связей либо создавать их вручную.'},
             {k:'ОБНОВЛЕНИЕ',t:'Личности и термины расширены',d:'Добавлены подробные биографические справки из прикреплённого PDF, расширенные определения понятий и практика по ним.'}
         ]; const a=readModuleActivity(); if(a.last) items.unshift({k:'АКТИВНОСТЬ',t:a.last.label,d:`${a.last.module} · ${formatActivityTime(a.last.ts)}`}); el.innerHTML=items.slice(0,6).map(x=>`<div class="rounded-xl border border-slate-800 bg-slate-900/45 p-3"><div class="text-[9px] uppercase tracking-[.14em] text-indigo-400 font-black">${escapeHistoryHtml(x.k)}</div><div class="text-xs font-bold text-white mt-1">${escapeHistoryHtml(x.t)}</div><div class="text-[11px] text-slate-400 mt-1 leading-relaxed">${escapeHistoryHtml(x.d)}</div></div>`).join(''); }

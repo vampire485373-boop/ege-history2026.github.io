@@ -8128,7 +8128,7 @@ function scheduleTermsRender(immediate=false){ clearTimeout(termsRenderTimer); i
         function readAtlasActivity(){ return safeReadObject(ATLAS_ACTIVITY_KEY,{opened:{}}); }
         function recordAtlasStudy(id){ const d=readAtlasActivity(); d.opened=d.opened||{}; const k=String(id); d.opened[k]=(Number(d.opened[k])||0)+1; d.last={id:k,ts:Date.now()}; safeWriteObject(ATLAS_ACTIVITY_KEY,d); }
         function formatActivityTime(ts){ if(!ts)return ''; try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(_){return ''; } }
-        function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[
+        function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[{k:'ОБНОВЛЕНИЕ',t:'Справочник: материал открывается напрямую',d:'При выборе найденного события открывается сама запись, а поисковая строка больше не перезаписывается выбранным названием. Добавлены лёгкие анимации для результатов, терминов, личностей и справочных карточек.'},
             {k:'ОБНОВЛЕНИЕ',t:'v53 · Справочник и карты расширены',d:'Справочник получил нормальную адаптивную сетку для ПК и телефона. Банк карт пополнен шестью тренировочными карточками на трёх новых ФИПИ-связанных схемах; новые изображения также учитываются отдельными карточками Атласа.'},
             {k:'ИСПРАВЛЕНИЕ',t:'Карточки: безопасный размер текста на ПК и телефоне',d:'Исправлено масштабирование длинных названий в карточках; добавлены отдельные пределы для ПК, планшета и телефона, чтобы текст не пересекался и не вылезал за карточку.'},
             {k:'ИСПРАВЛЕНИЕ',t:'Мобильная шапка и навигация стабилизированы',d:'Переработана мобильная шапка: название, серия и панель разделов больше не накладываются друг на друга; навигация получила отдельную горизонтальную прокрутку и безопасные размеры кнопок.'},
@@ -9295,7 +9295,28 @@ function renderReferenceHub(){
 function toggleReferenceVisual(i){if(referenceState.visualOpen.has(i))referenceState.visualOpen.delete(i);else referenceState.visualOpen.add(i);renderReferenceHub();}
 function setReferenceSearch(encoded){const input=document.getElementById('reference-hub-search');if(input){input.value=decodeURIComponent(encoded||'');renderReferenceHub();input.focus();}}
 function openReferenceHistory(id){closeReferenceHub();const item=ALL_HISTORICAL_DATES.find(x=>Number(x.id)===Number(id));if(!item)return;switchTab('dictionary');setDictionaryBaseMode('brief');setTimeout(()=>{const ext=getDictionaryExtendedBase().find(x=>String(x.id)===String(item.id));if(ext)setDictionarySelected(String(item.id));else if(typeof openHistoryDetails==='function')openHistoryDetails(item.id)},90);}
-function openReferenceHistoryByQuery(encoded){const q=decodeURIComponent(encoded||'');closeReferenceHub();switchTab('dictionary');setDictionaryBaseMode('brief');const input=document.getElementById('dict-search');if(input){input.value=q;scheduleDictionaryRender(true);setTimeout(()=>{const first=getDictionaryFilteredItems()[0];if(first){const ext=getDictionaryExtendedBase().find(x=>String(x.id)===String(first.id));if(ext)setDictionarySelected(first.id);else if(typeof openHistoryDetails==='function')openHistoryDetails(first.id);return;}const yr=(q.match(/\b(1[0-9]{3}|20[0-2][0-9])\b/)||[])[1];if(yr&&typeof openHistoryDetails==='function'){const fallback=ALL_HISTORICAL_DATES.find(x=>String(x.year).includes(yr));if(fallback)openHistoryDetails(fallback.id);}},90);}}
+function openReferenceHistoryByQuery(encoded){
+            const q=decodeURIComponent(encoded||'').trim();
+            if(!q)return;
+            const norm=v=>normalizeHistorySearch(String(v||'').replace(/[–—]/g,'-'));
+            const nq=norm(q);
+            const records=Array.isArray(ALL_HISTORICAL_DATES)?ALL_HISTORICAL_DATES:[];
+            const exact=records.find(x=>norm(x.title)===nq||norm(x.year)===nq);
+            const titleHit=exact||records.find(x=>{const t=norm(x.title);return t&& (t.includes(nq)||nq.includes(t))&&Math.min(t.length,nq.length)>=5;});
+            const year=(q.match(/\b(\d{3,4})\b/)||[])[1];
+            const match=titleHit||(year?records.find(x=>String(x.year||'').includes(year)):null);
+            closeReferenceHub();
+            switchTab('dictionary');
+            setDictionaryBaseMode('brief');
+            dictionaryScope='all';dictionaryCentury='all';dictionaryTopic='all';dictionaryView='cards';dictionarySelectedId=null;dictionaryRenderLimit=42;
+            const search=document.getElementById('dict-search');if(search)search.value='';
+            const scope=document.getElementById('dict-scope-all');if(scope)scope.click();
+            const century=document.getElementById('dict-century-filter');if(century)century.value='all';
+            const topic=document.getElementById('dict-topic-filter');if(topic)topic.value='all';
+            scheduleDictionaryRender(true);
+            if(match){setTimeout(()=>openHistoryDetails(match.id),40);}
+            else if(search){search.value=q;scheduleDictionaryRender(true);}
+        }
 function openReferencePerson(encoded){const name=decodeURIComponent(encoded||'');closeReferenceHub();switchTab('personalities');const input=document.getElementById('people-search');if(input){input.value=name;setPeopleKeyword(encodeURIComponent(name));}else if(typeof setPeopleKeyword==='function'){setPeopleKeyword(encodeURIComponent(name));}}
 function getReferenceHubCounts(){return {culture:EGE_CULTURE_REFERENCE_2027.length,congress:EGE_CONGRESS_REFERENCE_2027.length,visual:EGE_VISUAL_REFERENCE_2027.length,terms:actuallyAddedTerms.length,dates:EGE_DATES_GLOBAL_SUPPLEMENT_2027.length,people:FIPI_PEOPLE_SUPPLEMENT_2027.length+FIPI_EGE_PEOPLE_EXTRA_2027.length};}
 
@@ -9891,5 +9912,108 @@ function v73Init(){
 window.addEventListener('DOMContentLoaded',()=>setTimeout(v73Init,60));
 })();
 </script>
+
+<style id="v77-custom-deck-polish">
+#global-custom-panel .custom-card-item{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;animation:v77CardEnter .28s both;min-width:0;overflow-wrap:anywhere}
+#global-custom-panel .custom-card-item:nth-child(2){animation-delay:25ms}#global-custom-panel .custom-card-item:nth-child(3){animation-delay:50ms}#global-custom-panel .custom-card-item:nth-child(4){animation-delay:75ms}
+#global-custom-panel .custom-card-item:hover{transform:translateY(-2px);border-color:rgba(129,140,248,.42);box-shadow:0 10px 24px rgba(0,0,0,.16)}
+#global-custom-panel button,#global-custom-panel input,#global-custom-panel select{font-family:inherit;min-width:0}
+#global-custom-panel .custom-card-item h4{overflow-wrap:anywhere;line-height:1.35}
+@keyframes v77CardEnter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:767px){#global-custom-panel{padding:12px!important}#global-custom-panel .custom-card-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}#global-custom-panel .custom-card-item{padding:12px!important;border-radius:16px!important}#global-custom-panel #custom-card-filters{grid-template-columns:minmax(0,1fr)!important}#global-custom-panel #custom-card-filters input,#global-custom-panel #custom-card-filters select{width:100%;min-height:44px;font-size:14px}#global-custom-panel .custom-card-item .mt-3.flex{gap:8px}#global-custom-panel .custom-card-item button{min-height:42px;font-size:12px;padding:9px 10px}}
+@media(prefers-reduced-motion:reduce){#global-custom-panel .custom-card-item{animation:none!important;transition:none!important}}
+</style>
+
+<script id="v78-dictionary-direct-open">
+(function(){
+'use strict';
+
+function v78Norm(v){return String(v??'').toLowerCase().replace(/ё/g,'е').replace(/[«»“”„‟]/g,'').replace(/[\u2013\u2014–—-]/g,' ').replace(/[^\p{L}\p{N}]+/gu,' ').trim().replace(/\s+/g,' ');}
+
+function v78FindDirectItem(q){
+  const nq=v78Norm(q); if(!nq)return null;
+  const pools=[];
+  try{if(typeof getDictionaryExtendedBase==='function')pools.push(...getDictionaryExtendedBase());}catch(_){ }
+  try{if(typeof getDictionaryBriefBase==='function')pools.push(...getDictionaryBriefBase());}catch(_){ }
+  const seen=new Set();
+  const records=pools.filter(x=>{const k=String(x?.id??'');if(seen.has(k))return false;seen.add(k);return true;});
+  let hit=records.find(x=>v78Norm(x.title)===nq);
+  if(hit)return hit;
+  hit=records.find(x=>v78Norm(x.title).includes(nq)||nq.includes(v78Norm(x.title)));
+  if(hit)return hit;
+  const tokens=nq.split(' ').filter(Boolean);
+  let best=null,bestScore=0;
+  for(const x of records){
+    const hay=v78Norm([x.title,x.year,x.description,x.overview,x.figures,(x.people||[]).join(' '),(x.searchAliases||[]).join(' ')].join(' '));
+    const score=tokens.reduce((n,t)=>n+(hay.includes(t)?1:0),0);
+    if(score>bestScore){bestScore=score;best=x;}
+  }
+  return bestScore>=Math.max(1,Math.ceil(tokens.length*.7))?best:null;
+}
+
+function v78OpenReferenceHistoryDirect(encoded){
+  const q=decodeURIComponent(encoded||'').trim(); if(!q)return;
+  try{if(typeof closeReferenceHub==='function')closeReferenceHub();}catch(_){ }
+  const hit=v78FindDirectItem(q);
+  try{switchTab('dictionary');}catch(_){ }
+  try{setDictionaryBaseMode('extended');}catch(_){ }
+  if(hit){
+    try{setDictionarySelected(String(hit.id));}catch(_){ }
+    // The resolved record is the navigation target. Do not write into the search box.
+    return;
+  }
+  const input=document.getElementById('dict-search');
+  if(input){input.value=q;try{scheduleDictionaryRender(true);}catch(_){ }}
+}
+window.openReferenceHistoryByQuery=v78OpenReferenceHistoryDirect;
+
+function v78FixDictionaryRowSelection(){
+  const root=document.getElementById('dictionary-results-list');
+  if(!root || root.dataset.v78DirectSelection==='1')return;
+  // v73 attached a bubbling listener that wrote the selected title into the search input.
+  // Cloning the list removes that stale listener while preserving the inline row handlers and DOM.
+  const clone=root.cloneNode(true);
+  clone.dataset.v78DirectSelection='1';
+  root.replaceWith(clone);
+}
+
+function v78Install(){
+  v78FixDictionaryRowSelection();
+  try{window.openReferenceHistoryByQuery=v78OpenReferenceHistoryDirect;}catch(_){ }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(v78Install,80),{once:true});
+else setTimeout(v78Install,80);
+})();
+</script>
+
+<style id="v78-module-motion">
+/* Lightweight motion only: no large blur/shadows or continuous animation. */
+#dictionary-results-list [data-dict-id],
+#terms-list-wrap .term-card,
+#people-list-wrap .people-card,
+#relation-list tr,
+.reference-hub-card,
+.study-route-card{
+  transition:transform .18s ease,opacity .18s ease,border-color .18s ease,box-shadow .18s ease;
+  will-change:transform;
+}
+#dictionary-results-list [data-dict-id]:hover,
+#terms-list-wrap .term-card:hover,
+#people-list-wrap .people-card:hover,
+.reference-hub-card:hover,
+.study-route-card:hover{transform:translateY(-2px)}
+.dictionary-v41-preview-inner,
+.dictionary-v42-extended-preview{animation:v78PanelIn .18s ease both}
+@keyframes v78PanelIn{from{opacity:.75;transform:translateY(3px)}to{opacity:1;transform:none}}
+#relation-list tr:hover{background:rgba(79,70,229,.055)}
+@media(max-width:767px){
+  #dictionary-results-list [data-dict-id],#terms-list-wrap .term-card,#people-list-wrap .people-card,.reference-hub-card,.study-route-card{transition:transform .14s ease,opacity .14s ease,border-color .14s ease}
+  #dictionary-results-list [data-dict-id]:hover,#terms-list-wrap .term-card:hover,#people-list-wrap .people-card:hover,.reference-hub-card:hover,.study-route-card:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  #dictionary-results-list [data-dict-id],#terms-list-wrap .term-card,#people-list-wrap .people-card,#relation-list tr,.reference-hub-card,.study-route-card,.dictionary-v41-preview-inner,.dictionary-v42-extended-preview{animation:none!important;transition:none!important;transform:none!important}
+}
+</style>
+
 </body>
 </html>

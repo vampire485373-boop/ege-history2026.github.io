@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="Vampire">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр ЕГЭ по Истории · v42</title>
+    <title>Тренажёр ЕГЭ по Истории · v87</title>
 
 <script>
         // Pre-defining window.tailwind avoids ReferenceError if CDN script loads asynchronously
@@ -381,8 +381,62 @@
             white-space: nowrap;
             box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
         }
-        .header-streak i { color: #f59e0b; }
-        .header-streak strong { color: #fff; font-size: 11px; }
+        .header-streak {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            text-align: left;
+            border-color: rgba(129,140,248,.20);
+            background: linear-gradient(180deg, rgba(30,41,59,.82), rgba(15,23,42,.78));
+            transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+        .header-streak:hover {
+            border-color: rgba(129,140,248,.34);
+            background: linear-gradient(180deg, rgba(35,46,68,.9), rgba(17,24,39,.86));
+            box-shadow: 0 6px 18px rgba(15,23,42,.24), inset 0 1px 0 rgba(255,255,255,.035);
+        }
+        .header-streak:active { transform: translateY(1px); }
+
+        .header-streak.is-boosted .header-streak-fire {
+            animation: streakFirePop .42s ease-out;
+        }
+        @keyframes streakFirePop {
+            0% { transform: scale(.9); }
+            55% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+        .header-streak-fire {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: rgba(245,158,11,.10);
+            box-shadow: inset 0 0 0 1px rgba(245,158,11,.06);
+            flex: 0 0 auto;
+        }
+        .header-streak-fire i { color: #f59e0b; }
+        .header-streak-copy {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 5px;
+            line-height: 1;
+        }
+        .header-streak-label {
+            color: #94a3b8;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+        .header-streak strong { color: #fff; font-size: 13px; font-weight: 900; }
+        .header-streak-tail {
+            color: #64748b;
+            font-size: 9px;
+            font-weight: 700;
+            margin-left: 1px;
+        }
         .header-main-nav {
             min-width: 0;
             width: 100%;
@@ -521,8 +575,12 @@
                 padding: 3px 6px;
                 font-size: 9px;
                 border-radius: 7px;
+                gap: 4px;
             }
-            .header-streak strong { font-size: 10px; }
+            .header-streak-fire { width: 18px; height: 18px; border-radius: 5px; }
+            .header-streak strong { font-size: 11px; }
+            .header-streak-tail { display:none; }
+            .header-streak-label { font-size: 8px; }
         }
 
         @media (max-width: 480px) {
@@ -534,6 +592,8 @@
             .header-meta-row { flex-wrap: wrap; row-gap: 3px; }
             .header-subtitle { flex: 1 1 100%; max-width: 100%; }
             .header-streak { align-self: flex-start; }
+            .header-streak-copy { gap: 4px; }
+            .header-streak-label { display: none; }
         }
 
         .creator-signature {
@@ -1999,6 +2059,15 @@
 @media(max-width:900px){.practice-ege-hero{grid-template-columns:1fr}.practice-ege-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.practice-ege-mode-grid{grid-template-columns:1fr}.practice-ege-line-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:767px){.practice-ege-shell{padding-left:0!important;padding-right:0!important}.practice-ege-hero{padding:13px;border-radius:14px}.practice-ege-hero h2{font-size:22px}.practice-ege-hero p{font-size:10.5px;line-height:1.55}.practice-ege-note{font-size:8px}.practice-ege-stats{gap:6px}.practice-ege-stats strong{font-size:15px}.practice-ege-modes{padding:11px;border-radius:14px}.practice-ege-section-head{align-items:flex-start}.practice-ege-line-title{display:block}.practice-ege-line-title small{display:block;margin-top:3px}.practice-ege-line-grid{gap:6px}.practice-ege-line-grid button{min-height:58px;padding:8px}.practice-ege-question{padding:12px;border-radius:14px}.practice-ege-prompt{font-size:15px;line-height:1.42}.practice-ege-options{grid-template-columns:1fr;gap:7px}.practice-ege-option{min-height:50px;font-size:10.5px;padding:10px}.practice-ege-map-button img{max-height:50dvh;min-height:180px}.practice-ege-actions{position:sticky;bottom:max(8px,env(safe-area-inset-bottom));padding-top:5px;background:linear-gradient(180deg,transparent,#08111e 25%)}.practice-ege-next,.practice-ege-close{flex:1;min-height:44px}}
 @media(max-width:380px){.practice-ege-stats strong{font-size:14px}.practice-ege-mode-desc{font-size:9px}.practice-ege-line-grid span{font-size:8px}.practice-ege-prompt{font-size:14px}.practice-ege-option{font-size:10px}}
+
+/* v79 learning cards polish */
+.term-card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;content-visibility:auto;contain-intrinsic-size:360px}
+.term-card:hover{transform:translateY(-2px);border-color:rgba(129,140,248,.32)}
+.term-card details[open] summary{color:#a5b4fc}
+.reference-hub-card{transition:transform .18s ease,border-color .18s ease}
+.reference-hub-card:hover{transform:translateY(-2px);border-color:rgba(129,140,248,.35)}
+@media(max-width:640px){.term-card:hover,.reference-hub-card:hover{transform:none}.term-card{padding:13px!important}.term-card p{overflow-wrap:anywhere}.reference-hub-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.reference-hub-action{min-width:0;white-space:normal;line-height:1.25;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){.term-card,.reference-hub-card{transition:none}.term-card:hover,.reference-hub-card:hover{transform:none}}
 </style>
 
         <!-- Created by Vampire · v37 mobile header fix -->
@@ -2565,11 +2634,14 @@ html,body{min-width:0}
                         </h1>
                         <div class="header-meta-row">
                             <p class="text-xs text-slate-400 header-subtitle">Даты · События · Соотношения</p>
-                            <div class="header-streak" title="Текущая серия правильных ответов" aria-label="Текущая серия правильных ответов">
-                                <i class="fa-solid fa-fire"></i>
-                                <span>Серия</span>
-                                <strong id="streak-counter">0</strong>
-                            </div>
+                            <button type="button" class="header-streak" id="header-streak" title="Текущая серия правильных ответов" aria-label="Текущая серия правильных ответов">
+                                <span class="header-streak-fire"><i class="fa-solid fa-fire"></i></span>
+                                <span class="header-streak-copy">
+                                    <span class="header-streak-label">Серия</span>
+                                    <strong id="streak-counter">0</strong>
+                                </span>
+                                <span class="header-streak-tail">подряд</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -3657,7 +3729,7 @@ html,body{min-width:0}
                                 <option value="person">Личности</option>
                                 <option value="term">Термины</option>
                                 <option value="map">Карты</option>
-                                <option value="relation">Связи</option>
+                                <option value="relation">Связи</option><option value="congress">Съезды</option>
                                 <option value="free">Своя тема</option>
                             </select>
                         </div>
@@ -3670,7 +3742,7 @@ html,body{min-width:0}
                         <div class="glass-panel p-5 rounded-2xl">
                             <div class="flex items-center justify-between gap-3">
                                 <h3 class="font-bold text-white flex items-center"><i class="fa-solid fa-rotate text-emerald-400 mr-2"></i> Что уже обновлено</h3>
-                                <span class="text-[9px] uppercase tracking-[.14em] font-black text-slate-500">v69 · 30.09.2026</span>
+                                <span class="text-[9px] uppercase tracking-[.14em] font-black text-slate-500">v87 · 02.10.2026</span>
                             </div>
                             <div class="mt-3 space-y-2 text-xs text-slate-300">
                                 <div>• хронологическая база: <strong id="updates-total">470</strong> событий и дат</div>
@@ -3681,7 +3753,7 @@ html,body{min-width:0}
                                 <div>• убрана неработающая мобильная кнопка «Гид»</div>
                                 <div>• «Личности» и «Термины» вынесены в «Ещё», чтобы навигация оставалась компактной</div>
                                 <div>• добавлен Культурный атлас: архитектура, литература, музыка, кино и визуальные опоры из учебных материалов</div>
-                                <div>• добавлена подборка ключевых съездов РСДРП/РКП(б)/ВКП(б)/КПСС и съездов Советов</div>
+                                <div>• добавлена подборка ключевых съездов РСДРП/РКП(б)/ВКП(б)/КПСС и съездов Советов</div><div>• v79: термины получили дополнительные пояснения и конкретизацию; съезды можно добавлять в личную колоду</div>
                                 <div>• расширены термины, даты и экзаменационные персоналии; новые элементы связаны с существующими модулями</div>
                                 <div>• мировая история и синхронные соотношения остаются отдельными учебными разделами</div>
                                 <div>• материалы, связанные с КИМ и ФИПИ, отмечаются по источниковому статусу</div>
@@ -3747,7 +3819,7 @@ html,body{min-width:0}
                 </select>
             </div>
             <div id="reference-hub-summary" class="reference-hub-summary"></div>
-            <div id="reference-hub-content" class="reference-hub-content"></div>
+            <div id="reference-hub-content" class="reference-hub-content" aria-live="polite"></div>
         </div>
     </div>
 
@@ -3835,14 +3907,14 @@ html,body{min-width:0}
             <form id="custom-card-form" onsubmit="saveCustomCard(event)" class="p-4 sm:p-5 space-y-3">
                 <input type="hidden" id="custom-card-edit-id" value="">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label class="block"><span class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Раздел</span><select id="custom-card-module" class="w-full mt-1.5 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"><option value="history">Даты / события</option><option value="person">Личности</option><option value="term">Термины</option><option value="map">Карты</option><option value="relation">Связи</option><option value="free">Своя тема</option></select></label>
+                    <label class="block"><span class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Раздел</span><select id="custom-card-module" class="w-full mt-1.5 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"><option value="history">Даты / события</option><option value="person">Личности</option><option value="term">Термины</option><option value="map">Карты</option><option value="relation">Связи</option><option value="congress">Съезды</option><option value="free">Своя тема</option></select></label>
                     <label class="block"><span class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Название</span><input id="custom-card-title" type="text" maxlength="100" placeholder="Например: Иван III — Судебник 1497" class="w-full mt-1.5 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500"></label>
                 </div>
                 <details id="custom-card-library-details" class="rounded-xl border border-indigo-500/15 bg-indigo-500/5 p-3">
                     <summary class="cursor-pointer text-[11px] font-black text-indigo-200">Добавить готовое из библиотеки</summary>
                     <div class="mt-3 space-y-2">
                         <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2">
-                            <select id="custom-library-type" onchange="renderCustomLibraryPicker()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"><option value="history">Даты / события</option><option value="person">Личности</option><option value="term">Термины</option><option value="map">Карты</option><option value="relation">Связи</option></select>
+                            <select id="custom-library-type" onchange="renderCustomLibraryPicker()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"><option value="history">Даты / события</option><option value="person">Личности</option><option value="term">Термины</option><option value="map">Карты</option><option value="relation">Связи</option><option value="congress">Съезды</option></select>
                             <input id="custom-library-search" type="text" oninput="scheduleCustomLibraryRender()" placeholder="Найти в готовой базе..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
                         </div>
                         <div id="custom-library-list" class="max-h-60 overflow-auto space-y-1"></div>
@@ -5806,7 +5878,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
         function writeCustomCardProgress(v){
             const ok=safeWriteObject(CUSTOM_CARD_PROGRESS_KEY,v);if(ok)customCardProgressCache=v&&typeof v==='object'?v:{};return ok;
         }
-        function customCardModuleLabel(m){return ({history:'Даты / события',person:'Личности',term:'Термины',map:'Карты',relation:'Связи',free:'Своя тема'})[m]||'Своя тема'}
+        function customCardModuleLabel(m){return ({history:'Даты / события',person:'Личности',term:'Термины',map:'Карты',relation:'Связи',congress:'Съезды',free:'Своя тема'})[m]||'Своя тема'}
         function openCustomCardFromMap(id){
             const t=EGE_MAP_TASKS.find(x=>String(x.id)===String(id)); if(!t)return;
             const answer=Array.isArray(t.options)?(t.options[t.answer]||'—'):'—';
@@ -5835,7 +5907,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
             resetCustomCardForm();
             const fields={module:'custom-card-module',title:'custom-card-title',front:'custom-card-front',back:'custom-card-back',hint:'custom-card-hint',image:'custom-card-image',tags:'custom-card-tags',source:'custom-card-source'};
             Object.entries(fields).forEach(([k,id])=>{if(prefill[k]!=null){const el=document.getElementById(id);if(el)el.value=prefill[k]}});
-            const type=document.getElementById('custom-library-type'); if(type) type.value=prefill.module&&['history','person','term','map','relation'].includes(prefill.module)?prefill.module:'history';
+            const type=document.getElementById('custom-library-type'); if(type) type.value=prefill.module&&['history','person','term','map','relation','congress'].includes(prefill.module)?prefill.module:'history';
             const search=document.getElementById('custom-library-search'); if(search) search.value='';
             openCustomCardModal();
             renderCustomLibraryPicker();
@@ -5847,6 +5919,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
             if(type==='term') return TERMS_LIBRARY_2027.map(x=>({id:x.id,title:x.name,sub:[x.period,x.category].filter(Boolean).join(' · ')}));
             if(type==='map') return EGE_MAP_TASKS.map(x=>({id:String(x.id),title:x.title||x.type,sub:[x.type,x.sourceType].filter(Boolean).join(' · ')}));
             if(type==='relation') return RELATION_ENTRIES.map((x,i)=>({id:String(i),title:`${x.year} · ${x.event}`,sub:[x.country,x.russia].filter(Boolean).join(' · ')}));
+            if(type==='congress') return EGE_CONGRESS_REFERENCE_2027.map((x,i)=>({id:String(i),title:`${x.date} · ${x.title}`,sub:[x.type,x.place,x.decision].filter(Boolean).join(' · ')}));
             return [];
         }
         let customLibraryRenderFrame=0;
@@ -5874,6 +5947,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
             else if(type==='term'){const x=TERMS_LIBRARY_2027.find(v=>v.id===id);if(x)p={module:'term',title:x.name,front:x.name,back:x.definition,hint:`${x.period} · ${x.era||''}`,tags:[x.period,x.era,...(x.tags||[])].filter(Boolean).join(', '),source:'Библиотека терминов проекта · ЕГЭ-2027'};}
             else if(type==='map'){const x=EGE_MAP_TASKS.find(v=>String(v.id)===id);if(x){const corr=Array.isArray(x.options)?x.options[x.answer]||'—':'—';p={module:'map',title:x.title||'Карта',front:x.prompt||x.title||'Определи карту',back:corr+(x.guide?.what?`\n${x.guide.what}`:''),hint:x.hint||x.guide?.how||'',image:x.image||'',tags:[x.type,x.title].filter(Boolean).join(', '),source:x.source||'Банк карт проекта'};}}
             else if(type==='relation'){const x=RELATION_ENTRIES[Number(id)];if(x)p={module:'relation',title:`${x.year} · ${x.event}`,front:`${x.year}: ${x.event}`,back:`${x.country||'—'} → в России: ${x.russia||'—'}`,tags:[x.year,x.country].filter(Boolean).join(', '),source:'Блок «Связи» проекта'};}
+            else if(type==='congress'){const x=EGE_CONGRESS_REFERENCE_2027[Number(id)];if(x)p={module:'congress',title:x.title,front:`В каком году и где состоялось событие: ${x.title}?`,back:`${x.date} · ${x.place}\nРешение: ${x.decision}`,hint:'Вспомни политическую ситуацию и решение съезда.',tags:[x.type,x.date,x.place,...(x.tags||[])].filter(Boolean).join(', '),source:'Справочник: съезды и заседания'};}
             if(p){openCustomCardBuilder(p);document.getElementById('custom-card-library-details')?.removeAttribute('open');}
         }
         function openCustomCardFromPerson(encodedName){
@@ -5951,7 +6025,7 @@ const PERSONALITY_CONFUSION_PAIRS = [
                     const existing=readCustomCards(),ids=new Set(existing.map(x=>String(x.id))),fingerprints=new Set(existing.map(customCardFingerprint)),merged=existing.slice(),now=Date.now(),importedProgress=d?.progress&&typeof d.progress==='object'?d.progress:{};
                     const idMap=new Map();let added=0,skipped=0;
                     for(const c of incoming.slice(0,500)){
-                        const normalizedModule=['history','person','term','map','relation','free'].includes(c?.module)?c.module:'free';
+                        const normalizedModule=['history','person','term','map','relation','congress','free'].includes(c?.module)?c.module:'free';
                         const candidate={module:normalizedModule,front:String(c?.front||'').slice(0,700),back:String(c?.back||'').slice(0,1200)};
                         if(!candidate.front||!candidate.back){skipped++;continue;}
                         const fp=customCardFingerprint(candidate);
@@ -6070,6 +6144,8 @@ const TERM_CONFUSION_NOTES={
     'Урочные лета':'Не путай с заповедными: здесь речь о сроке розыска беглых, а не о самом запрете перехода.'
 };
 function getTermConfusionNote(t){return TERM_CONFUSION_NOTES[t.name]||'';}
+const TERM_EXPLANATIONS_V79={"Полюдье": "Способ сбора дани: князь с дружиной объезжал подвластные земли и получал установленные сборы. Конкретизация: реформа Ольги заменила нерегулярный сбор упорядоченными уроками и погостами.", "Уроки": "Заранее установленный размер дани. Важно отличать от полюдья (способ сбора) и погостов (места сбора и управления).", "Погосты": "Административные пункты, связанные со сбором дани. Запоминай как территориальную опору реформы Ольги, а не как вид налога.", "Вече": "Собрание горожан, решавшее важные вопросы городской жизни. Пример из курса: политические традиции Новгорода и Пскова; полномочия и состав веча менялись в разные эпохи.", "Раздробленность": "Политическое существование нескольких самостоятельных княжеств вместо единого центра. Не означает прекращение культурных и торговых связей между русскими землями.", "Ярлык": "Грамота ордынского хана, подтверждавшая право князя на княжение или владение. Отличай документ (ярлык) от выплаты (выход).", "Вотчина": "Земельное владение, связанное с наследственным правом. Для сравнения: поместье первоначально предоставляли за службу; позднее различия постепенно сокращались.", "Поместье": "Земельное владение, которое в Московском государстве предоставлялось служилому человеку за службу. Экзаменационная связка: земля ↔ служба ↔ дворянское войско.", "Опричнина": "Политика Ивана IV 1565–1572 годов: особая территория и аппарат управления, сопровождавшиеся конфискациями и репрессиями. Сопоставляй с земщиной — остальной частью государства.", "Заповедные лета": "Временный запрет крестьянского перехода в Юрьев день. Отличай от урочных лет, которые задавали срок розыска беглых.", "Урочные лета": "Срок, в течение которого землевладелец мог добиваться возвращения беглого крестьянина. Важный итог Соборного уложения 1649 года — бессрочный сыск.", "Соборное уложение": "Свод законов 1649 года при Алексее Михайловиче. В социальном вопросе закрепило бессрочный сыск беглых крестьян и усилило крепостную зависимость.", "Мануфактура": "Производство, основанное на разделении труда при ручной технике. Это промежуточная форма между ремесленной мастерской и фабрикой с машинным производством.", "Избранная рада": "Круг советников Ивана IV, связанный с реформами середины XVI века. Запоминай через меры: приказы, земские соборы, военные и судебные преобразования.", "Земский собор": "Сословно-представительное совещание при государе. Не был парламентом современного типа: состав, регулярность и реальные полномочия зависели от политической ситуации.", "Двоевластие": "Сосуществование двух центров власти после Февральской революции 1917 года: Временного правительства и Советов. Привязывай понятие к вопросу о власти, а не только к названию органа.", "Военный коммунизм": "Политика периода Гражданской войны: национализация, продразвёрстка и централизованное распределение ресурсов. Сопоставляй с НЭПом 1921 года, который заменил продразвёрстку продналогом.", "Новая экономическая политика (НЭП)": "Экономический курс, начатый в 1921 году: продналог вместо продразвёрстки и допущение ограниченных рыночных отношений. Связка для ЕГЭ: X съезд РКП(б) → НЭП → восстановление хозяйства.", "Индустриализация": "Создание крупной промышленной базы ускоренными темпами, особенно в годы первых пятилеток. Для конкретизации связывай с планированием, строительством предприятий и изменением структуры экономики.", "Коллективизация": "Объединение индивидуальных крестьянских хозяйств в коллективные хозяйства. В СССР с конца 1920-х годов сопровождалась форсированием, раскулачиванием и тяжёлыми социальными последствиями.", "Деколонизация": "Распад колониальных империй и обретение независимости бывшими колониями, особенно после Второй мировой войны. Примеры из базы: независимость Индии (1947) и «год Африки» (1960).", "Разрядка": "Период снижения международной напряжённости в 1970-е годы, сопровождавшийся переговорами и соглашениями СССР и США. Примеры: ОСВ-I (1972), Хельсинкский заключительный акт (1975).", "Гласность": "Расширение публичного обсуждения общественных и политических проблем в период перестройки. Связывай с реформами М. С. Горбачёва и изменением информационной среды конца 1980-х.", "Перестройка": "Курс реформ в СССР во второй половине 1980-х годов, связанный с попыткой обновления экономики и политической системы. Для ответа конкретизируй реформы, даты и последствия, а не используй термин как синоним распада СССР."};
+function getTermExplanationV79(t){return TERM_EXPLANATIONS_V79[t.name]||'';}
 function renderTerms(){
     const wrap=document.getElementById('terms-list-wrap'); if(!wrap)return;
     const q=normalizeHistorySearch(document.getElementById('terms-search')?.value||'');
@@ -6095,6 +6171,7 @@ function renderTerms(){
         return `<article class="term-card glass-panel p-4 rounded-2xl">
             <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h3 class="font-black text-white text-base">${escapeHistoryHtml(t.name)}</h3><div class="mt-1 text-[10px] text-indigo-300">${escapeHistoryHtml(t.period)} · ${escapeHistoryHtml(t.category)} · ${escapeHistoryHtml(t.era||'')}</div></div><span class="text-[9px] uppercase font-black text-slate-500">${t.category==='Россия'?'РОССИЯ':'МИР'}</span></div>
             <div class="mt-3 rounded-xl border border-indigo-500/10 bg-indigo-500/5 p-3"><div class="text-[9px] uppercase tracking-[.13em] text-slate-500 font-black">Определение</div><p class="mt-1 text-xs text-slate-200 leading-relaxed">${escapeHistoryHtml(t.definition)}</p></div>
+            ${getTermExplanationV79(t)?`<div class="mt-2 rounded-xl border border-sky-500/10 bg-sky-500/5 p-3"><div class="text-[9px] uppercase tracking-[.13em] text-sky-300/80 font-black">Пояснение и конкретизация</div><p class="mt-1 text-xs text-slate-200 leading-relaxed">${escapeHistoryHtml(getTermExplanationV79(t))}</p></div>`:''}
             <div class="mt-3 rounded-xl border border-slate-800/80 bg-slate-950/25 p-3"><div class="text-[9px] uppercase tracking-[.13em] text-slate-500 font-black">ЕГЭ-якорь</div><p class="mt-1 text-[11px] text-slate-300 leading-relaxed">${escapeHistoryHtml(getTermExamAnchor(t))}</p></div>
             ${confusion?`<div class="mt-2 rounded-xl border border-amber-500/10 bg-amber-500/5 p-3"><div class="text-[9px] uppercase tracking-[.13em] text-amber-300/80 font-black">Не перепутай</div><p class="mt-1 text-[11px] text-amber-100/80 leading-relaxed">${escapeHistoryHtml(confusion)}</p></div>`:''}
             ${study.examples.length?`<div class="mt-3 rounded-xl border border-emerald-500/10 bg-emerald-500/5 p-3"><div class="text-[9px] uppercase tracking-[.13em] text-emerald-300/80 font-black">Конкретный пример</div><div class="mt-1 space-y-1.5">${study.examples.map(x=>`<button type="button" class="term-example-link block w-full text-left text-[11px] text-slate-200 hover:text-white leading-relaxed" onclick="openHistoryDetails(${x.id})">${escapeHistoryHtml(x.label)} <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-emerald-300 ml-1"></i></button>`).join('')}</div></div>`:''}
@@ -7023,6 +7100,9 @@ function scheduleTermsRender(immediate=false){ clearTimeout(termsRenderTimer); i
         }
         function setupDesktopModuleNav(){
             const nav=document.querySelector('.desktop-module-nav'); if(!nav)return;
+            // Start from the beginning so a previously restored browser scroll position
+            // cannot leave the first modules hidden behind the arrow.
+            requestAnimationFrame(()=>{ nav.scrollLeft=0; updateDesktopNavArrows(); });
             nav.addEventListener('scroll',updateDesktopNavArrows,{passive:true});
             nav.addEventListener('wheel',e=>{ if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&nav.scrollWidth>nav.clientWidth){ nav.scrollLeft+=e.deltaY; e.preventDefault(); } },{passive:false});
             nav.addEventListener('keydown',e=>{ if(e.key==='Home'){e.preventDefault();nav.scrollTo({left:0,behavior:'smooth'});} if(e.key==='End'){e.preventDefault();nav.scrollTo({left:nav.scrollWidth,behavior:'smooth'});} });
@@ -8128,7 +8208,7 @@ function scheduleTermsRender(immediate=false){ clearTimeout(termsRenderTimer); i
         function readAtlasActivity(){ return safeReadObject(ATLAS_ACTIVITY_KEY,{opened:{}}); }
         function recordAtlasStudy(id){ const d=readAtlasActivity(); d.opened=d.opened||{}; const k=String(id); d.opened[k]=(Number(d.opened[k])||0)+1; d.last={id:k,ts:Date.now()}; safeWriteObject(ATLAS_ACTIVITY_KEY,d); }
         function formatActivityTime(ts){ if(!ts)return ''; try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));}catch(_){return ''; } }
-        function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[{k:'ОБНОВЛЕНИЕ',t:'Справочник: материал открывается напрямую',d:'При выборе найденного события открывается сама запись, а поисковая строка больше не перезаписывается выбранным названием. Добавлены лёгкие анимации для результатов, терминов, личностей и справочных карточек.'},
+        function renderUpdatesFeed(){ const el=document.getElementById('updates-feed'); if(!el)return; const items=[{k:'ИНТЕРФЕЙС',t:'v87 · HUD и навигация стали аккуратнее',d:'Верхняя панель получила более ровную сетку, спокойнее выстроенное меню и стабильную стартовую позицию навигации. Стиль и основные цвета сохранены.'},{k:'ДОРАБОТКА МОДУЛЯ',t:'v85 · Удобное чтение материалов съездов',d:'В подробном окне убраны лишние фильтры, добавлена навигация между связанными по типу съездами и улучшена мобильная компоновка. Остальные базы и колоды сохранены.'},{k:'ОБНОВЛЕНИЕ БАЗЫ',t:'v84 · Расширенные материалы съездов',d:'Внутреннее окно подробнее дополнено историческим контекстом, ходом и содержанием, решениями, значением и ключевыми участниками для основных съездов. Исходные даты, места и решения сохранены.'},{k:'НОВЫЙ РАЗДЕЛ',t:'v83 · Собственная база съездов',d:'Подробные карточки съездов открываются прямо в модуле, без перехода в Справочник. Добавлен отдельный экран материала и возврат к списку.'},{k:'ИСПРАВЛЕНИЕ',t:'v82 · Поиск и открытие съездов в Справочнике',d:'Исправлен переход в Справочник: фильтры сбрасываются, запись открывается по точному названию или показывается через поиск.'},{k:'ОБНОВЛЕНИЕ',t:'Справочник: материал открывается напрямую',d:'При выборе найденного события открывается сама запись, а поисковая строка больше не перезаписывается выбранным названием. Добавлены лёгкие анимации для результатов, терминов, личностей и справочных карточек.'},
             {k:'ОБНОВЛЕНИЕ',t:'v53 · Справочник и карты расширены',d:'Справочник получил нормальную адаптивную сетку для ПК и телефона. Банк карт пополнен шестью тренировочными карточками на трёх новых ФИПИ-связанных схемах; новые изображения также учитываются отдельными карточками Атласа.'},
             {k:'ИСПРАВЛЕНИЕ',t:'Карточки: безопасный размер текста на ПК и телефоне',d:'Исправлено масштабирование длинных названий в карточках; добавлены отдельные пределы для ПК, планшета и телефона, чтобы текст не пересекался и не вылезал за карточку.'},
             {k:'ИСПРАВЛЕНИЕ',t:'Мобильная шапка и навигация стабилизированы',d:'Переработана мобильная шапка: название, серия и панель разделов больше не накладываются друг на друга; навигация получила отдельную горизонтальную прокрутку и безопасные размеры кнопок.'},
@@ -8828,8 +8908,26 @@ const DICTIONARY_EXTENDED_REFERENCE_DB = [{"id":"305","year":"476","century":"V"
 
         function updateStreakDisplay() {
             const streakElem = document.getElementById('streak-counter');
-            if (streakElem) streakElem.innerText = currentStreak;
+            if (streakElem) {
+                streakElem.innerText = currentStreak;
+                const host = document.getElementById('header-streak');
+                if (host) {
+                    host.classList.remove('is-boosted');
+                    if (currentStreak > 0) requestAnimationFrame(() => host.classList.add('is-boosted'));
+                }
+            }
         }
+
+        document.addEventListener('click', (e) => {
+            const streak = e.target.closest && e.target.closest('#header-streak');
+            if (!streak) return;
+            const n = Number(currentStreak) || 0;
+            const message = n > 0
+                ? `Сейчас: ${n} правильных подряд. Ошибка сбросит серию.`
+                : 'Серия начнётся после первого правильного ответа.';
+            streak.setAttribute('aria-label', message);
+            streak.title = message;
+        });
 
         function saveUserProgress() {
             try {
@@ -8934,6 +9032,107 @@ try {
 @media(max-width:700px){.reference-hub-modal{padding:8px}.reference-hub-panel{max-height:96vh;border-radius:16px}.reference-hub-head{padding:16px}.reference-hub-tabs,.reference-hub-tools{padding-left:16px;padding-right:16px}.reference-hub-summary{padding-left:16px;padding-right:16px}.reference-hub-content{padding-left:16px;padding-right:16px}.reference-hub-grid,.reference-hub-visual{grid-template-columns:1fr}.reference-hub-tools{flex-direction:column;align-items:stretch}.reference-hub-tools select{width:100%}.reference-hub-head p{font-size:10px}.reference-hub-card-title{font-size:13px}.reference-hub-action{min-height:36px;padding:0 10px;font-size:10px}}
 .reference-hub-card,.reference-hub-card *{min-width:0;overflow-wrap:anywhere}
 
+</style>
+<style id="v87-hud-polish">
+/* ===== v87: HUD polish — same visual language, steadier geometry ===== */
+@media (min-width: 768px) {
+    header.border-b.sticky {
+        box-shadow: 0 8px 24px rgba(2,6,23,.14), inset 0 -1px 0 rgba(129,140,248,.035);
+    }
+    .top-header-inner {
+        min-height: 68px !important;
+        align-items: center !important;
+    }
+    .desktop-module-rail {
+        display: grid !important;
+        grid-template-columns: 32px minmax(0,1fr) 32px auto;
+        align-items: center;
+        gap: 7px;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0;
+    }
+    .desktop-module-rail .module-nav-arrow {
+        width: 32px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        border-radius: 10px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+    }
+    .desktop-module-nav {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        padding: 4px !important;
+        border-color: rgba(100,116,139,.28) !important;
+        background: rgba(15,23,42,.72) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.022), 0 3px 14px rgba(2,6,23,.10);
+        scroll-padding-inline: 4px;
+    }
+    .desktop-module-nav .tab-btn {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        border-radius: 8px !important;
+        transition: color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .desktop-module-nav .tab-btn:hover {
+        background: rgba(51,65,85,.34);
+    }
+    .desktop-module-nav .tab-btn.active,
+    .desktop-module-nav .tab-btn.is-current {
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 12px rgba(79,70,229,.12);
+    }
+    .site-command-entry {
+        align-self: center;
+    }
+    .site-command-toggle {
+        height: 36px !important;
+        min-height: 36px !important;
+        border-radius: 10px !important;
+        padding-inline: 10px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+    }
+    .header-brand {
+        align-self: center !important;
+    }
+    .header-brand > .w-10 {
+        box-shadow: 0 8px 20px rgba(99,102,241,.22) !important;
+    }
+    .header-title {
+        line-height: 1.12 !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 1280px) {
+    .desktop-module-rail { grid-template-columns: 30px minmax(0,1fr) 30px auto; gap: 6px; }
+    .desktop-module-rail .module-nav-arrow { width: 30px !important; }
+    .site-command-toggle { padding-inline: 9px !important; }
+}
+@media (min-width: 1281px) {
+    .top-header-inner { column-gap: 13px !important; }
+    .desktop-module-nav { transform: none !important; }
+}
+</style>
+<style id="v85-congress-detail-polish">
+.reference-hub-panel.congress-detail-open .reference-hub-tabs,.reference-hub-panel.congress-detail-open .reference-hub-tools{display:none!important}
+.reference-hub-detail-congress .reference-hub-detail-kicker{margin-top:14px}
+.reference-hub-detail-congress .reference-hub-detail-section{scroll-margin-top:12px}
+.reference-hub-detail-congress .v85-congress-neighbors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+.reference-hub-detail-congress .v85-congress-neighbor{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-width:0;min-height:58px;padding:10px 12px;border:1px solid rgba(129,140,248,.16);border-radius:12px;background:rgba(12,21,38,.82);color:#c7d2fe;text-align:left;font-size:11px;font-weight:850;line-height:1.35;cursor:pointer}
+.reference-hub-detail-congress .v85-congress-neighbor span{color:#8192ab;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.reference-hub-detail-congress .v85-congress-neighbor:disabled{opacity:.3;cursor:default}
+.reference-hub-detail-congress .v85-congress-neighbor strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.reference-hub-detail-congress .v85-memory-key{border-color:rgba(129,140,248,.22);background:linear-gradient(135deg,rgba(79,70,229,.10),rgba(8,15,28,.72))}
+@media(max-width:700px){.reference-hub-detail-congress .v85-congress-neighbors{gap:7px}.reference-hub-detail-congress .v85-congress-neighbor{min-height:62px;padding:9px;font-size:10px}.reference-hub-detail-congress .reference-hub-detail-section p{overflow-wrap:anywhere}}
+@media(max-width:360px){.reference-hub-detail-congress .v85-congress-neighbors{grid-template-columns:1fr}}
+</style>
+<style id="v83-congress-local-detail">
+.reference-hub-detail{max-width:860px;margin:0 auto 10px;padding:clamp(16px,3vw,30px);border:1px solid rgba(129,140,248,.2);border-radius:20px;background:linear-gradient(155deg,rgba(15,25,45,.98),rgba(8,15,28,.98));box-shadow:0 16px 42px rgba(0,0,0,.2)}.reference-hub-detail-kicker{margin-top:22px;color:#9aa9c2;font-size:10px;font-weight:950;letter-spacing:.16em;text-transform:uppercase}.reference-hub-detail h3{margin:8px 0 14px;color:#f8fafc;font-size:clamp(22px,4vw,32px);font-weight:950;line-height:1.18;overflow-wrap:anywhere}.reference-hub-detail-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.reference-hub-detail-meta span{padding:9px 12px;border:1px solid rgba(148,163,184,.12);border-radius:10px;background:#0b1424;color:#c1cde0;font-size:12px}.reference-hub-detail-section{margin-top:12px;padding:16px;border:1px solid rgba(148,163,184,.1);border-radius:14px;background:rgba(8,15,28,.66)}.reference-hub-detail-section h4{margin:0 0 8px;color:#c7d2fe;font-size:13px;font-weight:900}.reference-hub-detail-section p{margin:0;color:#d0d9e7;font-size:14px;line-height:1.7}.reference-hub-detail-note{margin-top:12px!important;color:#8292aa!important;font-size:11px!important}.reference-hub-detail .reference-hub-chip{font-size:10px;min-height:28px;padding:0 10px}@media(max-width:700px){.reference-hub-detail{padding:16px;border-radius:15px}.reference-hub-detail-section{padding:13px}.reference-hub-detail-section p{font-size:13px}}
 </style>
 <script>
 (function(){
@@ -9240,6 +9439,7 @@ function refFindHistory(query){
 function openReferenceHub(mode='culture'){
     referenceState.mode=['culture','congress','visual'].includes(mode)?mode:'culture';
     const m=document.getElementById('reference-hub-modal'); if(!m)return;
+    m.querySelector('.reference-hub-panel')?.classList.remove('congress-detail-open');referenceState.congressDetail=null;
     m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     const input=document.getElementById('reference-hub-search');if(input)input.value='';
     renderReferenceHub();
@@ -9247,10 +9447,11 @@ function openReferenceHub(mode='culture'){
 function closeReferenceHub(event){
     if(event&&event.target&&event.target.id!=='reference-hub-modal')return;
     const m=document.getElementById('reference-hub-modal');if(!m)return;
+    m.querySelector('.reference-hub-panel')?.classList.remove('congress-detail-open');referenceState.congressDetail=null;
     m.classList.remove('open');m.setAttribute('aria-hidden','true');
     if(!document.querySelector('.history-detail-modal.open,.map-modal.open,.atlas-focus-modal.open,.dictionary-reader-modal.open,.reference-hub-modal.open'))document.body.style.overflow='';
 }
-function setReferenceHubMode(mode){referenceState.mode=['culture','congress','visual'].includes(mode)?mode:'culture';document.querySelectorAll('#reference-hub-modal .reference-hub-tabs button').forEach(b=>b.classList.remove('active'));document.getElementById(`reference-tab-${referenceState.mode}`)?.classList.add('active');const filter=document.getElementById('reference-hub-filter');if(filter)filter.value='all';renderReferenceHub();}
+function setReferenceHubMode(mode){referenceState.mode=['culture','congress','visual'].includes(mode)?mode:'culture';referenceState.congressDetail=null;document.querySelector('#reference-hub-modal .reference-hub-panel')?.classList.remove('congress-detail-open');document.querySelectorAll('#reference-hub-modal .reference-hub-tabs button').forEach(b=>b.classList.remove('active'));document.getElementById(`reference-tab-${referenceState.mode}`)?.classList.add('active');const filter=document.getElementById('reference-hub-filter');if(filter)filter.value='all';renderReferenceHub();}
 function scheduleReferenceHubRender(){cancelAnimationFrame(referenceState.renderFrame);referenceState.renderFrame=requestAnimationFrame(()=>{referenceState.renderFrame=0;renderReferenceHub();});}
 function updateReferenceHubCopy(){
     const title=document.getElementById('reference-hub-title'),sub=document.getElementById('reference-hub-subtitle');
@@ -9285,7 +9486,7 @@ function renderReferenceHub(){
         let items=EGE_CONGRESS_REFERENCE_2027.filter(x=>filter==='all'||String(x.date).includes(filter));
         if(q)items=items.filter(x=>normalizeRef([x.type,x.date,x.place,x.title,x.decision,(x.tags||[]).join(' ')].join(' ')).includes(q));
         document.getElementById('reference-hub-summary').textContent=`${items.length} заседаний и съездов${q?' · по поиску':''}`;
-        box.innerHTML=items.length?`<div class="reference-hub-grid">${items.map(x=>`<article class="reference-hub-card"><div class="reference-hub-card-kicker">${safeText(x.type)} · ${safeText(x.date)}</div><div class="reference-hub-card-title">${safeText(x.title)}</div><div class="reference-hub-card-sub">${safeText(x.place)}</div><div class="reference-hub-body">${safeText(x.decision)}</div><div class="reference-hub-chip-row">${(x.tags||[]).slice(0,6).map(t=>`<span class="reference-hub-chip">${safeText(t)}</span>`).join('')}</div><div class="reference-hub-actions"><button type="button" class="reference-hub-action primary" onclick="openReferenceHistoryByQuery('${encodeURIComponent(x.title)}')">В Справочник</button><button type="button" class="reference-hub-action" onclick="setReferenceSearch('${encodeURIComponent(x.title)}')">Поиск</button></div></article>`).join('')}</div>`:'<div class="reference-hub-empty">По этому запросу ничего не найдено.</div>';
+        box.innerHTML=items.length?`<div class="reference-hub-grid">${items.map(x=>`<article class="reference-hub-card"><div class="reference-hub-card-kicker">${safeText(x.type)} · ${safeText(x.date)}</div><div class="reference-hub-card-title">${safeText(x.title)}</div><div class="reference-hub-card-sub">${safeText(x.place)}</div><div class="reference-hub-body">${safeText(x.decision)}</div><div class="reference-hub-chip-row">${(x.tags||[]).slice(0,6).map(t=>`<span class="reference-hub-chip">${safeText(t)}</span>`).join('')}</div><div class="reference-hub-actions"><button type="button" class="reference-hub-action primary" onclick="openCongressLocalDetail(${EGE_CONGRESS_REFERENCE_2027.indexOf(x)})">Подробнее</button><button type="button" class="reference-hub-action" onclick="openCongressCustomCard('${encodeURIComponent(x.title)}')">В свою колоду</button></div></article>`).join('')}</div>`:'<div class="reference-hub-empty">По этому запросу ничего не найдено.</div>';
         return;
     }
     let items=EGE_VISUAL_REFERENCE_2027.filter(x=>q?normalizeRef([x.title,x.clue,x.answer,(x.tags||[]).join(' ')].join(' ')).includes(q):true);
@@ -9317,12 +9518,70 @@ function openReferenceHistoryByQuery(encoded){
             if(match){setTimeout(()=>openHistoryDetails(match.id),40);}
             else if(search){search.value=q;scheduleDictionaryRender(true);}
         }
+const EGE_CONGRESS_LOCAL_NOTES_2027 = {
+'I съезд РСДРП':{context:'В конце XIX века марксистские кружки и организации действовали разрозненно. Создание общей партии должно было объединить социал-демократическое движение России.',course:'На съезде в Минске представители нескольких социал-демократических организаций провозгласили создание РСДРП. Работа была вскоре прервана арестами участников.',meaning:'Съезд обозначил переход от отдельных марксистских кружков к общероссийской партийной организации.',people:'Ю. О. Мартов; В. И. Ленин участвовал в подготовке объединения, но на самом съезде не присутствовал.'},
+'II съезд РСДРП':{context:'Партия нуждалась в единой программе и уставе, а также в определении организационных принципов и стратегии революционного движения.',course:'Обсуждались программа-минимум (ближайшие демократические преобразования) и программа-максимум (социалистическая революция). Разногласия по вопросу членства и устройству партии привели к разделению на большевиков и меньшевиков.',meaning:'Съезд оформил ключевой раскол российской социал-демократии, который повлиял на политическую борьбу 1905–1917 годов.',people:'В. И. Ленин; Ю. О. Мартов; Г. В. Плеханов.'},
+'V съезд РСДРП':{context:'После революции 1905 года партия обсуждала тактику в условиях спада революционного движения и реакции.',course:'На съезде обсуждались отношение к Государственной думе, профсоюзам и дальнейшая тактика. Большевики получили заметное представительство, но организационное единство оставалось непрочным.',meaning:'Съезд отражает борьбу различных течений социал-демократии в период после революции 1905–1907 годов.',people:'В. И. Ленин; Ю. О. Мартов; Л. Д. Троцкий.'},
+'VI съезд РСДРП(б)':{context:'После Июльских дней 1917 года Временное правительство преследовало большевиков, а Ленин находился в подполье. Партия пересматривала тактику в условиях кризиса власти.',course:'Съезд подтвердил курс на социалистическую революцию и вооружённое восстание как перспективу, при этом конкретный момент восстания позднее определялся партийным руководством.',meaning:'Съезд стал важным этапом подготовки большевиков к захвату власти осенью 1917 года.',people:'Г. Е. Зиновьев и Л. Б. Каменев выступали против немедленного восстания позднее; В. И. Ленин направлял работу из подполья.'},
+'VII съезд РКП(б)':{context:'После Октябрьской революции Советская Россия находилась в состоянии войны с Центральными державами. Руководство обсуждало условия выхода из войны.',course:'Съезд принял решение о переименовании партии в Российскую коммунистическую партию (большевиков) и поддержал заключение Брестского мира, несмотря на острые внутрипартийные разногласия.',meaning:'Решения закрепили новую партийную идентичность и определили внешнеполитический курс Советской России в начале 1918 года.',people:'В. И. Ленин; Н. И. Бухарин; Л. Д. Троцкий.'},
+'VIII съезд РКП(б)':{context:'В разгар Гражданской войны большевистское руководство выстраивало государственные институты и регулярную Красную армию.',course:'Съезд утвердил новую партийную программу, обсуждал военное строительство, отношение к среднему крестьянству и работу в деревне.',meaning:'Решения отражали укрепление централизованного партийного и государственного управления в условиях Гражданской войны.',people:'В. И. Ленин; Л. Д. Троцкий; Н. И. Бухарин.'},
+'IX съезд РКП(б)':{context:'К 1920 году Советская власть стремилась восстановить промышленность и транспорт, разрушенные мировой и Гражданской войнами.',course:'Основное внимание уделялось хозяйственному строительству, централизации управления и принципам организации промышленности. Обсуждались темпы и методы восстановления.',meaning:'Съезд показывает переход от преимущественно военных задач к восстановлению экономики, хотя Гражданская война ещё продолжалась.',people:'В. И. Ленин; Л. Д. Троцкий; Г. Е. Зиновьев.'},
+'X съезд РКП(б)':{context:'Кризис политики военного коммунизма, крестьянские выступления и Кронштадтское восстание показали необходимость изменения экономического курса.',course:'Съезд принял решение о переходе к новой экономической политике (НЭП), заменив продразвёрстку продовольственным налогом. Отдельной резолюцией запрещались фракции внутри партии.',meaning:'НЭП стал существенным поворотом в экономической политике, а запрет фракций усилил внутрипартийную централизацию.',people:'В. И. Ленин; Л. Д. Троцкий; А. М. Коллонтай.'},
+'XI съезд РКП(б)':{context:'После перехода к НЭП требовалось наладить государственное управление и определить пределы рыночных механизмов.',course:'Съезд обсуждал хозяйственное восстановление, партийную дисциплину и кадровую политику. Это был последний съезд, на котором присутствовал В. И. Ленин.',meaning:'Съезд обозначил начало нового этапа управления в условиях НЭПа и важен как последний партийный съезд с участием Ленина.',people:'В. И. Ленин; Л. Д. Троцкий; И. В. Сталин.'},
+'XIV съезд ВКП(б)':{context:'После смерти Ленина в партии шла борьба по вопросам экономического развития и дальнейшей стратегии строительства социализма.',course:'Съезд утвердил курс на индустриализацию и закрепил название Всесоюзная коммунистическая партия (большевиков). Оппозиционные позиции сторонников Н. И. Бухарина и Г. Е. Зиновьева обсуждались в партийной борьбе.',meaning:'Съезд стал важной вехой в формировании курса ускоренного промышленного развития и политической конфигурации руководства.',people:'И. В. Сталин; Н. И. Бухарин; Г. Е. Зиновьев.'},
+'XV съезд ВКП(б)':{context:'Советское руководство обсуждало форсирование индустриального развития и преобразование сельского хозяйства.',course:'Съезд одобрил директивы первого пятилетнего плана и курс на коллективизацию. Усилилась политическая борьба с объединённой оппозицией.',meaning:'Решения подготовили масштабные социально-экономические преобразования конца 1920-х — 1930-х годов.',people:'И. В. Сталин; Н. И. Бухарин; Л. Д. Троцкий (оппозиция к этому времени была вытеснена из руководства).'},
+'XVI съезд ВКП(б)':{context:'Началась первая пятилетка; ускоренная коллективизация сопровождалась принуждением и серьёзными социальными потрясениями.',course:'Съезд поддержал дальнейшее ускорение индустриализации и коллективизации, а также курс на ликвидацию кулачества как класса.',meaning:'Съезд отражает закрепление форсированной модели преобразования экономики и деревни.',people:'И. В. Сталин; В. М. Молотов; С. М. Киров.'},
+'XVII съезд ВКП(б)':{context:'К началу 1930-х годов руководство заявляло о крупных результатах первой пятилетки и переходило к следующему этапу планового развития.',course:'Съезд утвердил второй пятилетний план. В политической истории он получил название «съезд победителей», однако за последовавшими событиями последовали массовые репрессии.',meaning:'Материал важен для изучения индустриализации и политической обстановки в СССР накануне Большого террора.',people:'И. В. Сталин; С. М. Киров; Г. К. Орджоникидзе.'},
+'XIX съезд КПСС':{context:'После Второй мировой войны СССР восстанавливал экономику и укреплял систему управления. Съезд проходил незадолго до смерти Сталина.',course:'ВКП(б) была переименована в КПСС; изменена структура руководящих органов, утверждены директивы пятого пятилетнего плана.',meaning:'Съезд закрепил послевоенную институциональную конфигурацию партии непосредственно перед политическими переменами 1953 года.',people:'И. В. Сталин; Г. М. Маленков; Н. С. Хрущёв.'},
+'XX съезд КПСС':{context:'После смерти Сталина начался пересмотр ряда практик государственного управления и последствий массовых репрессий.',course:'На закрытом заседании Н. С. Хрущёв выступил с докладом о культе личности Сталина и его последствиях. Съезд стал важным этапом десталинизации; реабилитация началась раньше и продолжалась после него.',meaning:'Доклад повлиял на общественно-политическую жизнь СССР и международное коммунистическое движение, но десталинизация была ограниченной и противоречивой.',people:'Н. С. Хрущёв; В. М. Молотов; А. И. Микоян.'},
+'XXI съезд КПСС':{context:'В конце 1950-х годов руководство СССР оценивало результаты индустриального развития и перспективы построения социализма.',course:'Внеочередной съезд заявил о вступлении СССР в период развёрнутого строительства коммунизма и утвердил семилетний план развития народного хозяйства.',meaning:'Решения отражают оптимистические официальные оценки советского развития периода оттепели.',people:'Н. С. Хрущёв; А. Н. Косыгин.'},
+'XXII съезд КПСС':{context:'Политика десталинизации продолжалась, а руководство стремилось закрепить обновлённый идеологический курс.',course:'Принята третья программа КПСС, провозглашавшая курс на построение коммунизма. Съезд постановил вынести тело Сталина из Мавзолея; останки были перезахоронены у Кремлёвской стены.',meaning:'Съезд стал символом дальнейшего пересмотра сталинского наследия и идеологических обещаний начала 1960-х годов.',people:'Н. С. Хрущёв; Л. И. Брежнев.'},
+'XXIII съезд КПСС':{context:'После отставки Хрущёва в 1964 году новое руководство пересматривало стиль управления и стремилось к большей институциональной устойчивости.',course:'Восстановлено название высшего партийного органа — Политбюро, должность Генерального секретаря; утверждены директивы восьмой пятилетки.',meaning:'Съезд отражает оформление политического курса руководства Л. И. Брежнева и начало периода, позднее обозначаемого как застой.',people:'Л. И. Брежнев; А. Н. Косыгин; Н. В. Подгорный.'},
+'XXIV съезд КПСС':{context:'В период разрядки международной напряжённости СССР развивал внешнеполитические инициативы и поддерживал концепцию стабильного социалистического строя.',course:'Съезд выдвинул программу мира и закрепил идеологическую концепцию развитого социализма.',meaning:'Решения показывают внешнеполитические ориентиры СССР начала 1970-х годов и официальное описание советской системы.',people:'Л. И. Брежнев; А. Н. Косыгин.'},
+'XXVIII съезд КПСС':{context:'Перестройка сопровождалась политической либерализацией, экономическим кризисом и ростом противоречий между союзным центром и республиками.',course:'Съезд проходил на фоне открытой борьбы за реформирование партии и государства. Б. Н. Ельцин заявил о выходе из КПСС; партийное руководство не смогло преодолеть внутренний раскол.',meaning:'Съезд стал одним из проявлений кризиса КПСС в последние годы существования СССР.',people:'М. С. Горбачёв; Б. Н. Ельцин; Н. И. Рыжков.'},
+'II Всероссийский съезд Советов':{context:'После свержения монархии в феврале 1917 года и Февральской революции в России сложилось двоевластие. К осени обострился кризис Временного правительства.',course:'После Октябрьского вооружённого восстания съезд провозгласил переход власти к Советам, образовал Совет народных комиссаров и принял первые декреты — о мире и земле.',meaning:'Решения оформили создание советской власти и определили первые направления её внутренней и внешней политики.',people:'В. И. Ленин; Л. Д. Троцкий; Л. Б. Каменев.'},
+'III Всероссийский съезд Советов':{context:'После Октябрьской революции происходила борьба за легитимность новой власти; Учредительное собрание было распущено в январе 1918 года.',course:'Съезд одобрил роспуск Учредительного собрания, утвердил Декларацию прав трудящегося и эксплуатируемого народа и закрепил название РСФСР.',meaning:'Съезд содействовал институциональному оформлению советского государства.',people:'Я. М. Свердлов; В. И. Ленин.'},
+'IV Всероссийский съезд Советов':{context:'Советское правительство приняло решение о заключении Брестского мира, вызвавшее острые споры внутри большевистской партии.',course:'Съезд ратифицировал Брестский мир и утвердил перенос столицы из Петрограда в Москву.',meaning:'Решения определили выход Советской России из мировой войны и закрепили Москву как столицу.',people:'В. И. Ленин; Я. М. Свердлов.'},
+'V Всероссийский съезд Советов':{context:'Летом 1918 года развернулась Гражданская война, обострились конфликты между большевиками и левыми эсерами.',course:'Съезд принял первую Конституцию РСФСР. Во время его работы произошёл мятеж левых эсеров, после которого их влияние в советских органах было резко ограничено.',meaning:'Конституция закрепила систему Советов и основы государственного устройства РСФСР в условиях Гражданской войны.',people:'Я. М. Свердлов; В. И. Ленин; М. А. Спиридонова.'},
+'VIII Всероссийский съезд Советов':{context:'К концу 1920 года основные фронты Гражданской войны были завершены, и на первый план выходило восстановление экономики.',course:'Съезд одобрил план ГОЭЛРО — программу электрификации страны — и создание Совета труда и обороны.',meaning:'ГОЭЛРО стал одной из основ советской политики модернизации и восстановления хозяйства.',people:'В. И. Ленин; Г. М. Кржижановский.'},
+'X Всероссийский съезд Советов':{context:'После Гражданской войны руководство стремилось закрепить объединение советских республик и создать общие органы управления.',course:'Съезд РСФСР одобрил образование СССР; вскоре решение было оформлено I Всесоюзным съездом Советов.',meaning:'Съезд стал этапом государственного объединения советских республик в единый союз.',people:'В. И. Ленин; И. В. Сталин; М. И. Калинин.'},
+'I Всесоюзный съезд Советов':{context:'Советские республики уже заключили договорные соглашения о военном и хозяйственном сотрудничестве; обсуждалась постоянная форма объединения.',course:'Съезд утвердил Декларацию и Договор об образовании СССР и избрал Центральный исполнительный комитет СССР.',meaning:'Съезд юридически оформил создание Союза Советских Социалистических Республик 30 декабря 1922 года.',people:'М. И. Калинин; Г. И. Петровский; М. Ф. Владимирский.'},
+'II Всесоюзный съезд Советов':{context:'После образования СССР требовалось закрепить союзное государственное устройство в основном законе.',course:'Съезд принял первую Конституцию СССР. В этот период Петроград был переименован в Ленинград (1924).',meaning:'Конституция 1924 года закрепила структуру союзных и республиканских органов власти.',people:'М. И. Калинин; А. И. Рыков.'},
+'I съезд народных депутатов СССР':{context:'Политическая реформа перестройки ввела новый представительный орган, выборы с альтернативными кандидатами и расширила публичность политической дискуссии.',course:'Съезд избрал М. С. Горбачёва председателем Верховного Совета СССР; обсуждения транслировались по телевидению. Возникла Межрегиональная депутатская группа.',meaning:'Съезд стал важным этапом политической гласности и формирования публичной парламентской политики в СССР.',people:'М. С. Горбачёв; А. Д. Сахаров; Б. Н. Ельцин.'},
+'II съезд народных депутатов СССР':{context:'На фоне гласности и политической конкуренции усилились требования пересмотра монополии КПСС на власть.',course:'На съезде прозвучали требования отмены статьи 6 Конституции СССР, закреплявшей руководящую роль КПСС. Само изменение было принято в марте 1990 года.',meaning:'Дискуссии подготовили конституционные изменения, открывшие путь к многопартийности.',people:'М. С. Горбачёв; А. Д. Сахаров; Б. Н. Ельцин.'},
+'III съезд народных депутатов СССР':{context:'К 1990 году политическая система СССР быстро менялась: росла роль выборных органов, а союзные республики заявляли о суверенитете.',course:'Введён пост Президента СССР, президентом избран М. С. Горбачёв; отменена конституционная норма о руководящей роли КПСС.',meaning:'Решения изменили систему высшей власти и ликвидировали конституционную основу однопартийной монополии.',people:'М. С. Горбачёв; А. Д. Лукьянов.'},
+'IV съезд народных депутатов СССР':{context:'В конце 1990 года союзное руководство пыталось сохранить управляемость государства и найти компромисс между центром и республиками.',course:'Учреждён пост вице-президента СССР; обсуждались меры по сохранению Союза, включая проведение референдума.',meaning:'Съезд отражал попытки реформировать союзные институты в условиях углубляющегося кризиса.',people:'М. С. Горбачёв; Г. И. Янаев.'},
+'V съезд народных депутатов СССР':{context:'После августовского путча 1991 года союзные органы власти утратили значительную часть влияния, а республики ускорили движение к независимости.',course:'Съезд рассматривал переходное устройство союзной власти и подготовку нового союзного договора, но согласовать устойчивую модель обновлённого Союза не удалось.',meaning:'Съезд стал одной из последних попыток сохранить союзное государство через договорное переустройство.',people:'М. С. Горбачёв; представители союзных республик.'}
+};
+
+function getCongressLocalNeighbors(index){
+    const current=EGE_CONGRESS_REFERENCE_2027[Number(index)];if(!current)return {prev:null,next:null};
+    const yearOf=x=>Number((String(x?.date||'').match(/\d{4}/)||[])[0])||0;
+    const group=EGE_CONGRESS_REFERENCE_2027.map((x,i)=>({x,i})).filter(v=>v.x.type===current.type).sort((a,b)=>yearOf(a.x)-yearOf(b.x)||a.i-b.i);
+    const pos=group.findIndex(v=>v.i===Number(index));
+    return {prev:pos>0?group[pos-1]:null,next:pos>=0&&pos<group.length-1?group[pos+1]:null};
+}
+function openCongressLocalDetail(index){
+    const x=EGE_CONGRESS_REFERENCE_2027[Number(index)];if(!x)return;
+    const box=document.getElementById('reference-hub-content');if(!box)return;
+    referenceState.congressDetail=Number(index);
+    document.querySelector('#reference-hub-modal .reference-hub-panel')?.classList.add('congress-detail-open');
+    const tags=(x.tags||[]).map(t=>`<span class="reference-hub-chip">${safeText(t)}</span>`).join('');
+    const note=EGE_CONGRESS_LOCAL_NOTES_2027[x.title]||{};
+    const section=(heading,body,empty)=>`<section class="reference-hub-detail-section"><h4>${heading}</h4><p>${safeText(body||empty)}</p></section>`;
+    const people=note.people||'';
+    document.getElementById('reference-hub-summary').textContent='Подробный материал · собственная база съездов';
+    box.innerHTML=`<article class="reference-hub-detail reference-hub-detail-congress"><button type="button" class="reference-hub-action" onclick="closeCongressLocalDetail()">← Ко всем съездам</button><div class="reference-hub-detail-kicker">${safeText(x.type)} · ${safeText(x.date)}</div><h3>${safeText(x.title)}</h3><div class="reference-hub-detail-meta"><span>⌖ ${safeText(x.place||'Место не указано')}</span><span>◷ ${safeText(x.date||'Дата не указана')}</span></div>${section('Исторический контекст',note.context,'В исходной записи отдельный контекст не указан.')}${section('Что происходило',note.course,x.decision||'Подробности хода заседания в исходной записи не указаны.')}${section('Решение съезда',x.decision,'В исходной записи решение не указано.')}${section('Историческое значение',note.meaning,'Значение отдельно не раскрыто в исходной записи; ориентируйся на зафиксированное решение и общий исторический контекст.')}${people?section('Ключевые участники',people,''):''}<section class="reference-hub-detail-section v85-memory-key"><h4>Ключ к запоминанию</h4><p><strong>${safeText(x.date||'Дата не указана')}</strong> · ${safeText(x.title)}${x.place?` · ${safeText(x.place)}`:''}</p><p class="mt-2">${safeText(x.decision||note.meaning||'Сопоставь событие с его историческим контекстом.')}</p><p class="reference-hub-detail-note">Краткое решение взято из исходной записи; расширенные пояснения служат учебным комментарием.</p></section>${tags?`<div class="reference-hub-chip-row">${tags}</div>`:''}<div class="reference-hub-actions"><button type="button" class="reference-hub-action primary" onclick="openCongressCustomCard('${encodeURIComponent(x.title)}')">Добавить в свою колоду</button></div><div class="v85-congress-neighbors"><button type="button" class="v85-congress-neighbor" ${getCongressLocalNeighbors(index).prev?'':'disabled'} onclick="${getCongressLocalNeighbors(index).prev?`openCongressLocalDetail(${getCongressLocalNeighbors(index).prev.i})`:''}"><span>Предыдущий · ${safeText(x.type)}</span><strong>${safeText(getCongressLocalNeighbors(index).prev?`${getCongressLocalNeighbors(index).prev.x.date} · ${getCongressLocalNeighbors(index).prev.x.title}`:'Нет предыдущей записи')}</strong></button><button type="button" class="v85-congress-neighbor" ${getCongressLocalNeighbors(index).next?'':'disabled'} onclick="${getCongressLocalNeighbors(index).next?`openCongressLocalDetail(${getCongressLocalNeighbors(index).next.i})`:''}"><span>Следующий · ${safeText(x.type)}</span><strong>${safeText(getCongressLocalNeighbors(index).next?`${getCongressLocalNeighbors(index).next.x.date} · ${getCongressLocalNeighbors(index).next.x.title}`:'Нет следующей записи')}</strong></button></div></article>`;
+    box.scrollTop=0;
+}
+function closeCongressLocalDetail(){referenceState.congressDetail=null;document.querySelector('#reference-hub-modal .reference-hub-panel')?.classList.remove('congress-detail-open');renderReferenceHub();const content=document.getElementById('reference-hub-content');if(content)content.scrollTop=0;}
+function openCongressCustomCard(encoded){const title=decodeURIComponent(encoded||'');const x=EGE_CONGRESS_REFERENCE_2027.find(v=>v.title===title);if(!x)return;openGlobalCustomDeck();setTimeout(()=>openCustomCardBuilder({module:'congress',title:x.title,front:`В каком году и где состоялось событие: ${x.title}?`,back:`${x.date} · ${x.place}\nРешение: ${x.decision}`,hint:'Вспомни политическую ситуацию и решение съезда.',tags:[x.type,x.date,x.place,...(x.tags||[])].filter(Boolean).join(', '),source:'Справочник: съезды и заседания'}),80);}
 function openReferencePerson(encoded){const name=decodeURIComponent(encoded||'');closeReferenceHub();switchTab('personalities');const input=document.getElementById('people-search');if(input){input.value=name;setPeopleKeyword(encodeURIComponent(name));}else if(typeof setPeopleKeyword==='function'){setPeopleKeyword(encodeURIComponent(name));}}
 function getReferenceHubCounts(){return {culture:EGE_CULTURE_REFERENCE_2027.length,congress:EGE_CONGRESS_REFERENCE_2027.length,visual:EGE_VISUAL_REFERENCE_2027.length,terms:actuallyAddedTerms.length,dates:EGE_DATES_GLOBAL_SUPPLEMENT_2027.length,people:FIPI_PEOPLE_SUPPLEMENT_2027.length+FIPI_EGE_PEOPLE_EXTRA_2027.length};}
 
 // Make the new atlas discoverable through the command palette without changing existing items.
 try{if(typeof SITE_COMMAND_ITEMS!=='undefined' && !SITE_COMMAND_ITEMS.some(x=>x.id==='culture-atlas')){SITE_COMMAND_ITEMS.push({id:'culture-atlas',label:'Культурный атлас',sub:'Архитектура, литература, музыка, кино и визуальные опоры',icon:'fa-landmark',action:'culture-atlas',keywords:'культура архитектура литература музыка кино картины'});SITE_COMMAND_ITEMS.push({id:'congress-reference',label:'Съезды и заседания',sub:'Съезды партий и Советов',icon:'fa-building-columns',action:'congress-reference',keywords:'съезд советов рсдрп ркп вкп кпсс 1917 1921 1956 1989'});} }catch(_){ }
-Object.assign(window,{openReferenceHub,closeReferenceHub,setReferenceHubMode,scheduleReferenceHubRender,updateReferenceHubCopy,updateReferenceHubFilter,renderReferenceHub,toggleReferenceVisual,setReferenceSearch,openReferenceHistory,openReferenceHistoryByQuery,openReferencePerson,getReferenceHubCounts});
+Object.assign(window,{openReferenceHub,closeReferenceHub,setReferenceHubMode,scheduleReferenceHubRender,updateReferenceHubCopy,updateReferenceHubFilter,renderReferenceHub,toggleReferenceVisual,setReferenceSearch,openReferenceHistory,openReferenceHistoryByQuery,openReferencePerson,openCongressCustomCard,openCongressLocalDetail,closeCongressLocalDetail,getReferenceHubCounts,EGE_CONGRESS_LOCAL_NOTES_2027});
 const v69OldOpenCommandAction = typeof window.openSiteCommandAction==='function' ? window.openSiteCommandAction : null;
 })();
 
@@ -9967,6 +10226,41 @@ function v78OpenReferenceHistoryDirect(encoded){
 }
 window.openReferenceHistoryByQuery=v78OpenReferenceHistoryDirect;
 
+// v80: Congress cards navigate by stable reference ID, not by text search.
+window.openCongressDictionaryDirect=function(encodedTitle){
+  let title=''; try{title=decodeURIComponent(String(encodedTitle||''));}catch(_){title=String(encodedTitle||'');}
+  title=String(title||'').trim(); if(!title)return;
+  const norm=s=>String(s||'').toLocaleLowerCase('ru').replace(/ё/g,'е').replace(/[«»„“”'’.,:;()\[\]—–-]/g,' ').replace(/\s+/g,' ').trim();
+  let hit=null, pools=[];
+  try{if(typeof getDictionaryExtendedBase==='function')pools.push(...getDictionaryExtendedBase());}catch(_){ }
+  try{if(typeof getDictionaryBriefBase==='function')pools.push(...getDictionaryBriefBase());}catch(_){ }
+  const unique=[...new Map(pools.map(x=>[String(x?.id),x])).values()];
+  const bridge=unique.filter(x=>String(x?.id||'').startsWith('ref-congress-'));
+  const n=norm(title);
+  hit=bridge.find(x=>norm(x.title)===n)||bridge.find(x=>norm(x.title).includes(n)||n.includes(norm(x.title)))||null;
+  try{if(typeof closeReferenceHub==='function')closeReferenceHub();}catch(_){ }
+  try{if(typeof switchTab==='function')switchTab('dictionary');}catch(_){ }
+  // Reset every filter so reference-only records cannot be hidden by a stale filter.
+  try{dictionaryBaseMode='extended';dictionaryScope='all';dictionaryCentury='all';dictionaryTopic='all';dictionaryView='cards';dictionarySelectedId=null;dictionaryRenderLimit=42;}catch(_){ }
+  try{updateDictionaryBaseUI();updateDictionaryScopeUI();updateDictionaryViewUI();}catch(_){ }
+  const century=document.getElementById('dict-century-filter');if(century)century.value='all';
+  const topic=document.getElementById('dict-topic-filter');if(topic)topic.value='all';
+  const input=document.getElementById('dict-search');if(input)input.value=hit?'':title;
+  try{if(typeof scheduleDictionaryRender==='function')scheduleDictionaryRender(true);}catch(_){ }
+  if(hit){
+    const id=String(hit.id);
+    setTimeout(()=>{
+      try{dictionarySelectedId=id;}catch(_){ }
+      try{if(typeof setDictionarySelected==='function')setDictionarySelected(id);else if(typeof renderDictionaryPreview==='function')renderDictionaryPreview(hit);}catch(_){ }
+      try{if(typeof scheduleDictionaryRender==='function')scheduleDictionaryRender(true);}catch(_){ }
+    },80);
+  }else{
+    // Keep the title in the visible search field and render all matching entries, even without a bridge.
+    try{if(typeof scheduleDictionaryRender==='function')scheduleDictionaryRender(true);}catch(_){ }
+  }
+};
+
+
 function v78FixDictionaryRowSelection(){
   const root=document.getElementById('dictionary-results-list');
   if(!root || root.dataset.v78DirectSelection==='1')return;
@@ -10012,6 +10306,34 @@ else setTimeout(v78Install,80);
 }
 @media(prefers-reduced-motion:reduce){
   #dictionary-results-list [data-dict-id],#terms-list-wrap .term-card,#people-list-wrap .people-card,#relation-list tr,.reference-hub-card,.study-route-card,.dictionary-v41-preview-inner,.dictionary-v42-extended-preview{animation:none!important;transition:none!important;transform:none!important}
+}
+</style>
+
+
+<style id="v80-site-polish">
+/* Consistent controls and safe wrapping across modules; intentionally avoids layout rewrites. */
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+:where(.glass-panel, .custom-card-item, .reference-hub-card, .term-card, .people-card) { min-width: 0; }
+:where(.glass-panel, .custom-card-item, .reference-hub-card, .term-card, .people-card) :where(h1,h2,h3,h4,p,span,strong,button) { overflow-wrap: anywhere; }
+:where(button, .filter-chip, .reference-hub-action) { touch-action: manipulation; }
+@media (max-width: 640px) {
+  :where(.custom-card-item, .reference-hub-card, .term-card, .people-card) { max-width: 100%; }
+  :where(.custom-card-item, .reference-hub-card, .term-card, .people-card) :where(.flex) { min-width: 0; }
+  :where(.custom-card-item, .reference-hub-card, .term-card, .people-card) button { max-width: 100%; white-space: normal; }
+  #custom-card-filters { grid-template-columns: minmax(0,1fr) !important; }
+  #custom-card-module-filter { width: 100%; min-height: 42px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #reference-hub-content .reference-hub-card, #custom-card-list .custom-card-item,
+  #terms-list-wrap .term-card, #people-list-wrap .people-card {
+    animation: v80SoftEnter .18s ease both;
+  }
+  @keyframes v80SoftEnter { from { opacity:.72; transform:translateY(3px); } to { opacity:1; transform:translateY(0); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  #reference-hub-content .reference-hub-card, #custom-card-list .custom-card-item,
+  #terms-list-wrap .term-card, #people-list-wrap .people-card { animation:none !important; transition:none !important; }
 }
 </style>
 
